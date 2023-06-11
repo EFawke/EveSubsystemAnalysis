@@ -412,7 +412,7 @@ Answer in 1-2 sentences. Use data to support your answer.`
         
         output.marketeerPrompt = marketeerPrompt;
         output.prompt = prompt;
-        const apiKey = "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";
+        const apiKey = "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";
         output.apiKey = apiKey;
 
         res.status(200).send(output)
