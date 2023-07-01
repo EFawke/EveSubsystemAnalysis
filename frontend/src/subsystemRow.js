@@ -30,9 +30,6 @@ class CompactTableRow extends React.Component {
         <td><a href = {"/subsystems/" + itemid + "/"}>{jita_profits_with_commas} ISK</a></td>
         <td><a href = {"/subsystems/" + itemid + "/"}>{jitaBuySellRatio}</a></td>
         <td><a href = {"/subsystems/" + itemid + "/"}>{numberDestroyed}</a></td>
-        {/* <td><a href = {"/subsystems/" + itemid + "/"}>{manufacture_cost_jita} ISK</a></td>
-        <td><a href = {"/subsystems/" + itemid + "/"}>{`${jita_sell_volume} Units/ ${jita_sell_orders} Orders`}</a></td>
-        <td><a href = {"/subsystems/" + itemid + "/"}>{`${jita_buy_volume} Units/ ${jita_buy_orders} Orders`}</a></td> */}
       </tr>
     );
   }

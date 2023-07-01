@@ -124,7 +124,8 @@ function tallyResults(buySellRatioRank, destroyed) {
                 destroyed[i].jita_buy_orders = buySellRatioRank[j].jita_buy_orders;
                 destroyed[i].manufacture_cost_jita = buySellRatioRank[j].manufacture_cost_jita;
                 destroyed[i].manufacture_cost_amarr = buySellRatioRank[j].manufacture_cost_amarr;
-                let jita_profits_num = buySellRatioRank[j].jita_sell - buySellRatioRank[j].manufacture_cost_jita;
+                // let jita_profits_num = buySellRatioRank[j].jita_sell - buySellRatioRank[j].manufacture_cost_jita;
+                let jita_profits_num = Math.round(buySellRatioRank[j].jita_sell - buySellRatioRank[j].manufacture_cost_jita);
                 destroyed[i].jita_profits_with_commas = jita_profits_num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 destroyed[i].jita_profits = jita_profits_num
                 let amarr_profits_num = buySellRatioRank[j].amarr_sell - buySellRatioRank[j].manufacture_cost_amarr;
