@@ -35,7 +35,7 @@ client.query('CREATE TABLE IF NOT EXISTS subsystems (assocKill BIGINT, killTime 
 //function to make the api call to zkillboard
 const axiosZkillData = () => {
     //console.log("fetching data from zkillboard");
-    axios("https://redisq.zkillboard.com/listen.php?ttw=1", {
+    axios("https://redisq.zkillboard.com/listen.php?queueID=AnimeTiddies?ttw=5", {
         headers: {
             'accept-encoding': 'gzip',
             'user-agent': 'Johnson Kanjus - evesubsystemanalysis.com - teduardof@gmail.com',
@@ -44,6 +44,7 @@ const axiosZkillData = () => {
     })
         .catch(err => {
             if (err) {
+                console.log(err);
                 return;
             }
         })

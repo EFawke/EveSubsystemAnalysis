@@ -64,6 +64,8 @@ homeRouter.get('/', (req, res, next) => {
             console.log(err)
             client.end();
         } else {
+            console.log("FUCKING FUCK FUCK")
+            console.log(result);
             latest = result.rows;
             latest.sort((a, b) => (a.jita_sell < b.jita_sell) ? 1 : -1)
             const mostProfitable = {}
