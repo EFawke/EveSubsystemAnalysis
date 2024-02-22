@@ -617,20 +617,6 @@ class App extends React.Component {
           borderColours.push('#161e26a1')
           pieChartColours.push('#FF000099')
         }
-        // } else {
-        //   if (key.includes("Tengu") && this.state.mode === 'light') {
-        //     pieChartColours.push("#0000CC")
-        //   }
-        //   if (key.includes("Loki") && this.state.mode === 'light') {
-        //     pieChartColours.push("#A52A2A")
-        //   }
-        //   if (key.includes("Proteus") && this.state.mode === 'light') {
-        //     pieChartColours.push("#00CC00")
-        //   }
-        //   if (key.includes("Legion") && this.state.mode === 'light') {
-        //     pieChartColours.push("#FFFF33")
-        //   }
-        // }
         if (key !== this.state.name && this.state.mode === 'light') {
           pieChartColours.push('#ffffff36')
           borderColours.push('#02617f52')
@@ -689,34 +675,6 @@ class App extends React.Component {
       }
       return rank
     }
-
-    // const today = this.state.lastSevenDays[6];
-    // const jitaSell = this.state.price;
-    // const amarrSell = this.state.amarrPrice;
-    // const amarrBuy = this.state.priceAverages[today].amarr_buy;
-    // const jitaBuy = this.state.priceAverages[today].buy;
-    // const jitaBuild = this.state.jitaBuild;
-    // const jitaBuild = this.state.priceAverages[today].manufacture_cost_jita;
-    // const amarrBuild = this.state.priceAverages[today].manufacture_cost_amarr;
-    // const jitaProfit = jitaSell - jitaBuild;
-    // const amarrProfit = amarrSell - amarrBuild;
-    // const jitaProfitMargin = (jitaProfit / jitaSell * 100).toFixed(2) + "%";
-    // const amarrProfitMargin = (amarrProfit / amarrSell * 100).toFixed(2) + "%";
-    // const jitaBuyOrders = this.state.averageQuants[today].buy;
-    // const jitaSellOrders = this.state.averageQuants[today].sell;
-    // const amarrBuyOrders = this.state.averageQuants[today].amarr_buy;
-    // const amarrSellOrders = this.state.averageQuants[today].amarr_sell;
-    // const percentageOfTotal = getPercentageOfTotal(num_des, this.state.pieChart)
-    // const subsystemRank = getSubsystemRank(this.state.pieChart)
-
-    //     const prompt = `
-    //     Subsystem name: ${this.state.name}.
-    // In the last 7 days, ${num_des} ${this.state.name} subsystems have been lost by players, accounting for ${percentageOfTotal} of subsystem losses this week. If we assume this is an indication of the demand, that makes it rank ${subsystemRank} out of 48.
-    // Based on the market data, you can build this subsystem for about ${jitaBuild} and sell it for ${jitaSell}, a difference of ${jitaProfit}.
-    // Given that you can only produce a finite number of subsystems per day, and that you have a finite amount of capital, should you produce this subsystem?
-    // Answer in 1-2 sentences. Use data to support your answer.`
-
-    //console.log(prompt);
 
     let grayMarketeer = this.state.view === "marketeer" ? "" : "gray";
     let grayDemand = this.state.view === "demand" ? "" : "gray";
