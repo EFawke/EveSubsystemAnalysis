@@ -40,6 +40,7 @@ const cleanUpOld = () => {
         })
         .then((res) => {
             console.log("cleaned up old entries");
+            console.log("market Data cleaned up")
         })
 }
 

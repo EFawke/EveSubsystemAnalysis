@@ -98,28 +98,27 @@ const grabMaterialData = () => {
             .then((result) => {
                 const buildPrice = result[2].data.blueprintDetails.adjustedPrice;
                 const subName = result[2].data.blueprintDetails.productTypeName;
-                console.log(subName + " " + buildPrice)
-                //console.log(result[2].data.blueprintDetails.adjustedPrice);
-                //console.log(result[2].data);
                 let resultsData = {};
                 //have to merge the two results together and label them with the correct market
                 for (let i = 0; i < result.length; i++) {
-                    if (i % 2 === 0) {
+                    if (i == 0) {
                         let jitaData = {};
                         jitaData.data = result[i].data;
                         jitaData.market = "jita";
                         resultsData.jitaData = jitaData;
-                    } else {
+                    }
+                    if(i == 1) {
                         let amarrData = {};
                         amarrData.data = result[i].data;
                         amarrData.market = "amarr";
                         resultsData.amarrData = amarrData;
                     }
-                    // console.log(result[2].data)
                 }
                 resultsData.id = id;
                 resultsData.name = name;
                 resultsData.date = date;
+                resultsData.buildPrice = buildPrice;
+                console.log(resultsData)
                 insertIntoTable(resultsData)
                 //console.log("ok I need to get the material prices now from result[2].data")
             })
@@ -167,10 +166,8 @@ const insertIntoTable = (res) => {
         res.jitaData.sellOrders,
         res.jitaData.sellVolume,
         res.date,
-        null,
-        null
-        // output.materialPriceJita,
-        // output.materialPriceAmarr
+        res.buildPrice,
+        res.buildPrice
     ]
     client.query(sql, values)
         .then((res) => {
@@ -190,8 +187,6 @@ const logMarketData = () => {
             console.log(err);
         })
 }
-
-// logMarketData();
 
 grabMaterialData()
 

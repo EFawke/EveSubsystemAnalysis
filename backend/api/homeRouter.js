@@ -1,5 +1,4 @@
 const express = require('express');
-// const { data } = require('jquery');
 const homeRouter = express.Router();
 const { Client } = require('pg');
 
@@ -70,6 +69,7 @@ homeRouter.get('/', (req, res, next) => {
             latest.sort((a, b) => (a.jita_sell < b.jita_sell) ? 1 : -1)
             const mostProfitable = {}
             for (let i = 0; i < latest.length; i++) {
+                console.log(latest[i])
 
                 if (latest[i].name.includes("Defensive")) {
                     if (!mostProfitable["Defensive"]) {
