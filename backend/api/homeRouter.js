@@ -63,14 +63,11 @@ homeRouter.get('/', (req, res, next) => {
             console.log(err)
             client.end();
         } else {
-            console.log("FUCKING FUCK FUCK")
-            console.log(result);
             latest = result.rows;
             latest.sort((a, b) => (a.jita_sell < b.jita_sell) ? 1 : -1)
+
             const mostProfitable = {}
             for (let i = 0; i < latest.length; i++) {
-                console.log(latest[i])
-
                 if (latest[i].name.includes("Defensive")) {
                     if (!mostProfitable["Defensive"]) {
                         mostProfitable["Defensive"] = latest[i]
@@ -96,7 +93,7 @@ homeRouter.get('/', (req, res, next) => {
             data.profitRank = latest.sort((a, b) => (a.jita_sell - a.material_cost < b.jita_sell - b.material_cost) ? 1 : -1)
             data.buySellRatioRank = latest.sort((a, b) => (a.jita_sell_volume / a.jita_buy_volume < b.jita_sell_volume / b.jita_buy_volume) ? 1 : -1)
             data.recommendedRank = tallyResults(data.buySellRatioRank, data.destroyed)
-            data.profit = mostProfitable;
+            data.profit = latest[0];
 
             res.status(200).send(data);
             client.end();
@@ -126,7 +123,6 @@ function tallyResults(buySellRatioRank, destroyed) {
                 destroyed[i].jita_buy_orders = buySellRatioRank[j].jita_buy_orders;
                 destroyed[i].manufacture_cost_jita = buySellRatioRank[j].manufacture_cost_jita;
                 destroyed[i].manufacture_cost_amarr = buySellRatioRank[j].manufacture_cost_amarr;
-                // let jita_profits_num = buySellRatioRank[j].jita_sell - buySellRatioRank[j].manufacture_cost_jita;
                 let jita_profits_num = Math.round(buySellRatioRank[j].jita_sell - buySellRatioRank[j].manufacture_cost_jita);
                 destroyed[i].jita_profits_with_commas = jita_profits_num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                 destroyed[i].jita_profits = jita_profits_num

@@ -35,6 +35,7 @@ const cleanUpOld = () => {
         )
     //remove all entries older than 10 days from marketdata
     client.query('DELETE FROM market_data WHERE date < NOW() - INTERVAL \'10 days\'')
+    // client.query('DELETE FROM market_data;')
         .catch(err => {
             console.log(err);
         })

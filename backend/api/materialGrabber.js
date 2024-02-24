@@ -96,6 +96,7 @@ const grabMaterialData = () => {
         location.push(axios.get(`https://www.fuzzwork.co.uk/blueprint/api/blueprint.php?typeid=${id}`))
         axios.all(location)
             .then((result) => {
+                //need to make sure that the data about prices is actually getting inserted into the table
                 const buildPrice = result[2].data.blueprintDetails.adjustedPrice;
                 const subName = result[2].data.blueprintDetails.productTypeName;
                 let resultsData = {};
@@ -118,7 +119,6 @@ const grabMaterialData = () => {
                 resultsData.name = name;
                 resultsData.date = date;
                 resultsData.buildPrice = buildPrice;
-                console.log(resultsData)
                 insertIntoTable(resultsData)
                 //console.log("ok I need to get the material prices now from result[2].data")
             })
@@ -153,24 +153,25 @@ const insertIntoTable = (res) => {
     const values = [
         res.id,
         res.name,
-        res.amarrData.maxBuy,
-        res.amarrData.minSell,
-        res.amarrData.buyOrders,
-        res.amarrData.buyVolume,
-        res.amarrData.sellOrders,
-        res.amarrData.sellVolume,
-        res.jitaData.maxBuy,
-        res.jitaData.minSell,
-        res.jitaData.buyOrders,
-        res.jitaData.buyVolume,
-        res.jitaData.sellOrders,
-        res.jitaData.sellVolume,
+        res.amarrData.data.maxBuy,
+        res.amarrData.data.minSell,
+        res.amarrData.data.buyOrders,
+        res.amarrData.data.buyVolume,
+        res.amarrData.data.sellOrders,
+        res.amarrData.data.sellVolume,
+        res.jitaData.data.maxBuy,
+        res.jitaData.data.minSell,
+        res.jitaData.data.buyOrders,
+        res.jitaData.data.buyVolume,
+        res.jitaData.data.sellOrders,
+        res.jitaData.data.sellVolume,
         res.date,
         res.buildPrice,
         res.buildPrice
     ]
     client.query(sql, values)
         .then((res) => {
+            // console.log(res)
         })
         .catch(err => {
             console.log(err);
@@ -187,6 +188,8 @@ const logMarketData = () => {
             console.log(err);
         })
 }
+
+logMarketData()
 
 grabMaterialData()
 

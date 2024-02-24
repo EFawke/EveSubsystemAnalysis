@@ -2,6 +2,7 @@ import React from 'react';
 
 class CompactTableRow extends React.Component {
   render() {
+    console.log("CompactTableRow")
     console.log(this.props.data)
     let name = this.props.data.name ? this.props.data.name : this.props.data.type_name;
     let itemid = this.props.data.itemid ? this.props.data.itemid : this.props.data.type_id;

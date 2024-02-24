@@ -200,7 +200,7 @@ class App extends React.Component {
     }
     if (window.location.pathname === "/") {
       const mostProfitable = this.state.profit
-
+      console.log("JITA RANK")
       console.log(this.state.jitaRank);
 
       return (
@@ -334,8 +334,8 @@ class App extends React.Component {
                   <CompactTableRow data={this.state.jitaRank[5]} />
                   <CompactTableRow data={this.state.jitaRank[6]} />
                   <CompactTableRow data={this.state.jitaRank[7]} />
-                  <CompactTableRow data={this.state.jitaRank[8]} />
-                  <CompactTableRow data={this.state.jitaRank[9]} />
+                  {/* <CompactTableRow data={this.state.jitaRank[8]} />
+                  <CompactTableRow data={this.state.jitaRank[9]} /> */}
                 </tbody>
               </table>
             </div>
