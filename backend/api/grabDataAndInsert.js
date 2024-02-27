@@ -132,7 +132,6 @@ const lookupSubsystemName = (itemTypeId, assocKill, killTime, location) => {
     for (let i = 0; i < namesAndIds.length; i++) {
         if (namesAndIds[i].id === itemTypeId) {
             const itemTypeName = namesAndIds[i].name;
-            console.log(itemTypeName + " inserted into database");
             client.query(`INSERT INTO subsystems (assocKill, killTime, location, type_id, type_name) VALUES (${assocKill}, '${killTime}', '${location}', ${itemTypeId}, '${itemTypeName}')`)
         }
     }

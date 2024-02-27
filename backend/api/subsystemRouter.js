@@ -135,24 +135,23 @@ shipTypeRouter.get(`/:subsystemID`, (req, res, next) => {
         const todayDateString = today.toISOString().split('T')[0]; // Get the current date string without the time
 
         const query = `
-  SELECT
-    ROUND(AVG(CAST(amarr_buy_volume AS FLOAT))) AS avg_amarr_buy_volume,
-    ROUND(AVG(CAST(amarr_sell_volume AS FLOAT))) AS avg_amarr_sell_volume,
-    ROUND(AVG(CAST(jita_buy_volume AS FLOAT))) AS avg_jita_buy_volume,
-    ROUND(AVG(CAST(jita_sell_volume AS FLOAT))) AS avg_jita_sell_volume,
-    ROUND(AVG(CAST(manufacture_cost_jita AS FLOAT))) AS avg_manufacture_cost_jita,
-    ROUND(AVG(CAST(manufacture_cost_amarr AS FLOAT))) AS avg_manufacture_cost_amarr,
-    DATE_TRUNC('day', date) AS day
-  FROM
-    market_data
-  WHERE
-    date >= '${lastWeek.toISOString()}'::date AND
-    date <= CURRENT_DATE
-  GROUP BY
-    DATE_TRUNC('day', date)
-  ORDER BY
-    DATE_TRUNC('day', date) ASC;
-`;
+        SELECT
+        ROUND(AVG(CAST(amarr_buy_volume AS FLOAT)) FILTER (WHERE amarr_buy_volume IS NOT NULL)) AS avg_amarr_buy_volume,
+        ROUND(AVG(CAST(amarr_sell_volume AS FLOAT)) FILTER (WHERE amarr_sell_volume IS NOT NULL)) AS avg_amarr_sell_volume,
+        ROUND(AVG(CAST(jita_buy_volume AS FLOAT)) FILTER (WHERE jita_buy_volume IS NOT NULL)) AS avg_jita_buy_volume,
+        ROUND(AVG(CAST(jita_sell_volume AS FLOAT)) FILTER (WHERE jita_sell_volume IS NOT NULL)) AS avg_jita_sell_volume,
+        ROUND(AVG(CAST(manufacture_cost_jita AS FLOAT)) FILTER (WHERE manufacture_cost_jita IS NOT NULL)) AS avg_manufacture_cost_jita,
+        ROUND(AVG(CAST(manufacture_cost_amarr AS FLOAT)) FILTER (WHERE manufacture_cost_amarr IS NOT NULL)) AS avg_manufacture_cost_amarr,
+        DATE_TRUNC('day', date) AS day
+    FROM
+        market_data
+    WHERE
+        date >= '${lastWeek.toISOString()}'::date AND
+        date <= CURRENT_DATE
+    GROUP BY
+        DATE_TRUNC('day', date)
+    ORDER BY
+        DATE_TRUNC('day', date) ASC;`;
 
 
 

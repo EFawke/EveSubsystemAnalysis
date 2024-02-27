@@ -96,6 +96,10 @@ const grabMaterialData = () => {
         location.push(axios.get(`https://www.fuzzwork.co.uk/blueprint/api/blueprint.php?typeid=${id}`))
         axios.all(location)
             .then((result) => {
+                if(result[0].data.minSell == null){
+                    console.log("no data for this item");
+                    return;
+                }
                 //need to make sure that the data about prices is actually getting inserted into the table
                 const buildPrice = result[2].data.blueprintDetails.adjustedPrice;
                 const subName = result[2].data.blueprintDetails.productTypeName;
@@ -120,7 +124,6 @@ const grabMaterialData = () => {
                 resultsData.date = date;
                 resultsData.buildPrice = buildPrice;
                 insertIntoTable(resultsData)
-                //console.log("ok I need to get the material prices now from result[2].data")
             })
             .catch(err => {
                 console.log(err);
@@ -130,7 +133,7 @@ const grabMaterialData = () => {
 }
 
 const insertIntoTable = (res) => {
-    // console.log(res)
+    console.log(res)
     const sql = `INSERT INTO market_data (
         itemid, 
         name, 
@@ -189,10 +192,10 @@ const logMarketData = () => {
         })
 }
 
-logMarketData()
+// logMarketData()
 
 grabMaterialData()
 
-const thirtyMinutes = 1800000;
+const thirtyMinutes = 3600000;
 
 setInterval(grabMaterialData, thirtyMinutes);
