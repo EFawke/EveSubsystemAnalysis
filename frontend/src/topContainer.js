@@ -49,7 +49,6 @@ class TopContainer extends React.Component {
                             <p className='product_price'>{this.state.price}<span className="quantity">M</span></p>
                         </div>
                     </div>
-                    <ChatGPT id = {this.state.id} mode={this.props.mode} />
                 </div>
             )
         }
