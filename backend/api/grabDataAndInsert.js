@@ -107,7 +107,7 @@ const axiosZkillData = () => {
             if (response.data.package === null) {
                 return;
             }
-            if (response && response.data.package !== null && response.data.package !== undefined) {
+            if (response && response.data.package !== null && response.data.package !== undefined && response.data.package.zkb.labels !== null) {
                 const items = response.data.package.killmail.victim.items;
                 let loc = "";
                 if(response.data.package.zkb.labels[3]){

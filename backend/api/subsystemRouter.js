@@ -387,8 +387,15 @@ shipTypeRouter.get(`/:subsystemID`, (req, res, next) => {
 
         let d = output.lastSevenDays[t]
 
-        //console.log(output.priceAverages)
-        const jitaBuild = output.priceAverages[d].manufacture_cost_jita;
+        let jitaBuild = null;
+
+        if(output.priceAverages[d]){
+            jitaBuild = output.priceAverages[d].manufacture_cost_jita;
+        } else {
+            jitaBuild = 0;
+        }
+
+        // const jitaBuild = output.priceAverages[d].manufacture_cost_jita;
         const jitaProfit = output.currentHighestSellPrice - jitaBuild;
         const num_des = output.pieChart[output.name] ? output.pieChart[output.name].count : 0;
         const subsystemRank = getSubsystemRank(output.pieChart);
