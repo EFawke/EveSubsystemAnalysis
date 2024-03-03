@@ -50,6 +50,7 @@ const subsystemIDArr = [
     { name: "Proteus Offensive - Support Processor", id: 45606 },
     { name: "Loki Offensive - Projectile Scoping Array", id: 45607 },
     { name: "Loki Offensive - Launcher Efficiency Configuration", id: 45608 },
+    { name: "Loki Offensive - Support Processor", id: 45609 }
 ]
 
 let client;
