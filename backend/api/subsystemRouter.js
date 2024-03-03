@@ -239,6 +239,7 @@ shipTypeRouter.get(`/:subsystemID`, (req, res, next) => {
         }
 
         client.end();
+        console.log(response.rows);
         //output.marketData = response.rows;
         let length = response.rows.length;
         const currentHighestSellPrice = response.rows[length - 1].jita_sell;
