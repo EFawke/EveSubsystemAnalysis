@@ -6,6 +6,9 @@ const subsystemIDArr = ["all", "45622", "45623", "45624", "45625", "45626", "456
 let output = {};
 
 shipTypeRouter.get(`/:subsystemID`, (req, res, next) => {
+    console.log("Hey")
+    console.log(req.params.subsystemID)
+
     if (!req.params.subsystemID || !subsystemIDArr.includes(req.params.subsystemID)) {
         res.status(400).send("Invalid subsystem ID");
         return;

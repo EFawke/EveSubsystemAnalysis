@@ -105,7 +105,6 @@ function tallyResults(buySellRatioRank, destroyed) {
     
     let end = destroyed.length - 10;
     destroyed.splice(0, end);
-    console.log(destroyed)
     for(let i = 0; i < destroyed.length; i++){
         for(let j = 0; j < buySellRatioRank.length; j++) {
             if(destroyed[i].type_id === buySellRatioRank[j].itemid) {

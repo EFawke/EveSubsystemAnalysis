@@ -11,3 +11,13 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+#top_container {
+  height: 50px;
+}
+
+#logo_main_image {
+  height: 100%;
+  width: auto;
+  object-fit: cover;
+}

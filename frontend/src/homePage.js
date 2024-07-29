@@ -1,0 +1,167 @@
+import React from "react";
+import namesAndIds from "./namesAndIds.js";
+import Skeleton from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
+import axios from "axios";
+
+export default class HomePage extends React.Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            recommendedSubsystems: [],
+            highTradeVolume: [],
+            overSupplied: [],
+            underSupplied: [],
+            darkMode: false,
+            isLoaded: false,
+        }
+    }
+
+    componentDidMount() {
+        axios.get(`/api/home`)
+            .then(response => {
+                this.setState({ data: response.data })
+            })
+            .catch(err => {
+                console.log(err);
+            })
+    }
+
+    componentDidUpdate(prevProps) {
+        if (this.props !== prevProps) {
+            this.setState({
+                darkMode: this.props.darkMode
+            });
+        }
+    }
+
+    render() {
+        const { darkMode } = this.state;
+        const darkModeClass = "bg-dark text-white";
+        return (
+            <div>
+                <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
+                    <div className="col-12">
+                        <div className="page-title-box">
+                            <h1 className={!darkMode ? "page-title" : "page-title bg-dark text-white"}>
+                                Recommended Subsystems
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+                <div className={darkMode ? "home-table row " + darkModeClass : "home-table row"}>
+                    <div className="col-lg">
+                        <div className={darkMode ? "card " + darkModeClass : "card"}>
+                            <div className="card-header d-flex justify-content-between header-row">
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Name</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Profit</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Lost</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Volume</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Sell/Buy</h5>
+                            </div>
+                            <div className="card-body pt-0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
+                    <div className="col-12">
+                        <div className="page-title-box">
+                            <h1 className={!darkMode ? "page-title" : "page-title bg-dark text-white"}>
+                                High Trade Volume
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+                <div className={darkMode ? "home-table row " + darkModeClass : "home-table row"}>
+                    <div className="col-lg">
+                        <div className={darkMode ? "card " + darkModeClass : "card"}>
+                            <div className="card-header d-flex justify-content-between header-row">
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Name</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Profit</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Lost</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Volume</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Sell/Buy</h5>
+                            </div>
+                            <div className="card-body pt-0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
+                    <div className="col-12">
+                        <div className="page-title-box">
+                            <h1 className={!darkMode ? "page-title" : "page-title bg-dark text-white"}>
+                                Undersupplied
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+                <div className={darkMode ? "home-table row " + darkModeClass : "home-table row"}>
+                    <div className="col-lg">
+                        <div className={darkMode ? "card " + darkModeClass : "card"}>
+                            <div className="card-header d-flex justify-content-between header-row">
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Name</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Profit</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Lost</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Volume</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Sell/Buy</h5>
+                            </div>
+                            <div className="card-body pt-0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
+                    <div className="col-12">
+                        <div className="page-title-box">
+                            <h1 className={!darkMode ? "page-title" : "page-title bg-dark text-white"}>
+                                Oversupplied
+                            </h1>
+                        </div>
+                    </div>
+                </div>
+                <div className={darkMode ? "home-table row " + darkModeClass : "home-table row"}>
+                    <div className="col-lg">
+                        <div className={darkMode ? "card " + darkModeClass : "card"}>
+                            <div className="card-header d-flex justify-content-between header-row">
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Name</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Profit</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Lost</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Volume</h5>
+                                <h5 className="home-heading fw-normal mt-0 text-truncate">Sell/Buy</h5>
+                            </div>
+                            <div className="card-body pt-0">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        )
+    }
+}
+
+
+// <div className="col">
+//     <table className={darkMode ? "table table-dark" : "table table-striped"}>
+//         <thead>
+//             <tr>
+//                 <th>ID</th>
+//                 <th>Name</th>
+//             </tr>
+//         </thead>
+//         <tbody>
+//             {namesAndIds.map((item) => (
+//                 <tr key={item.id}>
+//                     <td>{item.id}</td>
+//                     <td>
+//                         <a href={`/subsystem/${item.id}`}>{item.name}</a>
+//                     </td>
+//                 </tr>
+//             ))}
+//         </tbody>
+//     </table>
+// </div>

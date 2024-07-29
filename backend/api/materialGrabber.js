@@ -69,16 +69,16 @@ if (!process.env.DATABASE_URL) {
 
 client.connect()
     .catch(err => {
-        // console.log(err);
+        console.log(err);
     })
     .then((res) => {
-        //console.log("client is connected")
+        console.log("material grabber is connected")
     })
 
 const makeTable = () => {
     client.query(`CREATE TABLE IF NOT EXISTS market_data (id BIGSERIAL, itemID BIGINT, name VARCHAR(255), amarr_buy VARCHAR(255), amarr_sell VARCHAR(255), amarr_buy_orders BIGINT, amarr_buy_volume BIGINT, amarr_sell_orders BIGINT, amarr_sell_volume BIGINT, jita_buy VARCHAR(255), jita_sell VARCHAR(255), jita_buy_orders BIGINT, jita_buy_volume BIGINT, jita_sell_orders BIGINT, jita_sell_volume BIGINT, date TIMESTAMP, manufacture_cost_jita VARCHAR(255), manufacture_cost_amarr VARCHAR(255))`)
         .catch(err => {
-            // console.log(err);
+            console.log(err);
         })
         .then((res) => {
             //console.log("table is created");
@@ -187,13 +187,14 @@ const logMarketData = () => {
     const sql = "SELECT * FROM market_data";
     client.query(sql)
         .then((res) => {
+            console.log(res.rows)
         })
         .catch(err => {
             console.log(err);
         })
 }
 
-// logMarketData()
+logMarketData()
 
 grabMaterialData()
 

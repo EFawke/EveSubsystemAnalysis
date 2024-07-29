@@ -5,11 +5,11 @@ const app = express();
 const errorHandler = require('errorhandler');
 const path = require('path');
 const apiRouter = require('./api/apiRouter')
-// const homeRouter = require('./api/homeRouter')
+const subsystemRouter = require('./subsystem/subsystemRouter.js');
 
-// app.use('/', homeRouter)
 
 app.use('/api', apiRouter);
+app.use('/subsystem', subsystemRouter);
 app.use(morgan('dev'));
 app.use(cors());
 app.use(errorHandler());
