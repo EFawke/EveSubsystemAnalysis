@@ -68,6 +68,11 @@ class App extends React.Component {
             console.log(url)
             const urlParts = url.split('/');
             const id = parseInt(urlParts[urlParts.length - 1], 10);
+
+            console.log("heey")
+            console.log(url.includes('/subsystem/'))
+            console.log(array.some(item => item.id === id))
+            console.log(array);
         
             return url.includes('/subsystem/') && array.some(item => item.id === id);
         };
