@@ -66,10 +66,12 @@ class App extends React.Component {
         const { darkMode, profit, jitaRank, amarrRank } = this.state;
         const isValidUrl = (url, array) => {
             console.log(url)
+            console.log(window.location)
             const urlParts = url.split('/');
             const id = parseInt(urlParts[urlParts.length - 1], 10);
 
             console.log("heey")
+            console.log(urlParts)
             console.log(id)
             console.log(url.includes('/subsystem/'))
             console.log(array.some(item => item.id === id))
