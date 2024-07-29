@@ -131,7 +131,6 @@ marketRouter.get('/:subsystemID', async (req, res) => {
 
         let pieChartData = {};
         subsystemsResponse.rows.forEach(row => {
-            const currentSubId = req.params.subsystemID;
             if (!pieChartData[row.type_id]) {
                 pieChartData[row.type_id] = {
                     value: 1,
