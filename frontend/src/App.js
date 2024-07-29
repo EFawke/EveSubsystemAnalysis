@@ -70,6 +70,7 @@ class App extends React.Component {
             const id = parseInt(urlParts[urlParts.length - 1], 10);
 
             console.log("heey")
+            console.log(id)
             console.log(url.includes('/subsystem/'))
             console.log(array.some(item => item.id === id))
             console.log(array);
