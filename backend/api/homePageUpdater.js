@@ -35,7 +35,7 @@ const createTable = () => {
         })
 }
 
-// createTable();
+createTable();
 
 const dropTable = () => {
     client.query(`DROP TABLE home;`).catch((err) => {

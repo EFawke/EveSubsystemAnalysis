@@ -59,31 +59,18 @@ class App extends React.Component {
                 this.setState({ subsystem: item.name }) 
             }
         }
-        console.log(this.state);
     }
 
     render() {
         const { darkMode, profit, jitaRank, amarrRank } = this.state;
         const isValidUrl = (url, array) => {
-            console.log(url)
-            console.log(window.location)
             const urlParts = url.split('/');
             let id = parseInt(urlParts[urlParts.length - 1], 10);
-
             if(isNaN(id)){
                 id = parseInt(urlParts[urlParts.length - 2], 10);
-            }
-
-            console.log("heey")
-            console.log(urlParts)
-            console.log(id)
-            console.log(url.includes('/subsystem/'))
-            console.log(array.some(item => item.id === id))
-            console.log(array);
-        
+            }        
             return url.includes('/subsystem/') && array.some(item => item.id === id);
         };
-        // console.log(this.state.id)
         if (this.state.error) {
             return (
                 <div className="wrapper">
@@ -124,8 +111,6 @@ class App extends React.Component {
         }
 
         if (isValidUrl(window.location.pathname, namesAndIds)) {
-            console.log(window.location);
-            // console.log(window.location.pathname.split('/')[2]);
             const name = namesAndIds.find(x => x.id == window.location.pathname.split('/')[2]);
             return (
                 <div className= {darkMode ? "wrapper bg-dark text-white" : "wrapper"}>

@@ -342,9 +342,6 @@ class MarketData extends Component {
   componentDidUpdate(prevProps) {
     if(this.props.darkMode !== prevProps.darkMode) {
       const darkMode = this.props.darkMode;
-      console.log(darkMode);
-      // this.fetchMarketData();
-      // console.log(this.props.darkMode ? 'dark' : 'light');
       this.setState({
         darkMode: this.props.darkMode,
         pieOptions: {
@@ -473,7 +470,6 @@ class MarketData extends Component {
     const { id } = this.props;
     axios.get(`/api/subsystem/${id}`)
       .then(response => {
-        console.log(response.data);
         let jitaSellData = [];
         let profitData = [];
         const marketData = response.data.marketData;
