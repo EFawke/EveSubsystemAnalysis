@@ -180,7 +180,8 @@ const updateDatabase = async () => {
     await fetchData(numberOfDaysSinceDataInserted)
 }
 
-client.query(`SELECT * from price_data LIMIT 1;`)
+const gatherData = () => {
+    client.query(`SELECT * from price_data LIMIT 1;`)
     .then((res) => {
         if (res.rows.length === 0) {
             // console.log("NO DATA IN PRICE_DATA TABLE");
@@ -191,6 +192,9 @@ client.query(`SELECT * from price_data LIMIT 1;`)
         }
     })
     .catch(err => console.log(err))
+}
+
+setInterval(gatherData, 60000);
 
 //delete data older than 1 year
 client.query(`DELETE FROM price_data

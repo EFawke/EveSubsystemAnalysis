@@ -352,7 +352,8 @@ const updateDatabase = async () => {
     await fetchData(numberOfDaysSinceDataInserted);
 }
 
-client.query(`SELECT * from subsystem_costs LIMIT 1;`)
+const gatherData = () => {
+    client.query(`SELECT * from subsystem_costs LIMIT 1;`)
     .then((res) => {
         // console.log(res.rows)
         if (res.rows.length === 0) {
@@ -362,6 +363,9 @@ client.query(`SELECT * from subsystem_costs LIMIT 1;`)
         }
     })
     .catch(err => console.log(err))
+}
+
+setInterval(gatherData, 60000);
 
 const insertIntoDatabase = (unitCosts, subsystemType, tradeHub) => {
     unitCosts.forEach((cost) => {
