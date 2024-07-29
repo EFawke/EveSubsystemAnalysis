@@ -60,6 +60,7 @@ class App extends React.Component {
                 this.setState({ subsystem: item.name }) 
             }
         }
+        console.log(this.state);
     }
 
     render() {
