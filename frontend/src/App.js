@@ -26,7 +26,6 @@ class App extends React.Component {
     }
 
     toggleDarkMode = () => {
-        console.log("toggleDarkMode")
         this.setState({ darkMode: !this.state.darkMode });
     }
 
@@ -66,6 +65,7 @@ class App extends React.Component {
     render() {
         const { darkMode, profit, jitaRank, amarrRank } = this.state;
         const isValidUrl = (url, array) => {
+            console.log(url)
             const urlParts = url.split('/');
             const id = parseInt(urlParts[urlParts.length - 1], 10);
         

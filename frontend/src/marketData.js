@@ -471,7 +471,7 @@ class MarketData extends Component {
 
   fetchMarketData = () => {
     const { id } = this.props;
-    axios.get(`/subsystem/${id}`)
+    axios.get(`/api/subsystem/${id}`)
       .then(response => {
         let jitaSellData = [];
         let profitData = [];
@@ -523,7 +523,6 @@ class MarketData extends Component {
         }
 
         // Recent Losses
-
         let recentLossesBigNum = 0;
         let recentLossesCompareNum = 0;
         const recentLossesSeriesData = [];
@@ -590,7 +589,6 @@ class MarketData extends Component {
         })
 
         // Jita Sell
-
         const jitaSellBigNum = jitaSellData[jitaSellData.length - 1].price;
         const jitaSellSeriesData = [];
         const jitaSellDays = [];
@@ -645,7 +643,6 @@ class MarketData extends Component {
         })
 
         // Trade Volume
-
         let sellVolumeData = [];
         let compareSellVolumeData = [];
         const marketDataLength = marketData.length;
