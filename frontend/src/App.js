@@ -68,7 +68,11 @@ class App extends React.Component {
             console.log(url)
             console.log(window.location)
             const urlParts = url.split('/');
-            const id = parseInt(urlParts[urlParts.length - 1], 10);
+            let id = parseInt(urlParts[urlParts.length - 1], 10);
+
+            if(isNaN(id)){
+                id = parseInt(urlParts[urlParts.length - 2], 10);
+            }
 
             console.log("heey")
             console.log(urlParts)
