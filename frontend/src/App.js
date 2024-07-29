@@ -112,6 +112,8 @@ class App extends React.Component {
         }
 
         if (isValidUrl(window.location.pathname, namesAndIds)) {
+            console.log(window.location);
+            // console.log(window.location.pathname.split('/')[2]);
             const name = namesAndIds.find(x => x.id == window.location.pathname.split('/')[2]);
             return (
                 <div className= {darkMode ? "wrapper bg-dark text-white" : "wrapper"}>

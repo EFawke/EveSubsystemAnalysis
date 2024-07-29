@@ -473,6 +473,7 @@ class MarketData extends Component {
     const { id } = this.props;
     axios.get(`/api/subsystem/${id}`)
       .then(response => {
+        console.log(response.data);
         let jitaSellData = [];
         let profitData = [];
         const marketData = response.data.marketData;
