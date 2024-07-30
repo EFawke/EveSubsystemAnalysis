@@ -7,6 +7,7 @@ import HomePage from './homePage';
 import Footer from './footer';
 import ApexGraph from './marketGraph.js';
 import namesAndIds from './namesAndIds.js';
+import Build from './build.js';
 
 class App extends React.Component {
     constructor(props) {
@@ -38,6 +39,7 @@ class App extends React.Component {
         if (location === "/") {
             axios.get(`/api/home`)
                 .then(response => {
+                    console.log(response.data)
                     this.setState({ profit: response.data.profit })
                     this.setState({ jitaRank: response.data.recommendedRank.jitaRank })
                     this.setState({ amarrRank: response.data.recommendedRank.amarrRank })
@@ -102,6 +104,30 @@ class App extends React.Component {
                         <div className="content">
                             <div className="container">
                                 <HomePage profit={profit} jitaRank={jitaRank} amarrRank={amarrRank} darkMode={darkMode}/>
+                            </div>
+                        </div>
+                    </div>
+                    <Footer />
+                </div>
+            )
+        }
+        if(window.location.pathname === "/build/" || window.location.pathname === "/build"){
+            return (
+                <div className={darkMode ? "wrapper bg-dark text-white" : "wrapper"}>
+                    <Header toggleTheme = {this.toggleDarkMode}/>
+                    <div className={!darkMode ? "content-page" : "content-page bg-dark text-white"}>
+                        <div className="content">
+                            <div className="container">
+                                <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
+                                    <div className="col-12">
+                                        <div className="page-title-box">
+                                            <h1 className={!darkMode ? "page-title" : "page-title bg-dark text-white"}>
+                                                Shopping List
+                                            </h1>
+                                        </div>
+                                    </div>
+                                </div>
+                                <Build/>
                             </div>
                         </div>
                     </div>
