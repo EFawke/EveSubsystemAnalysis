@@ -35,7 +35,7 @@ const createTable = () => {
         })
 }
 
-createTable();
+// createTable();
 
 const dropTable = () => {
     client.query(`DROP TABLE home;`).catch((err) => {
@@ -46,7 +46,7 @@ const dropTable = () => {
         })
 }
 
-// dropTable();
+dropTable();
 
 const fetchPrices = async (region, subsystemId) => {
     let url = `https://evetycoon.com/api/v1/market/stats/10000002/45622`;
@@ -75,7 +75,9 @@ const fetchData = async (dateEpoch, subsystemId) => {
     await chill(1000);
     let rensData = await fetchPrices(rensRegion, subsystemId);
 
-    let query = `INSERT INTO home (date, id, jitaData, amarrData, dodixieData, hekData, rensData) VALUES (${dateEpoch}, 1, '${JSON.stringify(jitaData)}', '${JSON.stringify(amarrData)}', '${JSON.stringify(dodixieData)}', '${JSON.stringify(hekData)}', '${JSON.stringify(rensData)}');`;
+    let query = `INSERT INTO home 
+    (id, date, item_id, jitaData, amarrData, dodixieData, hekData, rensData) VALUES 
+    (NULL, ${dateEpoch}, ${subsystemId}, '${JSON.stringify(jitaData)}', '${JSON.stringify(amarrData)}', '${JSON.stringify(dodixieData)}', '${JSON.stringify(hekData)}', '${JSON.stringify(rensData)}');`;
     try {
         await client.query
             (query);
@@ -121,9 +123,9 @@ const updateHomeTable = async (epoch) => {
 }
 
 //run updateHomeTable every second
-setInterval(() => {
-    updateHomeTable(Date.now());
-}, 1000);
+// setInterval(() => {
+//     updateHomeTable(Date.now());
+// }, 1000);
 
 // client.query(`SELECT * FROM home;`)
 //     .then((res) => {
