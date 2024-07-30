@@ -49,7 +49,7 @@ const dropTable = () => {
 // dropTable();
 
 const fetchPrices = async (region, subsystemId) => {
-    let url = `https://evetycoon.com/api/v1/market/stats/10000002/45622`;
+    let url = `https://evetycoon.com/api/v1/market/stats/${region}/${subsystemId}`;
     let res = await axios.get(url);
     return res.data;
 }
@@ -76,8 +76,8 @@ const fetchData = async (dateEpoch, subsystemId) => {
     let rensData = await fetchPrices(rensRegion, subsystemId);
 
     let query = `INSERT INTO home 
-    (id, date, item_id, jitaData, amarrData, dodixieData, hekData, rensData) VALUES 
-    (NULL, ${dateEpoch}, ${subsystemId}, '${JSON.stringify(jitaData)}', '${JSON.stringify(amarrData)}', '${JSON.stringify(dodixieData)}', '${JSON.stringify(hekData)}', '${JSON.stringify(rensData)}');`;
+    (date, item_id, jitaData, amarrData, dodixieData, hekData, rensData) VALUES 
+    (${dateEpoch}, ${subsystemId}, '${JSON.stringify(jitaData)}', '${JSON.stringify(amarrData)}', '${JSON.stringify(dodixieData)}', '${JSON.stringify(hekData)}', '${JSON.stringify(rensData)}');`;
     try {
         await client.query
             (query);

@@ -118,7 +118,7 @@ class App extends React.Component {
                     <div className={!darkMode ? "content-page" : "content-page bg-dark text-white"}>
                         <div className="content">
                             <div className="container">
-                                <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
+                                {/* <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
                                     <div className="col-12">
                                         <div className="page-title-box">
                                             <h1 className={!darkMode ? "page-title" : "page-title bg-dark text-white"}>
@@ -126,7 +126,7 @@ class App extends React.Component {
                                             </h1>
                                         </div>
                                     </div>
-                                </div>
+                                </div> */}
                                 <Build/>
                             </div>
                         </div>
