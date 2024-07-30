@@ -37,15 +37,19 @@
 }
 
 .search-container .form-control {
-    padding-right: 2.5rem; /* Ensure there's enough space for the icon */
+    padding-right: 2.5rem;
+    /* Ensure there's enough space for the icon */
 }
 
 .search-container .search-icon {
-    right: 10px; /* Adjust the value to place the icon properly */
+    right: 10px;
+    /* Adjust the value to place the icon properly */
     top: 50%;
     transform: translateY(-50%);
-    pointer-events: none; /* Ensure the icon does not block input clicks */
-    color: rgba(33, 37, 41, 0.741); /* Adjust the color as needed */
+    pointer-events: none;
+    /* Ensure the icon does not block input clicks */
+    color: rgba(33, 37, 41, 0.741);
+    /* Adjust the color as needed */
 }
 
 .card {
@@ -72,12 +76,12 @@
     text-align: center;
 }
 
-.home-table.row{
+.home-table.row {
     margin-bottom: 0;
 
 }
 
-.home-table > div > div.card {
+.home-table>div>div.card {
     margin-bottom: 0;
 }
 
@@ -85,7 +89,7 @@ body {
     background: #fafbfb;
 }
 
-.card-header > .header-title {
+.card-header>.header-title {
     margin-bottom: 0;
 }
 
@@ -94,6 +98,21 @@ body {
     font-weight: 300;
 }
 
-.d-flex > h4.header-title {
+.d-flex>h4.header-title {
     padding: 6px;
+}
+
+.im_building_it {
+    width: 30%;
+}
+
+@media screen and (max-width: 900px) {
+    .im_building_it {
+        width: 100%;
+    }
+}
+
+.working_on_it {
+    margin: 0;
+    width: 100%;
 }

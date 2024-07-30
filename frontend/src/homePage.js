@@ -47,7 +47,7 @@ export default class HomePage extends React.Component {
 
         if (!data) {
             return (
-                <div>
+                <div className = "working_on_it">
                     <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
                         <div className="col-12">
                             <div className="page-title-box">
@@ -58,9 +58,8 @@ export default class HomePage extends React.Component {
                         </div>
                     </div>
                     <div>
-                        <img style = {{height: '500px'}} src={weebImage} alt="Under Construction" />
+                        <img className = "im_building_it" src={weebImage} alt="Under Construction" />
                     </div>
-
                 </div>
             )
         } else {
