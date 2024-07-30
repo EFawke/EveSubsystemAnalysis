@@ -58,13 +58,13 @@ class MicroCard extends React.Component {
     render() {
         let { darkMode, loading, options, series, cardTitle, bigNum, percentage } = this.state;
         const darkModeClass = "bg-dark text-white";
-        if (cardTitle === "Losses" || cardTitle === "Jita Sell" || cardTitle === "Trade Volume" || cardTitle === "Profit") {
+        if (cardTitle === "Losses" || cardTitle === "Sell" || cardTitle === "Trade Volume" || cardTitle === "Profit") {
             let classText = "text-danger me-2";
             if (percentage > 0) {
                 classText = "text-success me-2";
             }
             let showMillion = "";
-            if(cardTitle === "Jita Sell" || cardTitle === "Profit"){
+            if(cardTitle === "Sell" || cardTitle === "Profit"){
                 showMillion = "M";
             }
             return (

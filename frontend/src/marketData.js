@@ -851,7 +851,7 @@ class MarketData extends Component {
     return (
       <div>
         <div className= {darkMode ? "row " + darkModeClass : "row"} id="micro_cards">
-          <MicroCard darkMode={darkMode} cardTitle={"Jita Sell"} options={jitaSellOptions} series={jitaSellSeries} loading={loading} bigNum={jitaSellBigNum} percentage={jitaSellPercentage} />
+          <MicroCard darkMode={darkMode} cardTitle={"Sell"} options={jitaSellOptions} series={jitaSellSeries} loading={loading} bigNum={jitaSellBigNum} percentage={jitaSellPercentage} />
           <MicroCard darkMode={darkMode} cardTitle={"Losses"} options={recentLossesOptions} series={recentLossesSeries} loading={loading} bigNum={recentLossesBigNum} percentage={recentLossesPercentage} />
           <MicroCard darkMode={darkMode} cardTitle={"Trade Volume"} options={sellVolumeOptions} series={sellVolumeSeries} loading={loading} bigNum={sellVolumeBigNum} percentage={sellVolumePercentage} />
           <MicroCard darkMode={darkMode} cardTitle={"Profit"} options={profitOptions} series={profitSeries} loading={loading} bigNum={profitBigNum} percentage={profitPercentage} />
