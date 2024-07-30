@@ -35,7 +35,7 @@ const createTable = () => {
         })
 }
 
-// createTable();
+createTable();
 
 const dropTable = () => {
     client.query(`DROP TABLE home;`).catch((err) => {
@@ -46,7 +46,7 @@ const dropTable = () => {
         })
 }
 
-dropTable();
+// dropTable();
 
 const fetchPrices = async (region, subsystemId) => {
     let url = `https://evetycoon.com/api/v1/market/stats/10000002/45622`;
@@ -123,9 +123,9 @@ const updateHomeTable = async (epoch) => {
 }
 
 //run updateHomeTable every second
-// setInterval(() => {
-//     updateHomeTable(Date.now());
-// }, 1000);
+setInterval(() => {
+    updateHomeTable(Date.now());
+}, 1000);
 
 // client.query(`SELECT * FROM home;`)
 //     .then((res) => {
