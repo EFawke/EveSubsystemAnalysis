@@ -168,25 +168,3 @@ export default class HomePage extends React.Component {
         }
     }
 }
-
-
-// <div className="col">
-//     <table className={darkMode ? "table table-dark" : "table table-striped"}>
-//         <thead>
-//             <tr>
-//                 <th>ID</th>
-//                 <th>Name</th>
-//             </tr>
-//         </thead>
-//         <tbody>
-//             {namesAndIds.map((item) => (
-//                 <tr key={item.id}>
-//                     <td>{item.id}</td>
-//                     <td>
-//                         <a href={`/subsystem/${item.id}`}>{item.name}</a>
-//                     </td>
-//                 </tr>
-//             ))}
-//         </tbody>
-//     </table>
-// </div>
