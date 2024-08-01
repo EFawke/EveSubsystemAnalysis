@@ -34,6 +34,9 @@ export default function FreeSolo() {
               },
               '& .MuiFormLabel-root': {
                 top: '-8px',
+              },
+              '& .Mui-focused': {
+                top: 0,
               }
             }} 
           />
