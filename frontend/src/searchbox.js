@@ -28,7 +28,6 @@ export default function FreeSolo() {
             label="Search..." 
             sx={{ 
               '& .MuiInputBase-root': {
-                // lineHeight: 1.5, 
                 padding: '0',
                 backgroundColor: 'white',
               },
