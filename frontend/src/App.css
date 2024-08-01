@@ -116,3 +116,8 @@ body {
     margin: 0;
     width: 100%;
 }
+
+#search-box {
+    background: "white";
+    border: 1px solid "white";
+}

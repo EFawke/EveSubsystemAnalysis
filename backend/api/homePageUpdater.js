@@ -4,7 +4,7 @@ const { namesAndIds, subsystemIDArr } = require('./namesAndIds.js');
 
 let client;
 if (!process.env.DATABASE_URL) {
-    client = new Client()
+    client = new Client();
 } else {
     client = new Client({
         connectionString: process.env.DATABASE_URL,
@@ -27,36 +27,36 @@ const createTable = () => {
         dodixieData JSONB,
         hekData JSONB,
         rensData JSONB
-        );`).catch((err) => {
-            console.log(err);
-        })
-        .then((res) => {
-            console.log(res);
-        })
-}
+    );`).catch((err) => {
+        console.log(err);
+    }).then((res) => {
+        console.log(res);
+    });
+};
 
-createTable();
+// createTable();
 
 const dropTable = () => {
     client.query(`DROP TABLE home;`).catch((err) => {
         console.log(err);
-    })
-        .then((res) => {
-            console.log(res);
-        })
-}
+    }).then((res) => {
+        console.log(res);
+    });
+};
 
-// dropTable();
+dropTable();
 
 const fetchPrices = async (region, subsystemId) => {
     let url = `https://evetycoon.com/api/v1/market/stats/${region}/${subsystemId}`;
     let res = await axios.get(url);
     return res.data;
-}
+};
 
 const chill = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
-}
+};
+
+let isUpdating = false;
 
 const fetchData = async (dateEpoch, subsystemId) => {
     const jitaRegion = '10000002';
@@ -64,6 +64,7 @@ const fetchData = async (dateEpoch, subsystemId) => {
     const rensRegion = '10000030';
     const hekRegion = '10000042';
     const dodixieRegion = '10000032';
+
     await chill(1000);
     let jitaData = await fetchPrices(jitaRegion, subsystemId);
     await chill(1000);
@@ -78,59 +79,42 @@ const fetchData = async (dateEpoch, subsystemId) => {
     let query = `INSERT INTO home 
     (date, item_id, jitaData, amarrData, dodixieData, hekData, rensData) VALUES 
     (${dateEpoch}, ${subsystemId}, '${JSON.stringify(jitaData)}', '${JSON.stringify(amarrData)}', '${JSON.stringify(dodixieData)}', '${JSON.stringify(hekData)}', '${JSON.stringify(rensData)}');`;
+
     try {
-        await client.query
-            (query);
-    }
-    catch (err) {
+        await client.query(query);
+    } catch (err) {
         console.log(err);
     }
-}
+};
 
 const updateHomeTable = async (epoch) => {
+    if (isUpdating) return;
+
     let date = new Date(epoch);
 
-    //check if the date is more than 5 seconds past midnight
-    if (date.getHours() !== 0){
-        return;
-    }
-    if (date.getMinutes() !== 0){
-        return;
-    }
-    if (date.getSeconds() >= 5){
+    // Check if the date is more than 5 seconds past midnight
+    if (date.getHours() !== 0 || date.getMinutes() !== 0 || date.getSeconds() >= 5) {
         return;
     }
 
     date.setUTCHours(0, 0, 0, 0);
-    //convert the date back to an epoch
     let dateEpoch = date.getTime(); // to be added to the table later!!!
     let query = `SELECT * FROM home WHERE date = ${dateEpoch};`;
-    let res
+
     try {
-        res = await client.query
-            (query);
-    }
-    catch (err) {
+        const res = await client.query(query);
+        if (res.rows.length === 0) {
+            isUpdating = true;
+            await Promise.all(subsystemIDArr.map(element => fetchData(dateEpoch, element)));
+        }
+    } catch (err) {
         console.log(err);
+    } finally {
+        isUpdating = false;
     }
-    if (res.rows.length > 0) {
-        console.log("date already in table");
-        return;
-    }
-    subsystemIDArr.forEach(element => {
-        fetchData(dateEpoch, element); 
-    });
-}
+};
 
-//run updateHomeTable every second
-setInterval(() => {
-    updateHomeTable(Date.now());
-}, 1000);
-
-// client.query(`SELECT * FROM home;`)
-//     .then((res) => {
-//         console.log(res.rows);
-//     })
-//     .catch((err) => {
-//         console.log(err);
-//     })
+// Run updateHomeTable every second
+// setInterval(() => {
+//     updateHomeTable(Date.now());
+// }, 1000);

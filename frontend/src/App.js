@@ -39,10 +39,8 @@ class App extends React.Component {
         if (location === "/") {
             axios.get(`/api/home`)
                 .then(response => {
-                    console.log(response.data)
+                    console.log(response.data);
                     this.setState({ profit: response.data.profit })
-                    this.setState({ jitaRank: response.data.recommendedRank.jitaRank })
-                    this.setState({ amarrRank: response.data.recommendedRank.amarrRank })
                 })
                 .catch(err => {
                     console.log(err);

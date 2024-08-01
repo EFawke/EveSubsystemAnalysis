@@ -42,7 +42,6 @@ export default class HomePage extends React.Component {
 
     render() {
         const { darkMode, data } = this.state;
-        console.log(data);
         const darkModeClass = "bg-dark text-white";
 
         if (!data) {

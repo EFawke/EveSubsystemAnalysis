@@ -9,6 +9,10 @@ import { faSun } from '@fortawesome/free-solid-svg-icons'
 import { faGear } from '@fortawesome/free-solid-svg-icons'
 import { faHammer } from '@fortawesome/free-solid-svg-icons'
 import SearchDropDown from './searchDropDown.js';
+import FreeSolo from './searchbox.js';
+// import TextField from '@mui/material/TextField';
+// import Stack from '@mui/material/Stack';
+// import Autocomplete from '@mui/material/Autocomplete';
 
 
 class Header extends React.Component {
@@ -39,16 +43,17 @@ class Header extends React.Component {
                         <Button variant="dark" className="me-2" onClick={this.props.toggleTheme}>
                             <FontAwesomeIcon icon={faSun} onClick = {this.props.toggleTheme}/>
                         </Button>
-                        <Button variant="dark" className="me-2">
+                        {/* <Button variant="dark" className="me-2">
                             <FontAwesomeIcon icon={faGear} />
-                        </Button>
-                        <form className="d-flex" role="search">
+                        </Button> */}
+                        <FreeSolo />
+                        {/* <form className="d-flex" role="search">
                             <div className="search-container position-relative">
                                 <input className="form-control" type="search" placeholder="Search" aria-label="Search" onChange={this.handleChange} />
                                 <FontAwesomeIcon icon={faSearch} className="search-icon position-absolute" />
                                 { !search ? null : <SearchDropDown search = {search} /> }
                             </div>
-                        </form>
+                        </form> */}
                     </div>
                 </div>
             </nav>
