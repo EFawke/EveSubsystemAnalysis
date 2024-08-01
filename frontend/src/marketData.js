@@ -493,6 +493,19 @@ class MarketData extends Component {
         const data = marketData.map((item) => {
           return (item.average_price / 1000000).toFixed(2);
         }); // Assuming each data point has a 'value' field
+        
+        // QUICK FIX BUT NEEDS LOOKING INTO LATER
+        console.log(marketData.length);
+        const mktDataLength = marketData.length;
+        //if subsystemCosts.length is greater than mktdatalength, then remove the last few elements of subsystemCosts
+
+        if (subsystemCosts.length > mktDataLength) {
+          const diff = subsystemCosts.length - mktDataLength;
+          subsystemCosts.splice(mktDataLength, diff);
+        }
+
+        console.log(subsystemCosts.length);
+
         const costData = subsystemCosts.map((item) => {
           return (item.average_price / 1000000).toFixed(2);
         });
