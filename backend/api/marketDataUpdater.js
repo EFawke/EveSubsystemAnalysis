@@ -39,7 +39,11 @@ client.query(`CREATE TABLE IF NOT EXISTS "price_data" (
     order_count INT,
     volume INT);`)
 
-// client.query(`SELECT * FROM price_data;`)
+client.query(`SELECT * FROM price_data;`)
+    .then((res) => {
+        console.log("HERE IS PRICE DATA");
+        console.log(res.rows);
+    })
 
 const subsystemIDArr = [
     { name: "Legion Core - Dissolution Sequencer", id: 45622 },
@@ -194,8 +198,8 @@ const gatherData = () => {
     .catch(err => console.log(err))
 }
 
-setInterval(gatherData, 60000);
+// setInterval(gatherData, 60000);
 
 //delete data older than 1 year
-client.query(`DELETE FROM price_data
-WHERE date < (EXTRACT(EPOCH FROM NOW()) - 31536000) * 1000;`)
+// client.query(`DELETE FROM price_data
+// WHERE date < (EXTRACT(EPOCH FROM NOW()) - 31536000) * 1000;`)

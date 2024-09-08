@@ -76,15 +76,22 @@ const fetchData = async (dateEpoch, subsystemId) => {
     await chill(1000);
     let rensData = await fetchPrices(rensRegion, subsystemId);
 
+    //updaing the home page table
     let query = `INSERT INTO home 
     (date, item_id, jitaData, amarrData, dodixieData, hekData, rensData) VALUES 
     (${dateEpoch}, ${subsystemId}, '${JSON.stringify(jitaData)}', '${JSON.stringify(amarrData)}', '${JSON.stringify(dodixieData)}', '${JSON.stringify(hekData)}', '${JSON.stringify(rensData)}');`;
 
     try {
         await client.query(query);
+
+        //update the market table here as well.
     } catch (err) {
         console.log(err);
     }
+};
+
+const fetchCostsData = async (dateEpoch, subsystemType) => {
+    
 };
 
 const updateHomeTable = async (epoch) => {

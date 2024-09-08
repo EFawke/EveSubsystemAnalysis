@@ -7,7 +7,6 @@ import Button from 'react-bootstrap/Button';
 import MicroCard from './micro_card';
 import { mode } from 'crypto-js';
 
-
 class MarketData extends Component {
   constructor(props) {
     super(props);
@@ -89,7 +88,15 @@ class MarketData extends Component {
         stroke: {
           colors: this.props.darkMode ? ['#212529'] : ['white'],
           width: 2.5,
-        }
+        },
+        responsive: [{
+          breakpoint: 900,
+          options: {
+            chart: {
+              height: 300,
+            }
+          }
+        }]
       },
       pieSeries: [],
 
@@ -504,8 +511,6 @@ class MarketData extends Component {
           subsystemCosts.splice(mktDataLength, diff);
         }
 
-        console.log(subsystemCosts.length);
-
         const costData = subsystemCosts.map((item) => {
           return (item.average_price / 1000000).toFixed(2);
         });
@@ -778,10 +783,6 @@ class MarketData extends Component {
                 rotate: 0,
               },
             },
-            // stroke: {
-            //   curve: 'smooth',
-            //   width: 2.5,
-            // },
           },
           series: [
             {
@@ -794,6 +795,7 @@ class MarketData extends Component {
             },
           ],
         });
+
         this.setState({
           pieOptions: {
             ...this.state.pieOptions,
@@ -801,6 +803,7 @@ class MarketData extends Component {
             labels: namesArray,
           },
         })
+
         this.setState({
           pieSeries: valuesArray,
         });
@@ -890,7 +893,9 @@ class MarketData extends Component {
                 {loading ? (
                   <Skeleton count={7} height={350 / 7} />
                 ) : (
-                  <Chart options={pieOptions} series={pieSeries} type="donut" height={386} />
+                  <Chart options={pieOptions} series={pieSeries} type="donut" 
+                  height={386} 
+                  />
                 )}
               </div>
             </div>

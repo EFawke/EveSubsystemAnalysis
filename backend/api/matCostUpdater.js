@@ -15,14 +15,14 @@ if (!process.env.DATABASE_URL) {
     });
 }
 
-client.connect()
-    .catch((err) => {
-        console.log("error connecting to database")
-        console.log(err)
-    })
-    .then(() => {
-        // console.log("mat cost updater connected to database")
-    })
+// client.connect()
+//     .catch((err) => {
+//         console.log("error connecting to database")
+//         console.log(err)
+//     })
+//     .then(() => {
+//         // console.log("mat cost updater connected to database")
+//     })
 
 //delete subsystem_costs table
 // const deleteTable = async () => {
@@ -44,15 +44,15 @@ client.connect()
 
 // return;
 
-client.query(`CREATE TABLE IF NOT EXISTS subsystem_costs (
-    id SERIAL PRIMARY KEY,
-    subsystem_type VARCHAR(50),
-    region VARCHAR(50),
-    date BIGINT,
-    average_price NUMERIC,
-    highest_price NUMERIC,
-    lowest_price NUMERIC
-);`)
+// client.query(`CREATE TABLE IF NOT EXISTS subsystem_costs (
+//     id SERIAL PRIMARY KEY,
+//     subsystem_type VARCHAR(50),
+//     region VARCHAR(50),
+//     date BIGINT,
+//     average_price NUMERIC,
+//     highest_price NUMERIC,
+//     lowest_price NUMERIC
+// );`)
 
 const coreCosts = {
     //gas (id, quantity)
@@ -365,7 +365,7 @@ const gatherData = () => {
     .catch(err => console.log(err))
 }
 
-setInterval(gatherData, 60000);
+// setInterval(gatherData, 60000);
 
 const insertIntoDatabase = (unitCosts, subsystemType, tradeHub) => {
     unitCosts.forEach((cost) => {
@@ -373,13 +373,12 @@ const insertIntoDatabase = (unitCosts, subsystemType, tradeHub) => {
             client.query(`INSERT INTO subsystem_costs (subsystem_type, region, date, average_price, highest_price, lowest_price) VALUES ('${subsystemType}', '${tradeHub}', '${cost.date}', ${cost.average}, ${cost.highest}, ${cost.lowest})`)
         }
     })
-
 }
 
-client.query(`DELETE FROM subsystem_costs
-WHERE date < (EXTRACT(EPOCH FROM NOW()) - 31536000) * 1000;`)
-    .then((res) => {
-        const numberOfDaysDeleted = res.rowCount;
-        // console.log(numberOfDaysDeleted + " rows of data deleted from subsystem_costs");
-    })
-    .catch(err => console.log(err))
+// client.query(`DELETE FROM subsystem_costs
+// WHERE date < (EXTRACT(EPOCH FROM NOW()) - 31536000) * 1000;`)
+//     .then((res) => {
+//         const numberOfDaysDeleted = res.rowCount;
+//         // console.log(numberOfDaysDeleted + " rows of data deleted from subsystem_costs");
+//     })
+//     .catch(err => console.log(err))

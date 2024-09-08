@@ -2,6 +2,7 @@ import React from 'react';
 import Chart from 'react-apexcharts';
 import 'react-loading-skeleton/dist/skeleton.css';
 import Skeleton from 'react-loading-skeleton';
+import Typography from '@mui/material/Typography';
 
 
 class MicroCard extends React.Component {
@@ -42,8 +43,8 @@ class MicroCard extends React.Component {
                 percentage: this.props.percentage,
             })
         }
-        if(this.props.darkMode !== prevProps.darkMode){
-            this.setState({darkMode: this.props.darkMode})
+        if (this.props.darkMode !== prevProps.darkMode) {
+            this.setState({ darkMode: this.props.darkMode })
             this.setState({
                 cardTitle: this.props.cardTitle,
                 options: this.props.options,
@@ -64,17 +65,20 @@ class MicroCard extends React.Component {
                 classText = "text-success me-2";
             }
             let showMillion = "";
-            if(cardTitle === "Sell" || cardTitle === "Profit"){
+            if (cardTitle === "Sell" || cardTitle === "Profit") {
                 showMillion = "M";
             }
             return (
                 <div className="col-md-6 col-xl-3">
-                    <div className= {darkMode ? "card " + darkModeClass : "card"}>
+                    <div className={darkMode ? "card " + darkModeClass : "card"}>
                         <div className="card-body">
                             <div className="row align-items-center">
                                 <div className="col-5">
+                                    {/* <Typography gutterBottom variant="h5" component="div">
+                                        {loading ? <Skeleton count={1} height={24}/> : this.props.cardTitle}
+                                    </Typography> */}
                                     <h5 className="text-muted fw-normal mt-0 text-truncate" title="New Leads">{loading ? <Skeleton count={1} height={24}/> : this.props.cardTitle}</h5>
-                                    <h3 className="my-2 py-1">{loading ? <Skeleton count={1} height={32.117} /> : bigNum}<span className = "text-muted fs-6">{loading ? null : showMillion}</span></h3>
+                                    <h3 className="my-2 py-1">{loading ? <Skeleton count={1} height={32.117} /> : bigNum}<span className="text-muted fs-6">{loading ? null : showMillion}</span></h3>
                                     <p className="mb-0 text-muted">
                                         {loading ? <Skeleton count={1} height={"auto"} /> : <span className={classText}><i className="mdi mdi-arrow-down-bold"></i> {percentage} %</span>}
                                     </p>
