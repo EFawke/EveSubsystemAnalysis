@@ -113,11 +113,16 @@ body {
 
 #subsystem-analysis-title {
     margin: 1.25rem 0rem;
-    font-weight: 300;
+    font-weight: 600;
+    text-align: center;
+    font-size: 1.6rem;
 }
 
 .d-flex>h4.header-title {
-    padding: 6px;
+    padding: 5px;
+    padding-left: 0;
+    font-weight: 400;
+    color: #6c757d !important;
 }
 
 .im_building_it {
@@ -152,4 +157,18 @@ body {
     display: flex;
     flex-direction: column;
     justify-content: space-between;
+}
+
+.text-danger {
+    color: #ff0019 !important;
+    font-weight: 600;
+}
+
+.text-success {
+    color: #00f784 !important;
+    font-weight: 600;
+}
+
+#search-box-label {
+    color: #000000a3;
 }
