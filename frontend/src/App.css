@@ -162,12 +162,12 @@ body {
 }
 
 .text-danger {
-    color: #ff0019 !important;
+    color: #ff4747;
     font-weight: 600;
 }
 
 .text-success {
-    color: #00f784 !important;
+    color: #00f784;
     font-weight: 600;
 }
 
@@ -177,4 +177,24 @@ body {
 
 .navbar-brand {
     font-size: 1.5rem;
+}
+
+div.bg-dark > div > div > div > p > span.text-success {
+    color: #12c471;
+}
+
+div.bg-dark > div > div > div > h5.text-muted {
+    color: #a0abb4 !important;
+}
+
+.text-muted {
+    color: #889197 !important;
+}
+
+div.bg-dark > div > h4.header-title {
+    color: #a0abb4 !important;
+}
+
+h4.header-title {
+    color: #889197 !important;
 }
