@@ -1,7 +1,8 @@
 import React from 'react';
 import Chart from 'react-apexcharts';
 import 'react-loading-skeleton/dist/skeleton.css';
-import Skeleton from 'react-loading-skeleton';
+// import Skeleton from 'react-loading-skeleton';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import Typography from '@mui/material/Typography';
 
 
@@ -77,16 +78,30 @@ class MicroCard extends React.Component {
                                     {/* <Typography gutterBottom variant="h5" component="div">
                                         {loading ? <Skeleton count={1} height={24}/> : this.props.cardTitle}
                                     </Typography> */}
-                                    <h5 className="text-muted fw-normal mt-0 text-truncate" title="New Leads">{loading ? <Skeleton count={1} height={24}/> : this.props.cardTitle}</h5>
-                                    <h3 className="my-2 py-1">{loading ? <Skeleton count={1} height={32.117} /> : bigNum}<span className="text-muted fs-6">{loading ? null : showMillion}</span></h3>
+                                    <h5 className="text-muted fw-normal mt-0 text-truncate" title="New Leads">{loading ? 
+                                        <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                                            <Skeleton count={1} height={24}/> 
+                                        </SkeletonTheme>
+                                        : this.props.cardTitle}</h5>
+                                    <h3 className="my-2 py-1">{loading ? 
+                                        <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                                            <Skeleton count={1} height={32.117} /> 
+                                        </SkeletonTheme>
+                                        : bigNum}<span className="text-muted fs-6">{loading ? null : showMillion}</span></h3>
                                     <p className="mb-0 text-muted">
-                                        {loading ? <Skeleton count={1} height={"auto"} /> : <span className={classText}><i className="mdi mdi-arrow-down-bold"></i> {percentage} %</span>}
+                                        {loading ? 
+                                        <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                                            <Skeleton count={1} height={"auto"} /> 
+                                        </SkeletonTheme>
+                                        : <span className={classText}><i className="mdi mdi-arrow-down-bold"></i> {percentage} %</span>}
                                     </p>
                                 </div>
                                 <div className={loading ? "col-6" : "col-4"}>
                                     <div className="text-end">
                                         {loading ? (
-                                            <Skeleton count={4} height={80 / 4} />
+                                            <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                                                <Skeleton count={4} height={80 / 4} />
+                                            </SkeletonTheme>
                                         ) : (
                                             <Chart options={options} series={series} type="line" width={150} height={80} />
                                         )}

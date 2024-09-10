@@ -1,7 +1,8 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Chart from 'react-apexcharts';
-import Skeleton from 'react-loading-skeleton';
+// import Skeleton from 'react-loading-skeleton';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import Button from 'react-bootstrap/Button';
 import MicroCard from './micro_card';
@@ -86,7 +87,7 @@ class MarketData extends Component {
         },
         labels: [],
         stroke: {
-          colors: this.props.darkMode ? ['#212529'] : ['white'],
+          colors: this.props.darkMode ? ['rgb(55, 64, 74)'] : ['white'],
           width: 2.5,
         },
         responsive: [{
@@ -441,7 +442,8 @@ class MarketData extends Component {
             height: 350,
             toolbar: {
               show: false,
-            }
+            },
+            background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
           },
           xaxis: {
             tickAmount: 5,
@@ -801,6 +803,10 @@ class MarketData extends Component {
             ...this.state.pieOptions,
             colors: colors,
             labels: namesArray,
+            // stroke: {
+            //   colors: this.props.darkMode ? ['#212529'] : ['white'],
+            //   width: 2.5,
+            // }
           },
         })
 
@@ -889,12 +895,21 @@ class MarketData extends Component {
                   </div>
                 </div>
               </div>
-              <div className="card-body pt-0">
+              <div className="card-body pt-0"
+              id = "pieChart"
+              //  style = {{display: 'flex'}}
+               >
                 {loading ? (
-                  <Skeleton count={7} height={350 / 7} />
+                  <SkeletonTheme borderRadius={'50%'} baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                    <Skeleton count={1}
+                     height={376} 
+                     width={376}
+                     />
+                  </SkeletonTheme>
                 ) : (
                   <Chart options={pieOptions} series={pieSeries} type="donut" 
                   height={386} 
+                  width={386}
                   />
                 )}
               </div>
@@ -918,7 +933,9 @@ class MarketData extends Component {
               </div>
               <div className="card-body pt-0">
                 {loading ? (
+                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
                   <Skeleton count={7} height={350 / 7} />
+                  </SkeletonTheme>
                 ) : (
                   <Chart
                     options={options}

@@ -55,23 +55,23 @@ class HomePageTable extends React.Component {
                 )
              }, //contain a picture of the item
             { field: 'name', headerName: 'Name', width: 280 },
-            { field: 'buy', headerName: 'Buy', type: 'number', width: 130 },
-            { field: 'buyOrders', headerName: 'Buy Orders', type: 'number', width: 130 },
-            { field: 'sell', headerName: 'Sell', type: 'number', width: 130 },
-            { field: 'sellOrders', headerName: 'Sell Orders', type: 'number', width: 130 },
-            {
-                field: 'profit', headerName: 'Profit',
-                description: 'This column has a value getter and is not sortable.',
-                width: 130,
-                valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
-            },
-            { field: 'tradeVol', headerName: 'Trade Volume', type: 'number', width: 130 },
-            {
-                field: 'losses', headerName: 'Losses',
-                description: 'Number blown up in the past week.',
-                sortable: false,
-                type: 'number', width: 130
-            },
+            { field: 'buy', headerName: 'Buy', type: 'number', width: 260 },
+            { field: 'sell', headerName: 'Sell', type: 'number', width: 260 },
+            { field: 'buyOrders', headerName: 'Buy Orders', type: 'number', width: 195 },
+            { field: 'sellOrders', headerName: 'Sell Orders', type: 'number', width: 195 },
+            // {
+            //     field: 'profit', headerName: 'Profit',
+            //     description: 'This column has a value getter and is not sortable.',
+            //     width: 130,
+            //     valueGetter: (value, row) => `${row.firstName || ''} ${row.lastName || ''}`,
+            // },
+            // { field: 'tradeVol', headerName: 'Trade Volume', type: 'number', width: 130 },
+            // {
+            //     field: 'losses', headerName: 'Losses',
+            //     description: 'Number blown up in the past week.',
+            //     sortable: false,
+            //     type: 'number', width: 130
+            // },
         ];
 
         console.log(data);
@@ -99,9 +99,9 @@ class HomePageTable extends React.Component {
                     id: item.item_id,
                     name: namesAndIds.find(obj => obj.id === item.item_id)?.name || '',
                     buy: item.jitadata.maxBuy,
-                    buyOrders: item.jitadata.buyOrders,
+                    buyOrders: item.jitadata.buyOrders + " | " + item.jitadata.buyVolume,
                     sell: item.jitadata.minSell,
-                    sellOrders: item.jitadata.sellOrders,
+                    sellOrders: item.jitadata.sellOrders + " | " + item.jitadata.sellVolume,
                     profit: item.jitadata.sellOrders - item.jitadata.buyOrders,
                     tradeVol: item.jitadata.tradeVol,
                     losses: item.jitadata.losses,
@@ -112,7 +112,7 @@ class HomePageTable extends React.Component {
         // const paginationModel = { page: 0, pageSize: 5 };
 
         return (
-            <Paper sx={{ height: 400, width: '100%' }} >
+            <Paper sx={{ height: 520, width: '100%' }} >
                 <DataGrid
                     rows={rows}
                     columns={columns}

@@ -163,12 +163,13 @@ body {
 
 .text-danger {
     color: #ff4747;
-    font-weight: 600;
+    font-weight: 500;
 }
 
 .text-success {
-    color: #00f784;
-    font-weight: 600;
+    color: #12c471 !important;
+    /* color: #00f784 !important; */
+    font-weight: 500;
 }
 
 #search-box-label {
@@ -180,7 +181,8 @@ body {
 }
 
 div.bg-dark > div > div > div > p > span.text-success {
-    color: #12c471;
+    color: #12c471 !important;
+    font-weight: 500;
 }
 
 div.bg-dark > div > div > div > h5.text-muted {
@@ -197,4 +199,17 @@ div.bg-dark > div > h4.header-title {
 
 h4.header-title {
     color: #889197 !important;
+}
+
+.MuiInputBase-colorPrimary {
+    color: rgba(0, 0, 0) !important;
+}
+
+#pieChart {
+    /* flex: 1 1 auto;
+    padding: 1rem 1rem; */
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 386px;
 }

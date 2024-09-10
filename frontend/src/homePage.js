@@ -3653,7 +3653,7 @@ export default class HomePage extends React.Component {
             )
         } else {
             return (
-                <div style={{marginTop: "3rem"}}>
+                <div>
                     <HomePageTable data={data} darkMode={darkMode} table={"Over Supplied"}/>
                 </div>
             )

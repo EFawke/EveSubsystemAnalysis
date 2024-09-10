@@ -112,6 +112,13 @@ class App extends React.Component {
                         <div className={!darkMode ? "content-page" : "content-page bg-dark text-white"}>
                             <div className="content">
                                 <div className="container">
+                                <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
+                                    <div className="col-12">
+                                        <div className="page-title-box">
+                                            <h1 id="subsystem-analysis-title" className={!darkMode ? "row page-title" : "row bg-dark text-white page-title"}>Recommended Subsystems</h1>
+                                        </div>
+                                    </div>
+                                </div>
                                     <HomePage profit={profit} jitaRank={jitaRank} amarrRank={amarrRank} darkMode={darkMode} />
                                 </div>
                             </div>
