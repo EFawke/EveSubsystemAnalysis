@@ -107,7 +107,6 @@ class App extends React.Component {
         if (window.location.pathname === "/") {
             axios.get(`/api/home`)
                 .then((res) => {
-                    console.log(res);
                     console.log(res.data);
                 })
             return (

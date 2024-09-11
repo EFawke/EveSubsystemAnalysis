@@ -36,8 +36,6 @@ class HomePageTable extends React.Component {
     render() {
         const { data, isLoaded, table, darkMode } = this.state
 
-        console.log(data);
-
         let rows = [];
 
         if (data) {

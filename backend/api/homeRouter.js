@@ -22,9 +22,9 @@ client.connect();
 
 
 homeRouter.get('/', async (req, res, next) => {
-    client.query("SELECT * FROM home ORDER BY date DESC LIMIT 1;")
+    client.query("SELECT * FROM home ORDER BY date DESC;")
         .then((result) => {
-            res.send(result.rows);
+            res.send(result);
         })
         .catch((err) => {
             console.log(err);
