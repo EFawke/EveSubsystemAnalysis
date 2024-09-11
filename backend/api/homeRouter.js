@@ -22,18 +22,14 @@ client.connect();
 
 
 homeRouter.get('/', async (req, res, next) => {
-    try {
-        const test = await axios.get(`https://evetycoon.com/api/v1/market/history/10000002/30375/`)
-
-        for (let i = 0; i < test.data.length; i++) {
-            const date = new Date(test.data[i].date);
-            // console.log(date.toDateString());
-        }
-    }
-
-    catch {
-        res.status(500).send();
-    }
+    client.query("SELECT * FROM home ORDER BY date DESC LIMIT 1;")
+        .then((result) => {
+            res.send(result.rows);
+        })
+        .catch((err) => {
+            console.log(err);
+            res.send(dummyData);
+        });
 })
 
 module.exports = homeRouter;

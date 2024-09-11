@@ -1,10 +1,11 @@
 import React from "react";
 import namesAndIds from "./namesAndIds.js";
-import Skeleton from 'react-loading-skeleton';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import axios from "axios";
 import weebImage from './weeb.jpeg';
 import HomePageTable from "./homePageTable.js";
+import QuickStats from "./quickStats.js";
 
 export default class HomePage extends React.Component {
     constructor(props) {
@@ -14,7 +15,7 @@ export default class HomePage extends React.Component {
             highTradeVolume: [],
             overSupplied: [],
             underSupplied: [],
-            darkMode: false,
+            darkMode: this.props.darkMode,
             isLoaded: false,
             data: [
                 {
@@ -3629,34 +3630,72 @@ export default class HomePage extends React.Component {
         }
     }
 
+    componentDidMount() {
+        // this.setState({
+        //     loading: true
+        // });
+
+        // axios.get("http://localhost:3001/api/getData")
+        //     .then(res => {
+        //         this.setState({
+        //             data: res.data,
+        //             loading: false
+        //         });
+        //     })
+        //     .catch(err => {
+        //         console.log(err);
+        //     });
+    }
+
     render() {
-        const { darkMode, data } = this.state;
+        const { darkMode, data, loading } = this.state;
 
         const darkModeClass = "bg-dark text-white";
 
-        if (!data) {
-            return (
-                <div className = "working_on_it">
-                    <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
-                        <div className="col-12">
-                            <div className="page-title-box">
-                                <h1 className={!darkMode ? "page-title" : "page-title bg-dark text-white"}>
-                                    Page Under Construction
-                                </h1>
+
+        return (
+            <div>
+                <div className={darkMode ? "row " + darkModeClass : "row"}>
+                    <div className="col-lg-12">
+                                {loading ? (
+                                    <SkeletonTheme borderRadius={'50%'} baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                                        <Skeleton count={1}
+                                            height={376}
+                                            width={376}
+                                        />
+                                    </SkeletonTheme>
+                                ) : (
+                                    <HomePageTable data={data} darkMode={darkMode} table={"Losses"} />
+                                )}
+                    </div>
+                    {/* <div className = "col-lg-4">
+                        {loading ? (
+                            <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                                <Skeleton count={7} height={350 / 7} />
+                            </SkeletonTheme>
+                        ) : (
+                            <QuickStats />
+                        )}
+                    </div> */}
+                    {/* <div className="col-lg-5">
+                        <div className={darkMode ? "card " + darkModeClass : "card"}>
+                            <div className="card-header d-flex justify-content-between align-items-center">
+                                <h4 className="header-title">Quick Stats</h4>
+                            </div>
+                            <div className="card-body pt-0">
+                                {loading ? (
+                                    <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                                        <Skeleton count={7} height={350 / 7} />
+                                    </SkeletonTheme>
+                                ) : (
+                                    <QuickStats />
+                                )}
                             </div>
                         </div>
-                    </div>
-                    <div>
-                        <img className = "im_building_it" src={weebImage} alt="Under Construction" />
-                    </div>
+                    </div> */}
                 </div>
-            )
-        } else {
-            return (
-                <div>
-                    <HomePageTable data={data} darkMode={darkMode} table={"Over Supplied"}/>
-                </div>
-            )
-        }
+                {/* <HomePageTable data={data} darkMode={darkMode} table={"Over Supplied"}/> */}
+            </div>
+        )
     }
 }

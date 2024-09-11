@@ -803,10 +803,6 @@ class MarketData extends Component {
             ...this.state.pieOptions,
             colors: colors,
             labels: namesArray,
-            // stroke: {
-            //   colors: this.props.darkMode ? ['#212529'] : ['white'],
-            //   width: 2.5,
-            // }
           },
         })
 
@@ -897,7 +893,6 @@ class MarketData extends Component {
               </div>
               <div className="card-body pt-0"
               id = "pieChart"
-              //  style = {{display: 'flex'}}
                >
                 {loading ? (
                   <SkeletonTheme borderRadius={'50%'} baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>

@@ -44,7 +44,7 @@ class App extends React.Component {
         if (location === "/") {
             axios.get(`/api/home`)
                 .then(response => {
-                    console.log(response.data);
+                    // console.log(response.data);
                     this.setState({ profit: response.data.profit })
                 })
                 .catch(err => {
@@ -105,6 +105,11 @@ class App extends React.Component {
             )
         }
         if (window.location.pathname === "/") {
+            axios.get(`/api/home`)
+                .then((res) => {
+                    console.log(res);
+                    console.log(res.data);
+                })
             return (
                 <ThemeProvider theme={darkMode ? darkTheme : ""}>
                     <div className={darkMode ? "wrapper bg-dark text-white" : "wrapper"}>
@@ -112,13 +117,13 @@ class App extends React.Component {
                         <div className={!darkMode ? "content-page" : "content-page bg-dark text-white"}>
                             <div className="content">
                                 <div className="container">
-                                <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
-                                    <div className="col-12">
-                                        <div className="page-title-box">
-                                            <h1 id="subsystem-analysis-title" className={!darkMode ? "row page-title" : "row bg-dark text-white page-title"}>Recommended Subsystems</h1>
+                                    <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
+                                        <div className="col-12">
+                                            <div className="page-title-box">
+                                                <h1 id="home-page-title" className={!darkMode ? "row page-title" : "row bg-dark text-white page-title"}>Recommended Subsystems</h1>
+                                            </div>
                                         </div>
                                     </div>
-                                </div>
                                     <HomePage profit={profit} jitaRank={jitaRank} amarrRank={amarrRank} darkMode={darkMode} />
                                 </div>
                             </div>

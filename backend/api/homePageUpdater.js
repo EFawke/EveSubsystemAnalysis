@@ -90,9 +90,9 @@ const fetchData = async (dateEpoch, subsystemId) => {
     }
 };
 
-const fetchCostsData = async (dateEpoch, subsystemType) => {
+// const fetchCostsData = async (dateEpoch, subsystemType) => {
     
-};
+// };
 
 const updateHomeTable = async (epoch) => {
     if (isUpdating) return;

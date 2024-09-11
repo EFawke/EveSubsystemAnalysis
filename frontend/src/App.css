@@ -119,6 +119,16 @@ body {
     text-decoration: underline;
 }
 
+#home-page-title {
+    margin: 1.25rem 0rem;
+    font-weight: 600;
+    text-align: center;
+    font-size: 1.6rem;
+    text-decoration: underline;
+    display: flex;
+    justify-content: center;
+}
+
 .d-flex>h4.header-title {
     padding: 5px;
     padding-left: 0;
