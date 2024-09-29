@@ -3,8 +3,6 @@ const axios = require('axios');
 const homeRouter = express.Router();
 const { Client } = require('pg');
 
-const { dummyData } = require('./dummyData.js');
-
 let client;
 if (!process.env.DATABASE_URL) {
     client = new Client()

@@ -27,7 +27,7 @@ const dropTable = () => {
         })
 }
 
-dropTable();
+// dropTable();
 
 //make a database table to store the data
 client.query(`CREATE TABLE IF NOT EXISTS subsystems (

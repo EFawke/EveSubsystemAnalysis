@@ -62,7 +62,7 @@ const logTable = () => {
         })
 }
 
-dropTable();
+// dropTable();
 createPriceDataTable();
 
 client.query(`SELECT * FROM price_data LIMIT 1;`)
