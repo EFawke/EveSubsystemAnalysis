@@ -14,10 +14,20 @@ if (!process.env.DATABASE_URL) {
         allowExitOnIdle: true
     });
 }
-client.connect()
+client.connect();
 
-// client.query(`SELECT * FROM subsystems`)
-//     .then(res => console.log(res.rows));
+// write a function to delete the table
+const dropTable = () => {
+    client.query(`DROP TABLE IF EXISTS subsystems;`)
+        .then(() => {
+            console.log('Dropped subsystems');
+        })
+        .catch((err) => {
+            console.log(err);
+        })
+}
+
+dropTable();
 
 //make a database table to store the data
 client.query(`CREATE TABLE IF NOT EXISTS subsystems (
@@ -47,7 +57,7 @@ const axiosZkillData = () => {
             if (!response) {
                 return;
             }
-            if(!response.data){
+            if (!response.data) {
                 return;
             }
             if (response.data.package === null) {
@@ -56,17 +66,17 @@ const axiosZkillData = () => {
             if (response && response.data.package !== null && response.data.package !== undefined && response.data.package.zkb.labels !== null) {
                 const items = response.data.package.killmail.victim.items;
                 let loc = "";
-                if(response.data.package.zkb.labels[3]){
+                if (response.data.package.zkb.labels[3]) {
                     loc = response.data.package.zkb.labels[3];
                 };
                 loc = loc.substring(4);
-                for(let i = 0; i < items.length; i++){
-                    if(subsystemIDArr.includes(items[i].item_type_id)){
+                for (let i = 0; i < items.length; i++) {
+                    if (subsystemIDArr.includes(items[i].item_type_id)) {
                         const itemTypeId = items[i].item_type_id;
                         const assocKill = response.data.package.killmail.killmail_id;
                         const killTime = response.data.package.killmail.killmail_time;
                         const location = loc;
-                        lookupSubsystemName(itemTypeId, assocKill, killTime, location);
+                        insertKillIntoDatabase(itemTypeId, assocKill, killTime, location);
                     }
                 }
             }
@@ -74,7 +84,7 @@ const axiosZkillData = () => {
 
 }
 
-const lookupSubsystemName = (itemTypeId, assocKill, killTime, location) => {
+const insertKillIntoDatabase = (itemTypeId, assocKill, killTime, location) => {
     for (let i = 0; i < namesAndIds.length; i++) {
         if (namesAndIds[i].id === itemTypeId) {
             const itemTypeName = namesAndIds[i].name;
