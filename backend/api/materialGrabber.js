@@ -1,5 +1,3 @@
-//this is a bit better. Go back and work on error handling.
-console.log("material grabber is running");
 const axios = require('axios');
 const { Client } = require('pg');
 const subsystemIDArr = [

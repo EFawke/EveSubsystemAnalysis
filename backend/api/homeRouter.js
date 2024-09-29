@@ -30,6 +30,7 @@ homeRouter.get('/', async (req, res, next) => {
             console.log(err);
             res.send(dummyData);
         });
+    
 })
 
 module.exports = homeRouter;

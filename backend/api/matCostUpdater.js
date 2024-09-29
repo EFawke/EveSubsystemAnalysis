@@ -1,3 +1,5 @@
+console.log("MAT COSTS ONLINE");
+
 const axios = require('axios');
 const express = require('express');
 const { Client } = require('pg');
@@ -34,7 +36,7 @@ if (!process.env.DATABASE_URL) {
 // }
 
 // deleteTable();
-// return;
+return;
 
 // client.query(`SELECT * from subsystem_costs;`)
 //     .then((res) => {

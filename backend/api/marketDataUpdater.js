@@ -39,11 +39,11 @@ client.query(`CREATE TABLE IF NOT EXISTS "price_data" (
     order_count INT,
     volume INT);`)
 
-client.query(`SELECT * FROM price_data;`)
-    .then((res) => {
-        console.log("HERE IS PRICE DATA");
-        console.log(res.rows);
-    })
+// client.query(`SELECT * FROM price_data;`)
+//     .then((res) => {
+//         console.log("HERE IS PRICE DATA");
+//         console.log(res.rows);
+//     })
 
 const subsystemIDArr = [
     { name: "Legion Core - Dissolution Sequencer", id: 45622 },
@@ -116,8 +116,7 @@ const bulkInsert = async (prices) => {
         if (index !== prices.length - 1) {
             query += ',';
         }
-    }
-    )
+    })
     client.query(query)
 }
 
@@ -136,7 +135,6 @@ const chill = (ms) => {
 }
 
 const fetchData = async (days) => {
-    // console.log('fetching market data... for ' + days + ' days');
     for (const subsystem of subsystemIDArr) {
         await getMarketData(subsystem.id, jitaRegion, days);
         await chill(1000);
@@ -149,7 +147,6 @@ const fetchData = async (days) => {
         await getMarketData(subsystem.id, dodixieRegion, days);
         await chill(1000);
     }
-    // console.log('market data fetched!!');
 }
 
 const getLastDateInDatabase = async () => {
@@ -186,16 +183,16 @@ const updateDatabase = async () => {
 
 const gatherData = () => {
     client.query(`SELECT * from price_data LIMIT 1;`)
-    .then((res) => {
-        if (res.rows.length === 0) {
-            // console.log("NO DATA IN PRICE_DATA TABLE");
-            fetchData(maxNumberOfDays);
-        } else {
-            // console.log("SOME DATA FOUND IN PRICE_DATA TABLE, WHICH IS GOOD");
-            updateDatabase();
-        }
-    })
-    .catch(err => console.log(err))
+        .then((res) => {
+            if (res.rows.length === 0) {
+                // console.log("NO DATA IN PRICE_DATA TABLE");
+                fetchData(maxNumberOfDays);
+            } else {
+                // console.log("SOME DATA FOUND IN PRICE_DATA TABLE, WHICH IS GOOD");
+                updateDatabase();
+            }
+        })
+        .catch(err => console.log(err))
 }
 
 // setInterval(gatherData, 60000);
