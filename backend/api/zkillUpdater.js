@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { Client } = require('pg');
-const { namesAndIds, subsystemIDArr } = require('./namesAndIds.js');
+const { namesAndIds } = require('./namesAndIds.js');
 
 let client;
 let queueId = "";
@@ -30,81 +30,62 @@ const dropTable = () => {
         })
 }
 
-// dropTable();
+// HAS TO BE OF TYPE NUMBER VERY IMPORTANT NOT STRING!!!
+const subsystemIDArr = [45622, 45623, 45624, 45625, 45626, 45627, 45628, 45629, 45630, 45631, 45632, 45633, 45586, 45587, 45588, 45589, 45590, 45591, 45592, 45593, 45594, 45595, 45596, 45597, 45610, 45611, 45612, 45613, 45614, 45615, 45616, 45617, 45618, 45619, 45620, 45621, 45598, 45599, 45600, 45601, 45602, 45603, 45604, 45605, 45606, 45607, 45608, 45609]
+
+dropTable();
 
 //make a database table to store the data
-client.query(`CREATE TABLE IF NOT EXISTS subsystems (
-        assocKill BIGINT, 
-        killTime TIMESTAMP, 
-        location VARCHAR(255), 
-        type_id BIGINT, 
-        type_name VARCHAR(255))`)
+// client.query(`CREATE TABLE IF NOT EXISTS subsystems (
+//         assocKill BIGINT, 
+//         killTime BIGINT, 
+//         location VARCHAR(255), 
+//         type_id BIGINT, 
+//         type_name VARCHAR(255))`)
 
-//function to make the api call to zkillboard
 const axiosZkillData = () => {
-    //console.log("fetching data from zkillboard");
-    axios(`https://redisq.zkillboard.com/listen.php?queueID=${queueId}&ttw=1`, {
+    axios(`https://redisq.zkillboard.com/listen.php?queueID=${queueId}`, {
         headers: {
             'accept-encoding': 'gzip',
             'user-agent': 'Johnson Kanjus - evesubsystemanalysis.com - teduardof@gmail.com',
             'connection': 'close'
         }
     })
-        .catch(err => {
-            if (err) {
-                console.log(err)
-                return;
-            }
-        })
-        .then(response => {
-            if (!response) {
-                return;
-            }
-            if (!response.data) {
-                return;
-            }
-            if (response.data.package === null) {
-                return;
-            }
+        .then((response) => {
             if (response && response.data.package !== null && response.data.package !== undefined && response.data.package.zkb.labels !== null) {
                 const items = response.data.package.killmail.victim.items;
                 let loc = "";
                 if (response.data.package.zkb.labels[3]) {
                     loc = response.data.package.zkb.labels[3];
-                };
+                }
                 loc = loc.substring(4);
-                // console.log(items);
                 let subsystemCount = 0;
                 for (let i = 0; i < items.length; i++) {
                     if (subsystemIDArr.includes(items[i].item_type_id)) {
                         subsystemCount++;
-                        const itemTypeId = items[i].item_type_id;
-                        const assocKill = response.data.package.killmail.killmail_id;
-                        const killTime = response.data.package.killmail.killmail_time;
+                        const itemTypeId = Number(items[i].item_type_id);
+                        const assocKill = Number(response.data.package.killmail.killmail_id);
+                        const killTime = new Date(response.data.package.killmail.killmail_time).getTime();
                         const location = loc;
                         insertKillIntoDatabase(itemTypeId, assocKill, killTime, location);
                     }
                 }
-                if (subsystemCount === 0 && queueId === "esalocal") {
-                    console.log("No subsystems found in this killmail " + response.data.package.killmail.killmail_id);
-                }
+                axiosZkillData();
             }
+        })
+        .catch(err => {
+            console.error('Axios error:', err);
         });
-
-}
+};
 
 const insertKillIntoDatabase = (itemTypeId, assocKill, killTime, location) => {
     for (let i = 0; i < namesAndIds.length; i++) {
         if (namesAndIds[i].id === itemTypeId) {
             const itemTypeName = namesAndIds[i].name;
-            console.log("subsystem: " + itemTypeName + " found!");
-            console.log(itemTypeId + " " + assocKill + " " + killTime + " " + location + " " + itemTypeName);
             client.query(`INSERT INTO subsystems (assocKill, killTime, location, type_id, type_name) VALUES (${assocKill}, '${killTime}', '${location}', ${itemTypeId}, '${itemTypeName}')`)
-                .catch((err) => {
-                    console.log(err);
-                })
+            .catch(err => console.log(err));
         }
     }
 }
 
-setInterval(axiosZkillData, 1000);
+// setInterval(axiosZkillData, 15 * 60 * 1000);
