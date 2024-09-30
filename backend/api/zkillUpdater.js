@@ -3,9 +3,12 @@ const { Client } = require('pg');
 const { namesAndIds, subsystemIDArr } = require('./namesAndIds.js');
 
 let client;
+let queueId = "";
 if (!process.env.DATABASE_URL) {
     client = new Client()
+    queueId = "evesubsystemanalysis";
 } else {
+    queueId = "test";
     client = new Client({
         connectionString: process.env.DATABASE_URL,
         ssl: {
@@ -40,7 +43,7 @@ client.query(`CREATE TABLE IF NOT EXISTS subsystems (
 //function to make the api call to zkillboard
 const axiosZkillData = () => {
     //console.log("fetching data from zkillboard");
-    axios("https://redisq.zkillboard.com/listen.php?queueID=subsystemanalysis?ttw=1", {
+    axios(`https://redisq.zkillboard.com/listen.php?queueID=${queueId}?ttw=1`, {
         headers: {
             'accept-encoding': 'gzip',
             'user-agent': 'Johnson Kanjus - evesubsystemanalysis.com - teduardof@gmail.com',
@@ -88,6 +91,7 @@ const insertKillIntoDatabase = (itemTypeId, assocKill, killTime, location) => {
     for (let i = 0; i < namesAndIds.length; i++) {
         if (namesAndIds[i].id === itemTypeId) {
             const itemTypeName = namesAndIds[i].name;
+            console.log("subsystem: " + itemTypeName + " found!");
             console.log(itemTypeId + " " + assocKill + " " + killTime + " " + location + " " + itemTypeName);
             client.query(`INSERT INTO subsystems (assocKill, killTime, location, type_id, type_name) VALUES (${assocKill}, '${killTime}', '${location}', ${itemTypeId}, '${itemTypeName}')`)
                 .catch((err) => {
