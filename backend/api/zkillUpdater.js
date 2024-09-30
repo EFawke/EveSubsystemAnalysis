@@ -6,9 +6,9 @@ let client;
 let queueId = "";
 if (!process.env.DATABASE_URL) {
     client = new Client()
-    queueId = "evesubsystemanalysis";
+    queueId = "esalocal";
 } else {
-    queueId = "test";
+    queueId = "evesubsystemanalysis";
     client = new Client({
         connectionString: process.env.DATABASE_URL,
         ssl: {
@@ -43,7 +43,7 @@ client.query(`CREATE TABLE IF NOT EXISTS subsystems (
 //function to make the api call to zkillboard
 const axiosZkillData = () => {
     //console.log("fetching data from zkillboard");
-    axios(`https://redisq.zkillboard.com/listen.php?queueID=${queueId}?ttw=1`, {
+    axios(`https://redisq.zkillboard.com/listen.php?queueID=${queueId}&ttw=1`, {
         headers: {
             'accept-encoding': 'gzip',
             'user-agent': 'Johnson Kanjus - evesubsystemanalysis.com - teduardof@gmail.com',
@@ -73,14 +73,20 @@ const axiosZkillData = () => {
                     loc = response.data.package.zkb.labels[3];
                 };
                 loc = loc.substring(4);
+                // console.log(items);
+                let subsystemCount = 0;
                 for (let i = 0; i < items.length; i++) {
                     if (subsystemIDArr.includes(items[i].item_type_id)) {
+                        subsystemCount++;
                         const itemTypeId = items[i].item_type_id;
                         const assocKill = response.data.package.killmail.killmail_id;
                         const killTime = response.data.package.killmail.killmail_time;
                         const location = loc;
                         insertKillIntoDatabase(itemTypeId, assocKill, killTime, location);
                     }
+                }
+                if (subsystemCount === 0 && queueId === "esalocal") {
+                    console.log("No subsystems found in this killmail " + response.data.package.killmail.killmail_id);
                 }
             }
         });
