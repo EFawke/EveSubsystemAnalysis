@@ -33,15 +33,15 @@ const dropTable = () => {
 // HAS TO BE OF TYPE NUMBER VERY IMPORTANT NOT STRING!!!
 const subsystemIDArr = [45622, 45623, 45624, 45625, 45626, 45627, 45628, 45629, 45630, 45631, 45632, 45633, 45586, 45587, 45588, 45589, 45590, 45591, 45592, 45593, 45594, 45595, 45596, 45597, 45610, 45611, 45612, 45613, 45614, 45615, 45616, 45617, 45618, 45619, 45620, 45621, 45598, 45599, 45600, 45601, 45602, 45603, 45604, 45605, 45606, 45607, 45608, 45609]
 
-dropTable();
+// dropTable();
 
 //make a database table to store the data
-// client.query(`CREATE TABLE IF NOT EXISTS subsystems (
-//         assocKill BIGINT, 
-//         killTime BIGINT, 
-//         location VARCHAR(255), 
-//         type_id BIGINT, 
-//         type_name VARCHAR(255))`)
+client.query(`CREATE TABLE IF NOT EXISTS subsystems (
+        assocKill BIGINT, 
+        killTime BIGINT, 
+        location VARCHAR(255), 
+        type_id BIGINT, 
+        type_name VARCHAR(255))`)
 
 const axiosZkillData = () => {
     axios(`https://redisq.zkillboard.com/listen.php?queueID=${queueId}`, {
@@ -88,4 +88,4 @@ const insertKillIntoDatabase = (itemTypeId, assocKill, killTime, location) => {
     }
 }
 
-// setInterval(axiosZkillData, 15 * 60 * 1000);
+setInterval(axiosZkillData, 15 * 60 * 1000);
