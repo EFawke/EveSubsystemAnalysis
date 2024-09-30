@@ -64,6 +64,7 @@ const axiosZkillData = () => {
                 return;
             }
             if (response && response.data.package !== null && response.data.package !== undefined && response.data.package.zkb.labels !== null) {
+                console.log(response.data.package.killmail.killmail_id);
                 const items = response.data.package.killmail.victim.items;
                 let loc = "";
                 if (response.data.package.zkb.labels[3]) {
