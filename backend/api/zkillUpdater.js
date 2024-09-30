@@ -64,7 +64,6 @@ const axiosZkillData = () => {
                 return;
             }
             if (response && response.data.package !== null && response.data.package !== undefined && response.data.package.zkb.labels !== null) {
-                console.log(response.data.package.killmail.killmail_id);
                 const items = response.data.package.killmail.victim.items;
                 let loc = "";
                 if (response.data.package.zkb.labels[3]) {
@@ -89,6 +88,7 @@ const insertKillIntoDatabase = (itemTypeId, assocKill, killTime, location) => {
     for (let i = 0; i < namesAndIds.length; i++) {
         if (namesAndIds[i].id === itemTypeId) {
             const itemTypeName = namesAndIds[i].name;
+            console.log(itemTypeId + " " + assocKill + " " + killTime + " " + location + " " + itemTypeName);
             client.query(`INSERT INTO subsystems (assocKill, killTime, location, type_id, type_name) VALUES (${assocKill}, '${killTime}', '${location}', ${itemTypeId}, '${itemTypeName}')`)
                 .catch((err) => {
                     console.log(err);
