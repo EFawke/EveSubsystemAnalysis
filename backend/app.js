@@ -6,12 +6,10 @@ const errorHandler = require('errorhandler');
 const path = require('path');
 const apiRouter = require('./api/apiRouter')
 
-
 app.use('/api', apiRouter);
 app.use(morgan('dev'));
 app.use(cors());
 app.use(errorHandler());
-
 
 let port = process.env.PORT;
 if (port == null || port == "") {

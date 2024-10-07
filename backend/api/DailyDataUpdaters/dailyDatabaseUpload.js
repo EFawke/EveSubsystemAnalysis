@@ -9,16 +9,9 @@ const updatePriceTable = async (epoch, client) => {
 
     let date = new Date(epoch);
 
-    // console.log(date.getHours(), date.getMinutes(), date.getSeconds());
-
     if (date.getHours() !== 0 || date.getMinutes() !== 0 || date.getSeconds() >= 2) {
         return;
     }
-
-    // testing
-    // if (date.getHours() !== 13 || date.getMinutes() !== 26 || date.getSeconds() >= 2) {
-    //     return;
-    // }
 
     date.setUTCHours(0, 0, 0, 0);
     let dateEpoch = date.getTime(); // to be added to the table later!!!

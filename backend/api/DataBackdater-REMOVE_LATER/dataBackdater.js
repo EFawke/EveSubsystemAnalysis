@@ -34,15 +34,33 @@ const getMinStatData = async (client) => {
     return minStatData;
 }
 
+const checkIfMissingDateIsntMissing = async (client, missingData) => {
+    const missingDataCheck = await client.query(`SELECT * FROM price_data WHERE date = ${missingData} AND region = 10000002 AND type_id = 34`)
+        .then((res) => {
+            return res.rows.length;
+        })
+        .catch((err) => {
+            console.log(err);
+        });
+
+    return missingDataCheck;
+}
+
 const backDate = async (client) => {
 
     const minStatData = await getMinStatData(client);
-    console.log(minStatData);
-
     const maxHistData = await getMaxHistData(client);
-    console.log(maxHistData);
+    let missingData = Number(maxHistData) + 1000 * 60 * 60 * 24;
+
+    const missingDataCheck = await checkIfMissingDateIsntMissing(client, missingData);
+
+    if(missingDataCheck){
+        console.log("Data is already in the database");        
+        return;
+    }
 
     if(minStatData && maxHistData){
+        fetchData(missingData, namesAndIds, materialsNamesAndIds, client, axios);
         console.log("data is fetched uwu");
     }
 }

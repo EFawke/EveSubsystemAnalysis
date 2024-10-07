@@ -12,123 +12,64 @@ const chill = (ms) => {
     return new Promise(resolve => setTimeout(resolve, ms));
 }
 
-function getMidnightEpochsPastYear() {
-    const oneDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
-    const today = new Date();
-    const timezoneOffset = today.getTimezoneOffset() * 60 * 1000; // Offset in milliseconds
-    today.setHours(0, 0, 0, 0);
-    today.setTime(today.getTime() - timezoneOffset - oneDay); // Set to midnight of the previous day
-    const epochArray = [];
-
-    for (let i = 0; i < 365; i++) {
-        const pastDate = new Date(today.getTime() - i * oneDay);
-        const epochTime = pastDate.getTime(); // Convert to epoch time
-        epochArray.push(epochTime);
-    }
-
-    return epochArray.reverse(); // Reverse to get oldest dates first
-}
-
-const getMarketData = async (subsystemType, locationId, client, axios, name, locationName, epochs) => {
+const getMarketData = async (subsystemType, locationId, client, axios, name, locationName, missingDate) => {
     const endpoint = makeUrl(subsystemType, locationId);
     const responses = await axios.get(endpoint)
     const pricesArr = responses.data.reverse();
-    const prices = pricesArr
-    await bulkInsert(prices, client, epochs, locationId, subsystemType, name, locationName);
-}
-
-const getPreviousPrice = (prices, currentDay, allDays) => {
-    // get the highest date that is less than the current day
-    let arrayOfPriceData = [];
-
-    for (let i = 0; i < prices.length; i++) {
-        if (prices[i].date < currentDay) {
-            arrayOfPriceData.push(prices[i]);
-        }
-    }
-
-    //get the highest date value from arrayOfPriceData
-    let previousPrice = arrayOfPriceData.reduce((prev, current) => (prev.date > current.date) ? prev : current);
-
-    return previousPrice;
-}
-
-const bulkInsert = async (prices, client, epochs, locationId, subsystemType, name, locationName) => {
-    for (let i = 0; i < prices.length; i++) {
-        const date = prices[i].date
-        const midnight = new Date(date);
-        const epochTime = midnight.getTime();
-        prices[i].date = epochTime;
-    }
-    // const oldestDate = epochs[0];
-
-    // for (let i = 0; i < prices.length; i++) {
-    //     if (prices[i].date < oldestDate) {
-    //         prices.splice(i, 1);
-    //     }
-    // }
-
-    prices.sort((a, b) => a.date - b.date);
-
-    let query = 'INSERT INTO price_data (date, region, type_id, average_price, highest_price, lowest_price, order_count, volume, buyVolume, sellVolume, buyOrders, sellOrders, maxBuy, minSell) VALUES ';
-
-    const priceData = [];
-
-    for (let i = 0; i < epochs.length; i++) {
-        const epoch = epochs[i];
-        const price = prices.find(price => price.date == epoch);
-        if (!price) {
-            if (i == 0) {
-                priceData.push({ date: epoch, average: 0, highest: 0, lowest: 0, order_count: 0, volume: 0 });
-                prices.push({ date: epoch, average: 0, highest: 0, lowest: 0, order_count: 0, volume: 0 });
-            } else {
-                // priceData.push({ date: epoch, average: priceData[i - 1].average, highest: priceData[i - 1].highest, lowest: priceData[i - 1].lowest, order_count: 0, volume: 0 });
-                const previousPrice = getPreviousPrice(prices, epoch, epochs)
-                prices.push({ date: epoch, average: previousPrice.average, highest: previousPrice.highest, lowest: previousPrice.lowest, order_count: 0, volume: 0 });
-                priceData.push({ date: epoch, average: previousPrice.average, highest: previousPrice.highest, lowest: previousPrice.lowest, order_count: 0, volume: 0 });
-            }
-        } else {
-            priceData.push(price);
-        }
-    }
-
-    priceData.forEach((price, index) => {
-        if (isNaN(price.average) || isNaN(price.highest) || isNaN(price.lowest) ||
-            !isFinite(price.average) || !isFinite(price.highest) || !isFinite(price.lowest)) {
-            console.error("Invalid price data detected: ", price);
-            // Handle the invalid data appropriately here, such as defaulting to 0 or skipping the row.
-        }
-
-        query += `(${Number(price.date)}, '${locationId}', '${subsystemType}', ${Number(price.average)}, ${Number(price.highest)}, ${Number(price.lowest)}, ${price.order_count}, ${price.volume}, 0, 0, 0, 0, 0, 0)`;
-        if (index !== priceData.length - 1) {
-            query += ',';
-        }
-    });
-
-    console.log(query);
-
-    // client.query(query)
-}
-
-const fetchData = async (subsystemIDArr, client, axios, maxHistData) => {
-    const epochs = getMidnightEpochsPastYear();
-
-    epochs.find((epoch, index) => {
-        if (epoch == maxHistData) {
-            epochs.splice(0, index);
+    let data = pricesArr.find((price) => {
+        let priceDate = new Date(price.date);
+        priceDate = priceDate.getTime();
+        if (priceDate === missingDate) {
+            return price;
         }
     })
 
-    for (const subsystem of subsystemIDArr) {
-        await getMarketData(subsystem.id, jitaRegion, client, axios, subsystem.name, "Jita", epochs);
+    if(!data){
+        client.query(`SELECT * FROM price_data WHERE date < ${missingDate} AND region = '${locationId}' AND type_id = '${subsystemType}' ORDER BY date DESC LIMIT 1;`).then((res) => {
+            data = res.rows[0];
+            insertData(data, client, subsystemType, locationId, name, locationName, missingDate, "not found");
+        })
+    } else {
+        insertData(data, client, subsystemType, locationId, name, locationName, missingDate, "found");
+    }
+}
+
+const insertData = (data, client, subsystemType, locationId, name, locationName, missingDate, identifier) => {
+    if(identifier === "found"){
+        const query = `INSERT INTO price_data (date, region, type_id, average_price, highest_price, lowest_price, order_count, volume, buyVolume, sellVolume, buyOrders, sellOrders, maxBuy, minSell) VALUES (${Number(missingDate)}, '${locationId}', '${subsystemType}', ${Number(data.average)}, ${Number(data.highest)}, ${Number(data.lowest)}, ${data.order_count}, ${data.volume}, 0, 0, 0, 0, 0, 0)`;
+        client.query(query);
+    }
+
+    if(identifier === "not found"){
+        const query = `INSERT INTO price_data (date, region, type_id, average_price, highest_price, lowest_price, order_count, volume, buyVolume, sellVolume, buyOrders, sellOrders, maxBuy, minSell) VALUES (${Number(missingDate)}, '${locationId}', '${subsystemType}', ${Number(data.average_price)}, ${Number(data.highest_price)}, ${Number(data.lowest_price)}, ${data.order_count}, ${data.volume}, 0, 0, 0, 0, 0, 0)`;
+        client.query(query);
+    }
+}
+
+const fetchData = async (missingDate, namesAndIds, materialsNamesAndIds, client, axios) => {
+    for (const subsystem of namesAndIds) {
+        await getMarketData(subsystem.id, jitaRegion, client, axios, subsystem.name, "Jita", missingDate);
         await chill(1000);
-        await getMarketData(subsystem.id, amarrRegion, client, axios, subsystem.name, "Amarr", epochs);
+        await getMarketData(subsystem.id, amarrRegion, client, axios, subsystem.name, "Amarr", missingDate);
         await chill(1000);
-        await getMarketData(subsystem.id, rensRegion, client, axios, subsystem.name, "Rens", epochs);
+        await getMarketData(subsystem.id, rensRegion, client, axios, subsystem.name, "Rens", missingDate);
         await chill(1000);
-        await getMarketData(subsystem.id, hekRegion, client, axios, subsystem.name, "Hek", epochs);
+        await getMarketData(subsystem.id, hekRegion, client, axios, subsystem.name, "Hek", missingDate);
         await chill(1000);
-        await getMarketData(subsystem.id, dodixieRegion, client, axios, subsystem.name, "Dodixie", epochs);
+        await getMarketData(subsystem.id, dodixieRegion, client, axios, subsystem.name, "Dodixie", missingDate);
+        await chill(1000);
+    }
+    await chill(1000);
+    for(const material of materialsNamesAndIds){
+        await getMarketData(material.id, jitaRegion, client, axios, material.name, "Jita", missingDate);
+        await chill(1000);
+        await getMarketData(material.id, amarrRegion, client, axios, material.name, "Amarr", missingDate);
+        await chill(1000);
+        await getMarketData(material.id, rensRegion, client, axios, material.name, "Rens", missingDate);
+        await chill(1000);
+        await getMarketData(material.id, hekRegion, client, axios, material.name, "Hek", missingDate);
+        await chill(1000);
+        await getMarketData(material.id, dodixieRegion, client, axios, material.name, "Dodixie", missingDate);
         await chill(1000);
     }
 }
@@ -138,5 +79,4 @@ module.exports = {
     fetchData,
     chill,
     getMarketData,
-    bulkInsert,
 };

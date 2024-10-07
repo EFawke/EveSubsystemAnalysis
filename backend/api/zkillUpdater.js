@@ -5,7 +5,13 @@ const { namesAndIds } = require('./namesAndIds.js');
 let client;
 let queueId = "";
 if (!process.env.DATABASE_URL) {
-    client = new Client()
+    client = new Client({
+        user: 'tedfawke',        // Your local PostgreSQL username
+        host: 'localhost',       // Host should be localhost for local development
+        database: 'evesubsystemanalysis_local',  // Your local database name
+        password: '',            // Local password if needed (empty if not used)
+        port: 5432               // Default PostgreSQL port
+    });
     queueId = "esalocal";
 } else {
     queueId = "evesubsystemanalysis";
@@ -82,8 +88,11 @@ const insertKillIntoDatabase = (itemTypeId, assocKill, killTime, location) => {
     for (let i = 0; i < namesAndIds.length; i++) {
         if (namesAndIds[i].id === itemTypeId) {
             const itemTypeName = namesAndIds[i].name;
-            client.query(`INSERT INTO subsystems (assocKill, killTime, location, type_id, type_name) VALUES (${assocKill}, '${killTime}', '${location}', ${itemTypeId}, '${itemTypeName}')`)
-            .catch(err => console.log(err));
+            client.query(`INSERT INTO subsystems (assocKill, killTime, location, type_id, type_name) VALUES (${assocKill}, ${killTime}, '${location}', ${itemTypeId}, '${itemTypeName}')`)
+            .catch(err => {
+                console.log("Error inserting into database");
+                console.log(err)
+            });
         }
     }
 }
