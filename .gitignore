@@ -1,2 +1,2 @@
 node_modules/.cache/
-.DS_Store
+.DS_Storelatest.dump # This makes sure Git ignores the .dump file in future commits.
