@@ -47,21 +47,32 @@ const checkIfMissingDateIsntMissing = async (client, missingData) => {
 }
 
 const backDate = async (client) => {
-
     const minStatData = await getMinStatData(client);
     const maxHistData = await getMaxHistData(client);
-    let missingData = Number(maxHistData) + 1000 * 60 * 60 * 24;
 
-    const missingDataCheck = await checkIfMissingDateIsntMissing(client, missingData);
-
-    if(missingDataCheck){
-        console.log("Data is already in the database");        
+    // Ensure both min and max data are available
+    if (!minStatData || !maxHistData) {
+        console.log("Unable to fetch minimum or maximum historical data.");
         return;
     }
 
-    if(minStatData && maxHistData){
-        fetchData(missingData, namesAndIds, materialsNamesAndIds, client, axios);
-        console.log("data is fetched uwu");
+    // Calculate the range of missing dates in daily intervals
+    let currentMissingDate = Number(maxHistData) + 1000 * 60 * 60 * 24; // Start from the day after the latest historical date
+    const endMissingDate = Number(minStatData); // Go back to the minimum statistical date
+
+    while (currentMissingDate <= endMissingDate) {
+        const missingDataCheck = await checkIfMissingDateIsntMissing(client, currentMissingDate);
+
+        if (missingDataCheck) {
+            console.log(`Data for date ${new Date(currentMissingDate).toISOString().split('T')[0]} is already in the database.`);
+        } else {
+            console.log(`Fetching missing data for date: ${new Date(currentMissingDate).toISOString().split('T')[0]}`);
+            await fetchData(currentMissingDate, namesAndIds, materialsNamesAndIds, client, axios);
+            console.log(`Data fetched for date: ${new Date(currentMissingDate).toISOString().split('T')[0]}`);
+        }
+
+        // Move to the next day
+        currentMissingDate += 1000 * 60 * 60 * 24; // Increment by one day in milliseconds
     }
 }
 

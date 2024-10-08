@@ -4,10 +4,10 @@ const apiRouter = express.Router();
 require('./updater.js');
 require('./zkillUpdater.js');
 
-// const homeRouter = require('./homeRouter.js');
+const homeRouter = require('./homeRouter.js');
 // const subsystemRouter = require('./subsystemRouter.js');
 
 // apiRouter.use('/subsystem', subsystemRouter);
-// apiRouter.use('/home', homeRouter);
+apiRouter.use('/home', homeRouter);
 
 module.exports = apiRouter;

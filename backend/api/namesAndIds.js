@@ -204,8 +204,68 @@ const materialsNamesAndIds = [
         id: 30628
     },
     {
+        name: "Wrecked Armor Nanobot",
+        id: 30618
+    },
+    {
+        name: "Wrecked Power Cores",
+        id: 30588
+    },
+    {
+        name: "Wrecked Thruster Sections",
+        id: 30562
+    },
+    {
+        name: "Wrecked Weapon Subroutines",
+        id: 30633
+    },
+    {
+        name: "Malfunctioning Armor Nanobot",
+        id: 30615
+    },
+    {
+        name: "Malfunctioning Power Cores",
+        id: 30586
+    },
+    {
+        name: "Malfunctioning Thruster Sections",
+        id: 30558
+    },
+    {
+        name: "Malfunctioning Weapon Subroutines",
+        id: 30632
+    },
+    {
         name: "Optimized Attainment Decryptor",
         id: 34207
+    },
+    {
+        name: "Accelerant Decryptor",
+        id: 34201
+    },
+    {
+        name: "Attainment Decryptor",
+        id: 34202
+    },    
+    {
+        name: "Augmentation Decryptor",
+        id: 34203
+    },    
+    {
+        name: "Optimized Augmentation Decryptor",
+        id: 34208
+    },    
+    {
+        name: "Parity Decryptor",
+        id: 34204
+    },    
+    {
+        name: "Process Decryptor",
+        id: 34205
+    },    
+    {
+        name: "Symmetry Decryptor",
+        id: 34206
     },
     {
         name: "Datacore - Defensive Subsystems Engineering",

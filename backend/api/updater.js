@@ -68,25 +68,25 @@ const logTable = () => {
         })
 }
 
-// dropTable();
-createPriceDataTable();
+dropTable();
+// createPriceDataTable();
 
-client.query(`SELECT * FROM price_data LIMIT 1;`)
-    .then((res) => {
-        if (res.rows.length === 0) {
-            initialDatabaseUpdate(client);
-        } else {
-            console.log("price data has already been initialized");
-        }
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+// client.query(`SELECT * FROM price_data LIMIT 1;`)
+//     .then((res) => {
+//         if (res.rows.length === 0) {
+//             initialDatabaseUpdate(client);
+//         } else {
+//             console.log("price data has already been initialized");
+//         }
+//     })
+//     .catch((err) => {
+//         console.log(err);
+//     })
 
 
-backDate(client);
+// backDate(client);
 
-setInterval(() => {
-    updatePriceTable(Date.now(), client);
-}, 1000);
+// setInterval(() => {
+//     updatePriceTable(Date.now(), client);
+// }, 1000);
 

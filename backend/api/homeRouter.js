@@ -24,24 +24,23 @@ if (!process.env.DATABASE_URL) {
 }
 client.connect();
 
-let today;  // Declare variable at top-level
+let today = Date.now();  // Declare variable at top-level
+let todayDate = new Date(today);
+todayDate.setHours(0, 0, 0, 0);
+today = todayDate.getTime();
+
+console.log(today);
 
 async function fetchToday() {
   try {
-    let result = await client.query("SELECT DISTINCT date FROM price_data ORDER BY date DESC LIMIT 30;");
+    let result = await client.query("SELECT DISTINCT date FROM price_data ORDER BY date DESC LIMIT 1;");
     console.log(result.rows);
   } catch (error) {
     console.error('Error executing query', error);
   }
 }
 
-// Fetch the date before starting the server/router
-fetchToday().then(() => {
-  today = Number(today);
-  client.query(`SELECT * FROM price_data WHERE date = ${today};`).then((res) => {
-    console.log(res.rows);
-  })
-});
+fetchToday();
 
 
 module.exports = homeRouter;

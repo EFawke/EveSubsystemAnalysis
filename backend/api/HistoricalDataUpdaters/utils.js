@@ -15,9 +15,7 @@ const chill = (ms) => {
 function getMidnightEpochsPastYear() {
     const oneDay = 24 * 60 * 60 * 1000; // Number of milliseconds in a day
     const today = new Date();
-    const timezoneOffset = today.getTimezoneOffset() * 60 * 1000; // Offset in milliseconds
-    today.setHours(0, 0, 0, 0);
-    today.setTime(today.getTime() - timezoneOffset - oneDay); // Set to midnight of the previous day
+    today.setUTCHours(0, 0, 0, 0); // Set to UTC midnight
     const epochArray = [];
 
     for (let i = 0; i < 365; i++) {
@@ -29,11 +27,18 @@ function getMidnightEpochsPastYear() {
     return epochArray.reverse(); // Reverse to get oldest dates first
 }
 
+
 const getMarketData = async (subsystemType, locationId, client, axios, name, locationName, epochs) => {
     const endpoint = makeUrl(subsystemType, locationId);
-    const responses = await axios.get(endpoint)
+    const responses = await axios.get(endpoint);
     const pricesArr = responses.data.reverse();
     const prices = pricesArr.slice(0, 365);
+
+    // Ensure dates from the API are treated as UTC when comparing with epochs
+    for (let i = 0; i < prices.length; i++) {
+        prices[i].date = new Date(prices[i].date).getTime(); // Convert to UTC epoch
+    }
+
     await bulkInsert(prices, client, epochs, locationId, subsystemType, name, locationName);
 }
 
@@ -54,13 +59,7 @@ const getPreviousPrice = (prices, currentDay, allDays) => {
 }
 
 const bulkInsert = async (prices, client, epochs, locationId, subsystemType, name, locationName) => {
-    for (let i = 0; i < prices.length; i++) {
-        const date = prices[i].date
-        const midnight = new Date(date);
-        const epochTime = midnight.getTime();
-        prices[i].date = epochTime;
-    }
-    const oldestDate = epochs[0];
+    const oldestDate = epochs[0]; // This is already in UTC
 
     for (let i = 0; i < prices.length; i++) {
         if (prices[i].date < oldestDate) {
@@ -78,35 +77,15 @@ const bulkInsert = async (prices, client, epochs, locationId, subsystemType, nam
         const epoch = epochs[i];
         const price = prices.find(price => price.date == epoch);
         if (!price) {
-            if (i == 0) {
-                priceData.push({ date: epoch, average: 0, highest: 0, lowest: 0, order_count: 0, volume: 0 });
-                prices.push({ date: epoch, average: 0, highest: 0, lowest: 0, order_count: 0, volume: 0 });
-            } else {
-                // priceData.push({ date: epoch, average: priceData[i - 1].average, highest: priceData[i - 1].highest, lowest: priceData[i - 1].lowest, order_count: 0, volume: 0 });
-                const previousPrice = getPreviousPrice(prices, epoch, epochs)
-                prices.push({ date: epoch, average: previousPrice.average, highest: previousPrice.highest, lowest: previousPrice.lowest, order_count: 0, volume: 0 });
-                priceData.push({ date: epoch, average: previousPrice.average, highest: previousPrice.highest, lowest: previousPrice.lowest, order_count: 0, volume: 0 });
-            }
+            const previousPrice = getPreviousPrice(prices, epoch, epochs);
+            prices.push({ date: epoch, average: previousPrice.average, highest: previousPrice.highest, lowest: previousPrice.lowest, order_count: 0, volume: 0 });
+            priceData.push({ date: epoch, average: previousPrice.average, highest: previousPrice.highest, lowest: previousPrice.lowest, order_count: 0, volume: 0 });
         } else {
             priceData.push(price);
         }
     }
 
     priceData.forEach((price, index) => {
-        if (isNaN(price.average) || isNaN(price.highest) || isNaN(price.lowest) ||
-            !isFinite(price.average) || !isFinite(price.highest) || !isFinite(price.lowest)) {
-            console.error("Invalid price data detected: ", price);
-            if(isNaN(price.average) || !isFinite(price.average)) {
-                price.average = 0;
-            }
-            if(isNaN(price.highest) || !isFinite(price.highest)) {
-                price.highest = 0;
-            }
-            if(isNaN(price.lowest) || !isFinite(price.lowest)) {
-                price.lowest = 0;
-            }
-        }
-
         query += `(${Number(price.date)}, '${locationId}', '${subsystemType}', ${Number(price.average)}, ${Number(price.highest)}, ${Number(price.lowest)}, ${price.order_count}, ${price.volume}, 0, 0, 0, 0, 0, 0)`;
         if (index !== priceData.length - 1) {
             query += ',';
@@ -114,8 +93,7 @@ const bulkInsert = async (prices, client, epochs, locationId, subsystemType, nam
     });
 
     console.log(`Inserting ${priceData.length} rows for ${name} in ${locationName}`);
-
-    client.query(query)
+    client.query(query);
 }
 
 const fetchData = async (subsystemIDArr, client, axios) => {

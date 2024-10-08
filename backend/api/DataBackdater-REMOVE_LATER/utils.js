@@ -14,36 +14,39 @@ const chill = (ms) => {
 
 const getMarketData = async (subsystemType, locationId, client, axios, name, locationName, missingDate) => {
     const endpoint = makeUrl(subsystemType, locationId);
-    const responses = await axios.get(endpoint)
+    const responses = await axios.get(endpoint);
     const pricesArr = responses.data.reverse();
     let data = pricesArr.find((price) => {
-        let priceDate = new Date(price.date);
-        priceDate = priceDate.getTime();
+        let priceDate = new Date(price.date).getTime(); // price.date from ESI is in UTC
         if (priceDate === missingDate) {
             return price;
         }
-    })
+    });
 
     if(!data){
-        client.query(`SELECT * FROM price_data WHERE date < ${missingDate} AND region = '${locationId}' AND type_id = '${subsystemType}' ORDER BY date DESC LIMIT 1;`).then((res) => {
-            data = res.rows[0];
-            insertData(data, client, subsystemType, locationId, name, locationName, missingDate, "not found");
-        })
+        await client.query(`SELECT * FROM price_data WHERE date < ${missingDate} AND region = '${locationId}' AND type_id = '${subsystemType}' ORDER BY date DESC LIMIT 1;`)
+            .then((res) => {
+                data = res.rows[0];
+                insertData(data, client, subsystemType, locationId, name, locationName, missingDate, "not found");
+            });
     } else {
         insertData(data, client, subsystemType, locationId, name, locationName, missingDate, "found");
     }
 }
 
 const insertData = (data, client, subsystemType, locationId, name, locationName, missingDate, identifier) => {
+    let query = '';
     if(identifier === "found"){
-        const query = `INSERT INTO price_data (date, region, type_id, average_price, highest_price, lowest_price, order_count, volume, buyVolume, sellVolume, buyOrders, sellOrders, maxBuy, minSell) VALUES (${Number(missingDate)}, '${locationId}', '${subsystemType}', ${Number(data.average)}, ${Number(data.highest)}, ${Number(data.lowest)}, ${data.order_count}, ${data.volume}, 0, 0, 0, 0, 0, 0)`;
-        client.query(query);
+        query = `INSERT INTO price_data (date, region, type_id, average_price, highest_price, lowest_price, order_count, volume, buyVolume, sellVolume, buyOrders, sellOrders, maxBuy, minSell) 
+        VALUES (${Number(missingDate)}, '${locationId}', '${subsystemType}', ${Number(data.average)}, ${Number(data.highest)}, ${Number(data.lowest)}, ${data.order_count}, ${data.volume}, 0, 0, 0, 0, 0, 0)`;
     }
 
     if(identifier === "not found"){
-        const query = `INSERT INTO price_data (date, region, type_id, average_price, highest_price, lowest_price, order_count, volume, buyVolume, sellVolume, buyOrders, sellOrders, maxBuy, minSell) VALUES (${Number(missingDate)}, '${locationId}', '${subsystemType}', ${Number(data.average_price)}, ${Number(data.highest_price)}, ${Number(data.lowest_price)}, ${data.order_count}, ${data.volume}, 0, 0, 0, 0, 0, 0)`;
-        client.query(query);
+        query = `INSERT INTO price_data (date, region, type_id, average_price, highest_price, lowest_price, order_count, volume, buyVolume, sellVolume, buyOrders, sellOrders, maxBuy, minSell) 
+        VALUES (${Number(missingDate)}, '${locationId}', '${subsystemType}', ${Number(data.average_price)}, ${Number(data.highest_price)}, ${Number(data.lowest_price)}, ${data.order_count}, ${data.volume}, 0, 0, 0, 0, 0, 0)`;
     }
+
+    client.query(query);
 }
 
 const fetchData = async (missingDate, namesAndIds, materialsNamesAndIds, client, axios) => {
