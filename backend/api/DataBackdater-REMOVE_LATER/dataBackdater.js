@@ -63,6 +63,9 @@ const backDate = async (client) => {
     while (currentMissingDate <= endMissingDate) {
         const missingDataCheck = await checkIfMissingDateIsntMissing(client, currentMissingDate);
 
+        console.log("TEST!!!")
+        console.log(missingDataCheck);
+
         if (missingDataCheck) {
             console.log(`Data for date ${new Date(currentMissingDate).toISOString().split('T')[0]} is already in the database.`);
         } else {

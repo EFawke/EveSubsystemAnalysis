@@ -43,7 +43,7 @@ const getMarketData = async (subsystemType, locationId, client, axios, name, loc
 }
 
 const getPreviousPrice = (prices, currentDay, allDays) => {
-    // get the highest date that is less than the current day
+    // Get the highest date that is less than the current day
     let arrayOfPriceData = [];
 
     for (let i = 0; i < prices.length; i++) {
@@ -52,7 +52,13 @@ const getPreviousPrice = (prices, currentDay, allDays) => {
         }
     }
 
-    //get the highest date value from arrayOfPriceData
+    // Check if the array is empty
+    if (arrayOfPriceData.length === 0) {
+        console.log(`No previous price data found for the date: ${new Date(currentDay).toISOString()}`);
+        return { average: 0, highest: 0, lowest: 0 }; // Return a default value if no previous price data
+    }
+
+    // Get the highest date value from arrayOfPriceData
     let previousPrice = arrayOfPriceData.reduce((prev, current) => (prev.date > current.date) ? prev : current);
 
     return previousPrice;
