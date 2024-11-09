@@ -222,9 +222,17 @@ class Build extends React.Component {
                                                     </div>
                                                 </>
                                             )}
-                                            <div className="mb-3">
+                                            {/* <div className="mb-3">
                                                 <label htmlFor="systemInput" className="form-label">System</label>
                                                 <input type="text" className="form-control" id="systemInput" name="system" value={system} onChange={this.handleInputChange} />
+                                            </div> */}
+                                            <div className="mb-3">
+                                                <label htmlFor="systemDropdown" className="form-label">System Type</label>
+                                                <select id="systemDropdown" className="form-select" name="system" value={system} onChange={this.handleInputChange}>
+                                                    <option value="lowsec">lowsec</option>
+                                                    <option value="nullsec">nullsec</option>
+                                                    <option value="wormhole">wormhole</option>
+                                                </select>
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="reactionCostIndexInput" className="form-label">Reaction System Cost Index</label>
@@ -272,9 +280,18 @@ class Build extends React.Component {
                                                     </div>
                                                 </>
                                             )}
-                                            <div className="mb-3">
+                                            {/* <div className="mb-3">
                                                 <label htmlFor="complexSystemInput" className="form-label">System</label>
                                                 <input type="text" className="form-control" id="complexSystemInput" name="complexSystem" value={complexSystem} onChange={this.handleInputChange} />
+                                            </div> */}
+                                            <div className="mb-3">
+                                                <label htmlFor="complexSystemDropdown" className="form-label">System Type</label>
+                                                <select id="complexSystemDropdown" className="form-select" name="complexSystem" value={complexSystem} onChange={this.handleInputChange}>
+                                                    <option value="highsec">highsec</option>
+                                                    <option value="lowsec">lowsec</option>
+                                                    <option value="nullsec">nullsec</option>
+                                                    <option value="wormhole">wormhole</option>
+                                                </select>
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="buildCostIndexInput" className="form-label">Manufacturing System Cost Index</label>
