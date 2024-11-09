@@ -482,13 +482,14 @@ class MarketData extends Component {
         let jitaSellData = [];
         let profitData = [];
         const marketData = response.data.marketData;
+        const tradeVolume = response.data.tradeVolume;
         this.setState({ marketData: marketData });
         const subsystemCosts = response.data.subsystemCosts;
         this.setState({ subsystemCosts: subsystemCosts });
         for (let i = 0; i < marketData.length; i++) {
           if (i >= marketData.length - 7) {
-            jitaSellData.push({ date: marketData[i].date, price: (marketData[i].highest_price / 1000000).toFixed(2) });
-            profitData.push({ date: marketData[i].date, price: ((marketData[i].highest_price - subsystemCosts[i].average_price) / 1000000).toFixed(2) });
+            jitaSellData.push({ date: marketData[i].date, price: (marketData[i].average_price / 1000000).toFixed(2) });
+            profitData.push({ date: marketData[i].date, price: ((marketData[i].average_price - subsystemCosts[i].totalCost) / 1000000).toFixed(2) });
           }
         }
         const recentLosses = response.data.recentLossData;
@@ -504,7 +505,6 @@ class MarketData extends Component {
         }); // Assuming each data point has a 'value' field
         
         // QUICK FIX BUT NEEDS LOOKING INTO LATER
-        console.log(marketData.length);
         const mktDataLength = marketData.length;
         //if subsystemCosts.length is greater than mktdatalength, then remove the last few elements of subsystemCosts
 
@@ -514,7 +514,7 @@ class MarketData extends Component {
         }
 
         const costData = subsystemCosts.map((item) => {
-          return (item.average_price / 1000000).toFixed(2);
+          return (item.totalCost / 1000000).toFixed(2);
         });
 
         const pieChartData = response.data.pieChartData;
@@ -659,71 +659,55 @@ class MarketData extends Component {
           },
         })
 
-        // Trade Volume
-        let sellVolumeData = [];
-        let compareSellVolumeData = [];
-        const marketDataLength = marketData.length;
-        let thisWeekSellVolumeAverage = 0;
-        let lastWeekSellVolumeAverage = 0;
-        let sellVolumeBigNum = 0;
-        for (let i = 0; i < marketDataLength; i++) {
-          if (i >= marketDataLength - 7) {
-            sellVolumeBigNum += marketData[i].volume;
-            sellVolumeData.push({ date: marketData[i].date, volume: marketData[i].volume });
-            thisWeekSellVolumeAverage += marketData[i].volume;
-          }
-          if (i >= marketDataLength - 14 && i < marketDataLength - 7) {
-            compareSellVolumeData.push({ date: marketData[i].date, volume: marketData[i].volume });
-            lastWeekSellVolumeAverage += marketData[i].volume;
-          }
-        }
-        thisWeekSellVolumeAverage = thisWeekSellVolumeAverage / 7;
-        lastWeekSellVolumeAverage = lastWeekSellVolumeAverage / 7;
-        let sellVolumePercentage = ((thisWeekSellVolumeAverage - lastWeekSellVolumeAverage) / lastWeekSellVolumeAverage * 100).toFixed(2);
-        this.setState({
-          sellVolumeBigNum: sellVolumeBigNum,
-          sellVolumePercentage: sellVolumePercentage,
-          sellVolumeSeries: [
-            {
-              name: 'Trade Volume',
-              data: sellVolumeData.map(item => item.volume),
-            },
-          ],
-          sellVolumeOptions: {
-            ...this.state.sellVolumeOptions,
-            xaxis: {
-              categories: sellVolumeData.map(item => {
-                let date = new Date(Number(item.date));
-                let dd = date.getDate();
-                let mm = date.getMonth() + 1;
-                let yy = date.getFullYear();
-                return `${dd}/${mm}/${yy}`;
-              }),
-              labels: {
-                show: false,
-              },
-              lines: {
-                show: false,
-              },
-              axisBorder: {
-                show: false,
-              },
-              axisTicks: {
-                show: false,
-              }
-            },
-            stroke: {
-              curve: 'smooth',
-              width: 2,
-            },
-            tooltip: {
-              enabled: true,
-              x: {
-                show: false,
-              }
-            },
-          },
-        })
+// Trade Volume Refactor
+const getAverageVolume = (data) => data.reduce((sum, item) => sum + item.volume, 0) / data.length;
+
+// Extract last 7 and 14 days data
+const last14DaysData = tradeVolume.slice(-14);
+const last7DaysData = tradeVolume.slice(-7);
+
+// Calculate volumes and averages
+const thisWeekSellVolumeAverage = getAverageVolume(last7DaysData);
+const lastWeekSellVolumeAverage = getAverageVolume(last14DaysData.slice(0, 7));
+const sellVolumePercentage = ((thisWeekSellVolumeAverage - lastWeekSellVolumeAverage) / lastWeekSellVolumeAverage * 100).toFixed(2);
+const sellVolumeBigNum = last7DaysData.reduce((sum, item) => sum + item.volume, 0);
+
+// Prepare data for series and x-axis
+const sellVolumeData = last7DaysData.map(item => ({ date: item.date, volume: item.volume }));
+const formattedCategories = sellVolumeData.map(item => {
+    const date = new Date(item.date);
+    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+});
+
+this.setState({
+    sellVolumeBigNum,
+    sellVolumePercentage,
+    sellVolumeSeries: [
+        {
+            name: 'Trade Volume',
+            data: sellVolumeData.map(item => item.volume),
+        },
+    ],
+    sellVolumeOptions: {
+        ...this.state.sellVolumeOptions,
+        xaxis: {
+            categories: formattedCategories,
+            labels: { show: false },
+            lines: { show: false },
+            axisBorder: { show: false },
+            axisTicks: { show: false }
+        },
+        stroke: {
+            curve: 'smooth',
+            width: 2,
+        },
+        tooltip: {
+            enabled: true,
+            x: { show: false }
+        },
+    },
+});
+
 
         // Profit
         let profitBigNum = profitData[profitData.length - 1].price;
@@ -836,7 +820,7 @@ class MarketData extends Component {
       return index >= subsystemCosts.length - days;
     });
     const costData = newCostData.map((item) => {
-      return (item.average_price / 1000000).toFixed(2);
+      return (item.totalCost / 1000000).toFixed(2);
     });
 
     this.setState({

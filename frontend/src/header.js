@@ -37,15 +37,15 @@ class Header extends React.Component {
                 <div className="container d-flex justify-content-between">
                     <a className="navbar-brand" href="/">Eve Subsystem Analysis <small className="text-muted">(2.0)</small></a>
                     <div className="d-flex align-items-center">
-                        {/* <a variant="dark" className="me-2 btn btn-dark" href = "/build/">
+                        <a variant="dark" className="me-2 btn btn-dark" href = "/build/">
                             <FontAwesomeIcon icon={faHammer} />
-                        </a> */}
+                        </a>
                         <Button variant="dark" className="me-2" onClick={this.props.toggleTheme}>
                             <FontAwesomeIcon icon={faSun} onClick = {this.props.toggleTheme}/>
                         </Button>
-                        {/* <Button variant="dark" className="me-2">
+                        <Button variant="dark" className="me-2">
                             <FontAwesomeIcon icon={faGear} />
-                        </Button> */}
+                        </Button>
                         <FreeSolo />
                         {/* <form className="d-flex" role="search">
                             <div className="search-container position-relative">

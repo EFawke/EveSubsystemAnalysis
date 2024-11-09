@@ -90,7 +90,7 @@ const azbel = {
     timeReduction: .2,
 };
 const raitaru = {
-    materialRecution: .01,
+    materialReduction: .01,
     iskReduction: .03,
     timeReduction: .15,
 };
@@ -843,6 +843,235 @@ const core = {
     ]
 }
 
+const intactArmorNanobots = {
+    typeId: 30614,
+    typeName: "Intact Armor Nanobots",
+    baseProbability: .26,
+    baseRuns: 20,
+    datacoreOne: 11496,
+    datacoreTwo: 20171,
+    //skills and levels
+    sleeperEncryptionMethods: 4,
+    skillOne: 4,
+    skillTwo: 4,
+};
+
+const intactPowerCores = {
+    typeId: 30582,
+    typeName: "Intact Power Cores",
+    baseProbability: .26,
+    baseRuns: 20,
+    datacoreOne: 20115,
+    datacoreTwo: 20414,
+    //skills and levels
+    sleeperEncryptionMethods: 4,
+    skillOne: 4,
+    skillTwo: 4,
+};
+
+const intactWeaponSubroutines = {
+    typeId: 30628,
+    typeName: "Intact Weapon Subroutines",
+    baseProbability: .26,
+    baseRuns: 20,
+    datacoreOne: 20412,
+    datacoreTwo: 20425,
+
+    //skills and levels
+    sleeperEncryptionMethods: 4,
+    skillOne: 4,
+    skillTwo: 4,
+};
+
+const intactThrusterSections = {
+    typeId: 30187,
+    typeName: "Intact Thruster Sections",
+    baseProbability: .26,
+    baseRuns: 20,
+    datacoreOne: 20114,
+    datacoreTwo: 20420,
+    //skills and levels
+    sleeperEncryptionMethods: 5,
+    skillOne: 5,
+    skillTwo: 5,
+};
+
+const malfunctioningArmorNanobots = {
+    typeId: 30615,
+    typeName: "Malfunctioning Armor Nanobots",
+    baseProbability: .21,
+    baseRuns: 10,
+    datacoreOne: 11496,
+    datacoreTwo: 20171,
+    //skills and levels
+    sleeperEncryptionMethods: 4,
+    skillOne: 4,
+    skillTwo: 4,
+};
+
+const malfunctioningPowerCores = {
+    typeId: 30586,
+    typeName: "Malfunctioning Power Cores",
+    baseProbability: .21,
+    baseRuns: 10,
+    datacoreOne: 20115,
+    datacoreTwo: 20414,
+    //skills and levels
+    sleeperEncryptionMethods: 4,
+    skillOne: 4,
+    skillTwo: 4,
+};
+
+const malfunctioningWeaponSubroutines = {
+    typeId: 30632,
+    typeName: "Malfunctioning Weapon Subroutines",
+    baseProbability: .21,
+    baseRuns: 10,
+    datacoreOne: 20412,
+    datacoreTwo: 20425,
+    //skills and levels
+    sleeperEncryptionMethods: 4,
+    skillOne: 4,
+    skillTwo: 4,
+};
+
+const malfunctioningThrusterSections = {
+    typeId: 30586,
+    typeName: "Malfunctioning Power Cores",
+    baseProbability: .21,
+    baseRuns: 10,
+    datacoreOne: 20115,
+    datacoreTwo: 20414,
+    //skills and levels
+    sleeperEncryptionMethods: 4,
+    skillOne: 4,
+    skillTwo: 4,
+};
+
+const wreckedArmorNanobots = {
+    typeId: 30618,
+    typeName: "Wrecked Armor Nanobots",
+    baseProbability: .14,
+    baseRuns: 3,
+    datacoreOne: 11496,
+    datacoreTwo: 20171,
+    //skills and levels
+    sleeperEncryptionMethods: 4,
+    skillOne: 4,
+    skillTwo: 4,
+};
+
+const wreckedPowerCores = {
+    typeId: 30588,
+    typeName: "Wrecked Power Cores",
+    baseProbability: .14,
+    baseRuns: 3,
+    datacoreOne: 20115,
+    datacoreTwo: 20414,
+    //skills and levels
+    sleeperEncryptionMethods: 4,
+    skillOne: 4,
+    skillTwo: 4,
+};
+
+const wreckedWeaponSubroutines = {
+    typeId: 30633,
+    typeName: "Wrecked Weapon Subroutines",
+    baseProbability: .14,
+    baseRuns: 3,
+    datacoreOne: 20412,
+    datacoreTwo: 20425,
+    //skills and levels
+    sleeperEncryptionMethods: 4,
+    skillOne: 4,
+    skillTwo: 4,
+};
+
+const wreckedThrusterSections = {
+    typeId: 30588,
+    typeName: "Wrecked Power Cores",
+    baseProbability: .14,
+    baseRuns: 3,
+    datacoreOne: 20115,
+    datacoreTwo: 20414,
+    //skills and levels
+    sleeperEncryptionMethods: 4,
+    skillOne: 4,
+    skillTwo: 4,
+};
+
+const accelerantDecryptor = {
+    typeName: "Accelerant Decryptor",
+    typeId: 34201,
+    probabilityModifier: 1.2,
+    inventionMEModifier: 2,
+    inventionTEModifier: 10,
+    inventionMaxRunModifier: 1
+}
+
+const attaintmentDecryptor = {
+    typeName: "Attainment Decryptor",
+    typeId: 34202,
+    probabilityModifier: 1.8,
+    inventionMEModifier: -1,
+    inventionTEModifier: 4,
+    inventionMaxRunModifier: 4
+}
+
+const augmentationDecryptor = {
+    typeName: "Augmentation Decryptor",
+    typeId: 34202,
+    probabilityModifier: 0.6,
+    inventionMEModifier: -2,
+    inventionTEModifier: 2,
+    inventionMaxRunModifier: 9
+}
+
+const parityDecryptor = {
+    typeName: "Parity Decryptor",
+    typeId: 34204,
+    probabilityModifier: 1.5,
+    inventionMEModifier: 1,
+    inventionTEModifier: -2,
+    inventionMaxRunModifier: 3
+}
+
+const processDecryptor = {
+    typeName: "Process Decryptor",
+    typeId: 34205,
+    probabilityModifier: 1.1,
+    inventionMEModifier: 3,
+    inventionTEModifier: 6,
+    inventionMaxRunModifier: 0
+}
+
+const symmetryDecryptor = {
+    typeName: "Symmetry Decryptor",
+    typeId: 34206,
+    probabilityModifier: 1,
+    inventionMEModifier: 1,
+    inventionTEModifier: 8,
+    inventionMaxRunModifier: 2
+}
+
+const optimizedAttainmentDecryptor = {
+    typeName: "Optimized Attainment Decryptor",
+    typeId: 34207,
+    probabilityModifier: 1.9,
+    inventionMEModifier: 1,
+    inventionTEModifier: -2,
+    inventionMaxRunModifier: 2
+}
+
+const optimizedAugmentationDecryptor = {
+    typeName: "Attainment Decryptor",
+    typeId: 34208,
+    probabilityModifier: 0.9,
+    inventionMEModifier: 2,
+    inventionTEModifier: 0,
+    inventionMaxRunModifier: 7
+}
+
 // Item IDs
 const itemIds = [
     //salvage
@@ -922,6 +1151,26 @@ module.exports = {
     mediumManufacturingTimeRigII, 
     largeManufacturingRigI, 
     largeManufacturingRigII,
+    intactArmorNanobots,
+    intactPowerCores,
+    intactWeaponSubroutines,
+    intactThrusterSections,
+    malfunctioningArmorNanobots,
+    malfunctioningPowerCores,
+    malfunctioningWeaponSubroutines,
+    malfunctioningThrusterSections,
+    wreckedArmorNanobots,
+    wreckedPowerCores,
+    wreckedWeaponSubroutines,
+    wreckedThrusterSections,
+    accelerantDecryptor,
+    attaintmentDecryptor,
+    augmentationDecryptor,
+    parityDecryptor,
+    processDecryptor,
+    symmetryDecryptor,
+    optimizedAttainmentDecryptor,
+    optimizedAugmentationDecryptor,
     getRequirements,
     getPricePerUnit,
     calculateSpecComponentRequirements,

@@ -284,7 +284,7 @@ const materialsNamesAndIds = [
         id: 20114
     },
     {
-        name: "Datacore - Offensive Subsystems Engineering ",
+        name: "Datacore - Offensive Subsystems Engineering",
         id: 20425
     },
     {
@@ -296,7 +296,7 @@ const materialsNamesAndIds = [
         id: 20414
     },
     {
-        name: "Datacore - Core Subsystems Engineering ",
+        name: "Datacore - Core Subsystems Engineering",
         id: 20115
     }
 ];

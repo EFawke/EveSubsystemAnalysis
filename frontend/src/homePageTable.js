@@ -40,15 +40,14 @@ class HomePageTable extends React.Component {
 
         if (data) {
             rows = data.map((item) => {
+                console.log(item);
                 return {
-                    // id: Number(item.item_id),
-                    id: item.item_id,
-                    name: namesAndIds.find(obj => obj.id === item.item_id)?.name || '',
-                    buy: item.jitadata.maxBuy,
-                    sell: item.jitadata.minSell,
-                    volRatio: (item.jitadata.sellVolume / item.jitadata.buyVolume).toFixed(2),
-                    tradeVolume: item.jitadata.tradeVolume,
-                    losses: item.jitadata.losses,
+                    type_id: item.type_id,
+                    name: item.type_name,
+                    buy: item.buy,
+                    sell: item.sell,
+                    volRatio: item.volRatio,
+                    losses: item.losses,
                 }
             })
         }
@@ -57,7 +56,6 @@ class HomePageTable extends React.Component {
 
         return (
             <div>
-                {/* <h2>Recommended Subsystems</h2> */}
                 <table className={darkMode ? "table table-hover table-dark" : "table table-hover"}>
                     <thead>
                         <tr>
@@ -66,15 +64,14 @@ class HomePageTable extends React.Component {
                             <th>Buy</th>
                             <th>Sell</th>
                             <th>Sell / Buy</th>
-                            <th>Trade Volume</th>
                             <th>Losses</th>
                         </tr>
                     </thead>
                     <tbody>
                         {rows.map((row) => (
                             <tr key={row.id}>
-                                <td><img src={`https://images.evetech.net/types/${row.id}/icon?size=32`} alt="Item" /></td>
-                                <td><a href={`/subsystem/${row.id}`}>{row.name}</a></td><td>{row.buy}</td><td>{row.sell}</td><td>{row.volRatio}</td><td>{row.tradeVolume}</td><td>{row.losses}</td>
+                                <td><img src={`https://images.evetech.net/types/${row.type_id}/icon?size=32`} alt="Item" /></td>
+                                <td><a href={`/subsystem/${row.type_id}`}>{row.name}</a></td><td>{row.buy}</td><td>{row.sell}</td><td>{row.volRatio}</td><td>{row.losses}</td>
                             </tr>
                         ))}
                     </tbody>

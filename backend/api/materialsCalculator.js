@@ -127,9 +127,7 @@ function scheduleReactions(reactions, slots) {
             reactionName: "",
         });
     }
-
     const totalRuns = reactions.reduce((acc, cur) => acc + cur.runs, 0);
-    // console.log("Total runs: " + totalRuns);
     let newHighest = Math.ceil(totalRuns / slots);
     for (let i = 0; i < schedule.length; i++) {
         reactions.forEach((reaction) => {
@@ -146,44 +144,22 @@ function scheduleReactions(reactions, slots) {
                 }
                 reaction.runs = 0;
             }
-
             // console.log(newHighest);
             if (reaction.runs / newHighest < 3 && reaction.runs > 0 && schedule[i].numRuns === 0) {
                 schedule[i].numRuns = newHighest;
                 schedule[i].reactionName = reaction.name;
                 reaction.runs = reaction.runs - newHighest;
             }
-
-            // if(i > schedule.length / 2){
-            //     let updatedRuns = reactions.reduce((acc, cur) => acc + cur.runs, 0);
-            //     console.log("updated runs: " + updatedRuns);
-            //     newHighest = Math.ceil(updatedRuns / slots - i);
-            // }
-
             if (reaction.runs > 0 && schedule[i].numRuns === 0) {
                 schedule[i].numRuns = newHighest;
                 schedule[i].reactionName = reaction.name;
                 reaction.runs = reaction.runs - newHighest;
             }
-
         })
-
-        // reactions.find((reaction) => {
-        //     if(reaction.runs <= Math.ceil(totalRuns / slots) && reaction.runs > 0){
-        //         schedule[i].numRuns = reaction.runs;
-        //         schedule[i].reactionName = reaction.name;
-        //         reaction.runs = 0;
-        //     }
-        // })
     }
-
-    // console.log("schedule runs: " + schedule.reduce((acc, cur) => acc + cur.numRuns, 0));
     return schedule;
 }
-
 const schedule = scheduleReactions(reactionsQuantities, slots);
-// console.log(schedule);
-
+console.log(schedule);
 gasRequirements.sort((a, b) => a.type_id - b.type_id);
-
-// console.log(gasRequirements);
+console.log(gasRequirements);

@@ -8,10 +8,6 @@
     font-weight: 400;
 }
 
-.navbar-brand {
-    font-weight: 500;
-}
-
 #footer_row {
     margin-bottom: 0;
 }
@@ -111,10 +107,23 @@ body {
     margin-bottom: 0;
 }
 
+#settings_panel {
+    height: 100vh;
+    overflow: scroll;
+}
+
 #subsystem-analysis-title {
     margin: 1.25rem 0rem;
     font-weight: 600;
     text-align: center;
+    font-size: 1.6rem;
+    text-decoration: underline;
+}
+
+#build-title {
+    margin: 1.25rem 0rem;
+    font-weight: 600;
+    /* text-align: center; */
     font-size: 1.6rem;
     text-decoration: underline;
 }
@@ -187,7 +196,8 @@ body {
 }
 
 .navbar-brand {
-    font-size: 1.5rem;
+    font-size: 1.3rem;
+    font-weight: 500;
 }
 
 div.bg-dark > div > div > div > p > span.text-success {
