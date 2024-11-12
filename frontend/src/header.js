@@ -43,9 +43,9 @@ class Header extends React.Component {
                         <Button variant="dark" className="me-2" onClick={this.props.toggleTheme}>
                             <FontAwesomeIcon icon={faSun} onClick = {this.props.toggleTheme}/>
                         </Button>
-                        <Button variant="dark" className="me-2">
+                        {/* <Button variant="dark" className="me-2">
                             <FontAwesomeIcon icon={faGear} />
-                        </Button>
+                        </Button> */}
                         <FreeSolo />
                         {/* <form className="d-flex" role="search">
                             <div className="search-container position-relative">

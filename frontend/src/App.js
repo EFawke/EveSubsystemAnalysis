@@ -119,7 +119,7 @@ class App extends React.Component {
                                     <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white subsystem_title"}>
                                         <div className="col-12">
                                             <div className="page-title-box">
-                                                <h1 id="home-page-title" className={!darkMode ? "row page-title" : "row bg-dark text-white page-title"}>Recommended Subsystems</h1>
+                                                <h1 id="home-page-title" className={!darkMode ? "row page-title" : "row bg-dark text-white page-title"}>Dashboard</h1>
                                             </div>
                                         </div>
                                     </div>

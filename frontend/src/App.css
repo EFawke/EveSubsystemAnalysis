@@ -113,29 +113,29 @@ body {
 }
 
 #subsystem-analysis-title {
-    margin: 1.25rem 0rem;
+    margin: 2.25rem 0rem;
     font-weight: 600;
-    text-align: center;
-    font-size: 1.6rem;
-    text-decoration: underline;
+    /* text-align: center; */
+    font-size: 1.4rem;
+    /* text-decoration: underline; */
 }
 
 #build-title {
-    margin: 1.25rem 0rem;
+    margin: 2.25rem 0rem;
     font-weight: 600;
     /* text-align: center; */
-    font-size: 1.6rem;
-    text-decoration: underline;
+    font-size: 1.4rem;
+    /* text-decoration: underline; */
 }
 
 #home-page-title {
-    margin: 1.25rem 0rem;
+    margin: 2.25rem 0rem;
     font-weight: 600;
-    text-align: center;
-    font-size: 1.6rem;
-    text-decoration: underline;
+    /* text-align: center; */
+    font-size: 1.4rem;
+    /* text-decoration: underline; */
     display: flex;
-    justify-content: center;
+    /* justify-content: center; */
 }
 
 .d-flex>h4.header-title {
@@ -233,3 +233,66 @@ h4.header-title {
     align-items: center;
     min-height: 386px;
 }
+
+/* Mobile adjustments */
+@media (max-width: 768px) {
+    /* Navbar adjustments */
+    .navbar .container {
+      flex-direction: column;
+      align-items: start;
+    }
+    .navbar .navbar-brand {
+      font-size: 1.2em;
+    }
+    .navbar .d-flex {
+      width: 100%;
+      justify-content: space-between;
+    }
+  
+    /* Search bar adjustments */
+    .MuiAutocomplete-root {
+      width: 100%;
+      margin-top: 10px;
+    }
+  
+    /* Title adjustments */
+    .subsystem_title h1 {
+      font-size: 1.5em;
+      text-align: center;
+    }
+  
+    /* Table adjustments */
+    .table {
+      font-size: 0.85em;
+    }
+    .table thead th {
+      font-size: 0.9em;
+    }
+    .table tbody tr td {
+      padding: 8px;
+      font-size: 0.85em;
+    }
+  
+    /* Table column visibility for small screens */
+    .table th:nth-child(5),
+    .table td:nth-child(5),
+    .table th:nth-child(6),
+    .table td:nth-child(6) {
+      display: none;
+    }
+  
+    /* Footer adjustments */
+    footer .container {
+      text-align: center;
+    }
+    footer .text-muted {
+      font-size: 0.85em;
+    }
+  
+    /* Adjust button size */
+    .btn {
+      padding: 0.5em;
+      font-size: 0.9em;
+    }
+  }
+  

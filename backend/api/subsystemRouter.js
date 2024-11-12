@@ -155,8 +155,10 @@ const getSubsystemTradeVolume = async (subsystemID) => {
 
 // Helper function to retrieve all subsystems data
 const getSubsystemsData = async () => {
+    const dateInMiliseconds = Date.now() - (14 * 24 * 60 * 60 * 1000);
+
     return await client.query(`
-        SELECT * FROM subsystems;
+        SELECT * FROM subsystems WHERE killtime >= ${dateInMiliseconds};
     `);
 };
 
@@ -235,6 +237,7 @@ marketRouter.get('/:subsystemID', async (req, res) => {
         ]);
 
         // console.log(tradeVolume);
+        console.log(subsystemsResponse);
 
 
         // Process data

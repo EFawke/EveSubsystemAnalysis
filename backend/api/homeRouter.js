@@ -39,8 +39,7 @@ homeRouter.get('/', async (req, res) => {
             FROM subsystems
             WHERE killtime >= $1
             GROUP BY type_id, type_name
-            ORDER BY loss_count DESC
-            LIMIT 10;
+            ORDER BY loss_count DESC;
         `, [oneWeekAgo]);
 
         const topSubsystems = topLostSubsystems.rows;
@@ -101,6 +100,8 @@ homeRouter.get('/', async (req, res) => {
                 buy: priceData.rows[0].maxbuy,
                 sell: priceData.rows[0].minsell,
                 volRatio: Number(priceData.rows[0].sellvolume / priceData.rows[0].buyvolume).toFixed(2),
+                buyVolume : priceData.rows[0].buyvolume,
+                sellVolume : priceData.rows[0].sellvolume,
                 losses: subsystem.loss_count,
                 price_data: priceData.rows,
                 medianMaxBuyDeltaPercentage: `${medianMaxBuyDeltaPercentage}%`,

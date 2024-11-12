@@ -24,16 +24,17 @@ class MarketData extends Component {
           type: 'line',
           height: 350,
           toolbar: {
-            show: false,
+        show: false,
           },
           background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
         },
         xaxis: {
           categories: [],
+          tickAmount: undefined, // Default tick amount
         },
         yaxis: [{
           title: {
-            text: 'Price in Millions',
+        text: 'Price in Millions',
           },
         }],
         tooltip: {
@@ -46,10 +47,22 @@ class MarketData extends Component {
       },
       series: [
         {
-          name: 'Market Data',
+          name: 'Sell Price',
           data: [],
         },
       ],
+      responsive: [{
+        breakpoint: 900,
+        options: {
+          chart: {
+        height: 250,
+        width: 250,
+          },
+          xaxis: {
+        tickAmount: 3, // Reduce the number of ticks for smaller screens
+          }
+        }
+      }],
 
       // Pie Chart
       pieOptions: {
@@ -94,7 +107,8 @@ class MarketData extends Component {
           breakpoint: 900,
           options: {
             chart: {
-              height: 300,
+              height: 250,
+              width: 250,
             }
           }
         }]
@@ -467,7 +481,7 @@ class MarketData extends Component {
         },
         series: [
           {
-            name: 'Market Data',
+            name: 'Sell Price',
             data: [],
           },
         ],
@@ -772,7 +786,7 @@ this.setState({
           },
           series: [
             {
-              name: 'Market Data',
+              name: 'Sell Price',
               data: data,
             },
             {
@@ -836,7 +850,7 @@ this.setState({
       },
       series: [
         {
-          name: 'Market Data',
+          name: 'Sell Price',
           data: data,
         },
         {

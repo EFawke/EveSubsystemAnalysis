@@ -47,6 +47,8 @@ class HomePageTable extends React.Component {
                     buy: item.buy,
                     sell: item.sell,
                     volRatio: item.volRatio,
+                    sellVolume: item.sellVolume,
+                    buyVolume: item.buyVolume,
                     losses: item.losses,
                 }
             })
@@ -63,7 +65,8 @@ class HomePageTable extends React.Component {
                             <th>Name</th>
                             <th>Buy</th>
                             <th>Sell</th>
-                            <th>Sell / Buy</th>
+                            <th>Buy Volume</th>
+                            <th>Sell Volume</th>
                             <th>Losses</th>
                         </tr>
                     </thead>
@@ -71,7 +74,7 @@ class HomePageTable extends React.Component {
                         {rows.map((row) => (
                             <tr key={row.id}>
                                 <td><img src={`https://images.evetech.net/types/${row.type_id}/icon?size=32`} alt="Item" /></td>
-                                <td><a href={`/subsystem/${row.type_id}`}>{row.name}</a></td><td>{row.buy}</td><td>{row.sell}</td><td>{row.volRatio}</td><td>{row.losses}</td>
+                                <td><a href={`/subsystem/${row.type_id}`}>{row.name}</a></td><td>{row.buy}</td><td>{row.sell}</td><td>{row.buyVolume}</td><td>{row.sellVolume}</td><td>{row.losses}</td>
                             </tr>
                         ))}
                     </tbody>

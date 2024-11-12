@@ -181,7 +181,7 @@ class Build extends React.Component {
                     <div className={` ${!darkMode ? "" : "bg-dark text-white"}`}>
                         <div>
                             <div className="row">
-                                <div className="col-md-3">
+                                <div className="col-md-4">
                                     <div className={`card ${!darkMode ? "" : "bg-dark text-white"}`}>
                                         <div className="card-body" id="settings_panel">
                                             <h5>Structures</h5>
@@ -390,7 +390,7 @@ class Build extends React.Component {
                                         </div>
                                     </div>
                                 </div>
-                                <div className="col-md-9">
+                                <div className="col-md-8">
                                     {/* {this.renderSummaryFigures()} */}
 
                                     <div className={`card ${!darkMode ? "" : "bg-dark text-white"}`}>
