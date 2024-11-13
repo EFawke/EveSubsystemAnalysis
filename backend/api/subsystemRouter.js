@@ -146,6 +146,7 @@ const getSubsystemTradeVolume = async (subsystemID) => {
                 volume: entry.volume
             });
         });
+        returnArray.reverse();
         return returnArray;
     } catch (error) {
         console.error(error);
@@ -235,10 +236,6 @@ marketRouter.get('/:subsystemID', async (req, res) => {
             getSubsystemsData(),
             getSubsystemTradeVolume(subsystemID)
         ]);
-
-        // console.log(tradeVolume);
-        console.log(subsystemsResponse);
-
 
         // Process data
         const recentLossData = retrieveLossWeekData(subsystemsResponse.rows, subsystemID);

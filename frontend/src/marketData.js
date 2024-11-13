@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import Chart from 'react-apexcharts';
-// import Skeleton from 'react-loading-skeleton';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import Button from 'react-bootstrap/Button';
