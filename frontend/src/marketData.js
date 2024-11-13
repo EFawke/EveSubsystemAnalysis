@@ -24,18 +24,18 @@ class MarketData extends Component {
           type: 'line',
           height: 350,
           toolbar: {
-        show: false,
+            show: false,
           },
           background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
         },
         xaxis: {
           categories: [],
-          tickAmount: undefined, // Default tick amount
+          tickAmount: 5,
         },
         yaxis: [{
           title: {
-        text: 'Price in Millions',
-          },
+            text: 'Price in Millions'
+          }
         }],
         tooltip: {
           shared: true,
@@ -43,7 +43,15 @@ class MarketData extends Component {
         },
         theme: {
           mode: this.props.darkMode ? 'dark' : 'light',
-        }
+        },
+        responsive:[{
+          breakpoint: 1000,
+          options: {
+            xaxis: {
+              tickAmount: 2,
+            }
+          }
+        }]
       },
       series: [
         {
@@ -51,19 +59,6 @@ class MarketData extends Component {
           data: [],
         },
       ],
-      responsive: [{
-        breakpoint: 900,
-        options: {
-          chart: {
-        height: 250,
-        width: 250,
-          },
-          xaxis: {
-        tickAmount: 3, // Reduce the number of ticks for smaller screens
-          }
-        }
-      }],
-
       // Pie Chart
       pieOptions: {
         theme: {
@@ -359,10 +354,10 @@ class MarketData extends Component {
 
   componentDidMount() {
     this.fetchMarketData();
-  } 
+  }
 
   componentDidUpdate(prevProps) {
-    if(this.props.darkMode !== prevProps.darkMode) {
+    if (this.props.darkMode !== prevProps.darkMode) {
       const darkMode = this.props.darkMode;
       this.setState({
         darkMode: this.props.darkMode,
@@ -390,7 +385,15 @@ class MarketData extends Component {
           },
           theme: {
             mode: this.props.darkMode ? 'dark' : 'light',
-          }
+          },
+          responsive: [{
+            breakpoint: 1000,
+            options: {
+              xaxis: {
+                tickAmount: 2,
+              }
+            }
+          }]
         },
         recentLossesOptions: {
           chart: {
@@ -477,7 +480,15 @@ class MarketData extends Component {
           },
           theme: {
             mode: this.state.darkMode ? 'dark' : 'light',
-          }
+          },
+          responsive:[{
+            breakpoint: 1000,
+            options: {
+              xaxis: {
+                tickAmount: 2,
+              }
+            }
+          }]
         },
         series: [
           {
@@ -517,7 +528,7 @@ class MarketData extends Component {
         const data = marketData.map((item) => {
           return (item.average_price / 1000000).toFixed(2);
         }); // Assuming each data point has a 'value' field
-        
+
         // QUICK FIX BUT NEEDS LOOKING INTO LATER
         const mktDataLength = marketData.length;
         //if subsystemCosts.length is greater than mktdatalength, then remove the last few elements of subsystemCosts
@@ -673,55 +684,54 @@ class MarketData extends Component {
           },
         })
 
-// Trade Volume Refactor
-const getAverageVolume = (data) => data.reduce((sum, item) => sum + item.volume, 0) / data.length;
+        // Trade Volume Refactor
+        const getAverageVolume = (data) => data.reduce((sum, item) => sum + item.volume, 0) / data.length;
 
-// Extract last 7 and 14 days data
-const last14DaysData = tradeVolume.slice(-14);
-const last7DaysData = tradeVolume.slice(-7);
+        // Extract last 7 and 14 days data
+        const last14DaysData = tradeVolume.slice(-14);
+        const last7DaysData = tradeVolume.slice(-7);
 
-// Calculate volumes and averages
-const thisWeekSellVolumeAverage = getAverageVolume(last7DaysData);
-const lastWeekSellVolumeAverage = getAverageVolume(last14DaysData.slice(0, 7));
-const sellVolumePercentage = ((thisWeekSellVolumeAverage - lastWeekSellVolumeAverage) / lastWeekSellVolumeAverage * 100).toFixed(2);
-const sellVolumeBigNum = last7DaysData.reduce((sum, item) => sum + item.volume, 0);
+        // Calculate volumes and averages
+        const thisWeekSellVolumeAverage = getAverageVolume(last7DaysData);
+        const lastWeekSellVolumeAverage = getAverageVolume(last14DaysData.slice(0, 7));
+        const sellVolumePercentage = ((thisWeekSellVolumeAverage - lastWeekSellVolumeAverage) / lastWeekSellVolumeAverage * 100).toFixed(2);
+        const sellVolumeBigNum = last7DaysData.reduce((sum, item) => sum + item.volume, 0);
 
-// Prepare data for series and x-axis
-const sellVolumeData = last7DaysData.map(item => ({ date: item.date, volume: item.volume }));
-const formattedCategories = sellVolumeData.map(item => {
-    const date = new Date(item.date);
-    return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-});
+        // Prepare data for series and x-axis
+        const sellVolumeData = last7DaysData.map(item => ({ date: item.date, volume: item.volume }));
+        const formattedCategories = sellVolumeData.map(item => {
+          const date = new Date(item.date);
+          return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
+        });
 
-this.setState({
-    sellVolumeBigNum,
-    sellVolumePercentage,
-    sellVolumeSeries: [
-        {
-            name: 'Trade Volume',
-            data: sellVolumeData.map(item => item.volume),
-        },
-    ],
-    sellVolumeOptions: {
-        ...this.state.sellVolumeOptions,
-        xaxis: {
-            categories: formattedCategories,
-            labels: { show: false },
-            lines: { show: false },
-            axisBorder: { show: false },
-            axisTicks: { show: false }
-        },
-        stroke: {
-            curve: 'smooth',
-            width: 2,
-        },
-        tooltip: {
-            enabled: true,
-            x: { show: false }
-        },
-    },
-});
-
+        this.setState({
+          sellVolumeBigNum,
+          sellVolumePercentage,
+          sellVolumeSeries: [
+            {
+              name: 'Trade Volume',
+              data: sellVolumeData.map(item => item.volume),
+            },
+          ],
+          sellVolumeOptions: {
+            ...this.state.sellVolumeOptions,
+            xaxis: {
+              categories: formattedCategories,
+              labels: { show: false },
+              lines: { show: false },
+              axisBorder: { show: false },
+              axisTicks: { show: false }
+            },
+            stroke: {
+              curve: 'smooth',
+              width: 2,
+            },
+            tooltip: {
+              enabled: true,
+              x: { show: false }
+            },
+          },
+        });
 
         // Profit
         let profitBigNum = profitData[profitData.length - 1].price;
@@ -794,6 +804,14 @@ this.setState({
               data: costData,
             },
           ],
+          responsive: [{
+            breakpoint: 1000,
+            options: {
+              xaxis: {
+                tickAmount: 1,
+              }
+            }
+          }]
         });
 
         this.setState({
@@ -864,17 +882,18 @@ this.setState({
   render() {
     const { darkMode, pieOptions, pieSeries, loading, options, series, recentLossesOptions, recentLossesSeries, recentLossesBigNum, recentLossesPercentage, jitaSellBigNum, jitaSellPercentage, jitaSellOptions, jitaSellSeries, sellVolumeBigNum, sellVolumePercentage, sellVolumeOptions, sellVolumeSeries, profitBigNum, profitPercentage, profitOptions, profitSeries } = this.state;
     const darkModeClass = "bg-dark text-white";
+    console.log(options);
     return (
       <div>
-        <div className= {darkMode ? "row " + darkModeClass : "row"} id="micro_cards">
+        <div className={darkMode ? "row " + darkModeClass : "row"} id="micro_cards">
           <MicroCard darkMode={darkMode} cardTitle={"Sell"} options={jitaSellOptions} series={jitaSellSeries} loading={loading} bigNum={jitaSellBigNum} percentage={jitaSellPercentage} />
           <MicroCard darkMode={darkMode} cardTitle={"Losses"} options={recentLossesOptions} series={recentLossesSeries} loading={loading} bigNum={recentLossesBigNum} percentage={recentLossesPercentage} />
           <MicroCard darkMode={darkMode} cardTitle={"Trade Volume"} options={sellVolumeOptions} series={sellVolumeSeries} loading={loading} bigNum={sellVolumeBigNum} percentage={sellVolumePercentage} />
           <MicroCard darkMode={darkMode} cardTitle={"Profit"} options={profitOptions} series={profitSeries} loading={loading} bigNum={profitBigNum} percentage={profitPercentage} />
         </div>
-        <div className= {darkMode ? "row " + darkModeClass : "row"}>
+        <div className={darkMode ? "row " + darkModeClass : "row"}>
           <div className="col-lg-5">
-            <div className= {darkMode ? "card " + darkModeClass : "card"}>
+            <div className={darkMode ? "card " + darkModeClass : "card"}>
               <div className="card-header d-flex justify-content-between align-items-center">
                 <h4 className="header-title">Losses</h4>
                 <div className="dropdown">
@@ -890,26 +909,26 @@ this.setState({
                 </div>
               </div>
               <div className="card-body pt-0"
-              id = "pieChart"
-               >
+                id="pieChart"
+              >
                 {loading ? (
                   <SkeletonTheme borderRadius={'50%'} baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
                     <Skeleton count={1}
-                     height={376} 
-                     width={376}
-                     />
+                      height={376}
+                      width={376}
+                    />
                   </SkeletonTheme>
                 ) : (
-                  <Chart options={pieOptions} series={pieSeries} type="donut" 
-                  height={386} 
-                  width={386}
+                  <Chart options={pieOptions} series={pieSeries} type="donut"
+                    height={386}
+                    width={386}
                   />
                 )}
               </div>
             </div>
           </div>
           <div className="col-lg-7">
-            <div className= {darkMode ? "card " + darkModeClass : "card"}>
+            <div className={darkMode ? "card " + darkModeClass : "card"}>
               <div className="card-header d-flex justify-content-between align-items-center">
                 <h4 className="header-title">Market</h4>
                 <div>
@@ -927,7 +946,7 @@ this.setState({
               <div className="card-body pt-0">
                 {loading ? (
                   <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
-                  <Skeleton count={7} height={350 / 7} />
+                    <Skeleton count={7} height={350 / 7} />
                   </SkeletonTheme>
                 ) : (
                   <Chart

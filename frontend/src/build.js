@@ -187,7 +187,7 @@ class Build extends React.Component {
                                             <h5>Structures</h5>
                                             <div className="mb-3">
                                                 <label htmlFor="refineryDropdown" className="form-label">Refinery</label>
-                                                <select id="refineryDropdown" className="form-select" name="refinery" value={refinery} onChange={this.handleInputChange}>
+                                                <select id="refineryDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="refinery" value={refinery} onChange={this.handleInputChange}>
                                                     <option value="Tatara">Tatara</option>
                                                     <option value="Athanor">Athanor</option>
                                                 </select>
@@ -195,7 +195,7 @@ class Build extends React.Component {
                                             {refinery === "Tatara" && (
                                                 <div className="mb-3">
                                                     <label htmlFor="tataraRigDropdown" className="form-label">Rig</label>
-                                                    <select id="tataraRigDropdown" className="form-select" name="tataraRig" value={tataraRig} onChange={this.handleInputChange}>
+                                                    <select id="tataraRigDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="tataraRig" value={tataraRig} onChange={this.handleInputChange}>
                                                         <option value="None">None</option>
                                                         <option value="T1">T1</option>
                                                         <option value="T2">T2</option>
@@ -206,7 +206,7 @@ class Build extends React.Component {
                                                 <>
                                                     <div className="mb-3">
                                                         <label htmlFor="teRigDropdown" className="form-label">T.E. Rig</label>
-                                                        <select id="teRigDropdown" className="form-select" name="teRig" value={teRig} onChange={this.handleInputChange}>
+                                                        <select id="teRigDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="teRig" value={teRig} onChange={this.handleInputChange}>
                                                             <option value="None">None</option>
                                                             <option value="T1">T1</option>
                                                             <option value="T2">T2</option>
@@ -214,7 +214,7 @@ class Build extends React.Component {
                                                     </div>
                                                     <div className="mb-3">
                                                         <label htmlFor="meRigDropdown" className="form-label">M.E. Rig</label>
-                                                        <select id="meRigDropdown" className="form-select" name="meRig" value={meRig} onChange={this.handleInputChange}>
+                                                        <select id="meRigDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="meRig" value={meRig} onChange={this.handleInputChange}>
                                                             <option value="None">None</option>
                                                             <option value="T1">T1</option>
                                                             <option value="T2">T2</option>
@@ -222,13 +222,9 @@ class Build extends React.Component {
                                                     </div>
                                                 </>
                                             )}
-                                            {/* <div className="mb-3">
-                                                <label htmlFor="systemInput" className="form-label">System</label>
-                                                <input type="text" className="form-control" id="systemInput" name="system" value={system} onChange={this.handleInputChange} />
-                                            </div> */}
                                             <div className="mb-3">
                                                 <label htmlFor="systemDropdown" className="form-label">System Type</label>
-                                                <select id="systemDropdown" className="form-select" name="system" value={system} onChange={this.handleInputChange}>
+                                                <select id="systemDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="system" value={system} onChange={this.handleInputChange}>
                                                     <option value="lowsec">lowsec</option>
                                                     <option value="nullsec">nullsec</option>
                                                     <option value="wormhole">wormhole</option>
@@ -236,16 +232,16 @@ class Build extends React.Component {
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="reactionCostIndexInput" className="form-label">Reaction System Cost Index</label>
-                                                <input type="number" className="form-control" id="reactionCostIndexInput" name="reactionCostIndex" value={reactionCostIndex} onChange={this.handleInputChange} />
+                                                <input type="number" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-control"} id="reactionCostIndexInput" name="reactionCostIndex" value={reactionCostIndex} onChange={this.handleInputChange} />
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="reactionFacilityTaxInput" className="form-label">Facility Tax</label>
-                                                <input type="number" className="form-control" id="reactionFacilityTaxInput" name="reactionFacilityTax" min={0} value={reactionFacilityTax} onChange={this.handleInputChange} />
+                                                <input type="number" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-control"} id="reactionFacilityTaxInput" name="reactionFacilityTax" min={0} value={reactionFacilityTax} onChange={this.handleInputChange} />
                                             </div>
                                             <Divider className="my-4" />
                                             <div className="mb-3">
                                                 <label htmlFor="complexDropdown" className="form-label">Manufacturing Complex</label>
-                                                <select id="complexDropdown" className="form-select" name="complex" value={complex} onChange={this.handleInputChange}>
+                                                <select id="complexDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="complex" value={complex} onChange={this.handleInputChange}>
                                                     <option value="Azbel">Azbel</option>
                                                     <option value="Raitaru">Raitaru</option>
                                                 </select>
@@ -253,7 +249,7 @@ class Build extends React.Component {
                                             {complex === "Azbel" && (
                                                 <div className="mb-3">
                                                     <label htmlFor="complexLargeRigDropdown" className="form-label">Rig</label>
-                                                    <select id="complexLargeRigDropdown" className="form-select" name="complexLargeRig" value={complexLargeRig} onChange={this.handleInputChange}>
+                                                    <select id="complexLargeRigDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="complexLargeRig" value={complexLargeRig} onChange={this.handleInputChange}>
                                                         <option value="None">None</option>
                                                         <option value="T1">T1</option>
                                                         <option value="T2">T2</option>
@@ -264,7 +260,7 @@ class Build extends React.Component {
                                                 <>
                                                     <div className="mb-3">
                                                         <label htmlFor="complexTeRigDropdown" className="form-label">T.E. Rig</label>
-                                                        <select id="complexTeRigDropdown" className="form-select" name="complexTeRig" value={complexTeRig} onChange={this.handleInputChange}>
+                                                        <select id="complexTeRigDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="complexTeRig" value={complexTeRig} onChange={this.handleInputChange}>
                                                             <option value="None">None</option>
                                                             <option value="T1">T1</option>
                                                             <option value="T2">T2</option>
@@ -272,7 +268,7 @@ class Build extends React.Component {
                                                     </div>
                                                     <div className="mb-3">
                                                         <label htmlFor="complexMeRigDropdown" className="form-label">M.E. Rig</label>
-                                                        <select id="complexMeRigDropdown" className="form-select" name="complexMeRig" value={complexMeRig} onChange={this.handleInputChange}>
+                                                        <select id="complexMeRigDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="complexMeRig" value={complexMeRig} onChange={this.handleInputChange}>
                                                             <option value="None">None</option>
                                                             <option value="T1">T1</option>
                                                             <option value="T2">T2</option>
@@ -280,13 +276,9 @@ class Build extends React.Component {
                                                     </div>
                                                 </>
                                             )}
-                                            {/* <div className="mb-3">
-                                                <label htmlFor="complexSystemInput" className="form-label">System</label>
-                                                <input type="text" className="form-control" id="complexSystemInput" name="complexSystem" value={complexSystem} onChange={this.handleInputChange} />
-                                            </div> */}
                                             <div className="mb-3">
                                                 <label htmlFor="complexSystemDropdown" className="form-label">System Type</label>
-                                                <select id="complexSystemDropdown" className="form-select" name="complexSystem" value={complexSystem} onChange={this.handleInputChange}>
+                                                <select id="complexSystemDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="complexSystem" value={complexSystem} onChange={this.handleInputChange}>
                                                     <option value="highsec">highsec</option>
                                                     <option value="lowsec">lowsec</option>
                                                     <option value="nullsec">nullsec</option>
@@ -295,11 +287,11 @@ class Build extends React.Component {
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="buildCostIndexInput" className="form-label">Manufacturing System Cost Index</label>
-                                                <input type="number" className="form-control" id="buildCostIndexInput" name="buildCostIndex" value={buildCostIndex} onChange={this.handleInputChange} />
+                                                <input type="number" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-control"} id="buildCostIndexInput" name="buildCostIndex" value={buildCostIndex} onChange={this.handleInputChange} />
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="complexFacilityTaxInput" className="form-label">Facility Tax</label>
-                                                <input type="number" className="form-control" id="complexFacilityTaxInput" name="complexFacilityTax" value={complexFacilityTax} onChange={this.handleInputChange} />
+                                                <input type="number" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-control"} id="complexFacilityTaxInput" name="complexFacilityTax" value={complexFacilityTax} onChange={this.handleInputChange} />
                                             </div>
                                             <Divider className="my-4" />
                                             <h5>Blueprints</h5>
@@ -317,7 +309,7 @@ class Build extends React.Component {
                                             <h5>Invention</h5>
                                             <div className="mb-3">
                                                 <label htmlFor="ancientRelicDropdown" className="form-label">Ancient Relic</label>
-                                                <select id="ancientRelicDropdown" className="form-select" name="ancientRelic" value={ancientRelic} onChange={this.handleInputChange}>
+                                                <select id="ancientRelicDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="ancientRelic" value={ancientRelic} onChange={this.handleInputChange}>
                                                     <option value="Intact">Intact</option>
                                                     <option value="Malfunctioning">Malfunctioning</option>
                                                     <option value="Wrecked">Wrecked</option>
@@ -325,7 +317,7 @@ class Build extends React.Component {
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="decryptorDropdown" className="form-label">Decryptor</label>
-                                                <select id="decryptorDropdown" className="form-select" name="decryptor" value={decryptor} onChange={this.handleInputChange}>
+                                                <select id="decryptorDropdown" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-select"} name="decryptor" value={decryptor} onChange={this.handleInputChange}>
                                                     <option value="None">None</option>
                                                     <option value="Accelerant Decryptor">Accelerant Decryptor</option>
                                                     <option value="Attainment Decryptor">Attainment Decryptor</option>
@@ -338,40 +330,28 @@ class Build extends React.Component {
                                                 </select>
                                             </div>
                                             <Divider className="my-4" />
-                                            {/* <h5>Process</h5>
-                                            <div className="form-check mb-3">
-                                                <input className="form-check-input" type="checkbox" id="buildingComponents" name="buildingComponents" checked={buildingComponents} onChange={this.handleCheckboxChange} />
-                                                <label className="form-check-label" htmlFor="buildingComponents">Building Components</label>
-                                            </div>
-                                            <div className="form-check mb-3">
-                                                <input className="form-check-input" type="checkbox" id="runningReactions" name="runningReactions" checked={runningReactions} onChange={this.handleCheckboxChange} />
-                                                <label className="form-check-label" htmlFor="runningReactions">Running Reactions</label>
-                                            </div> */}
-                                            {/* </div>
-
-                                    <div className="col-md-4"> */}
                                             <h5>Build Volume</h5>
                                             <div className="mb-3">
                                                 <label htmlFor="coreVolumeInput" className="form-label">Core</label>
-                                                <input type="number" className="form-control" id="coreVolumeInput" name="coreVolume" value={coreVolume} onChange={this.handleInputChange} />
+                                                <input type="number" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-control"} id="coreVolumeInput" name="coreVolume" value={coreVolume} onChange={this.handleInputChange} />
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="defensiveVolumeInput" className="form-label">Defensive</label>
-                                                <input type="number" className="form-control" id="defensiveVolumeInput" name="defensiveVolume" value={defensiveVolume} onChange={this.handleInputChange} />
+                                                <input type="number" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-control"} id="defensiveVolumeInput" name="defensiveVolume" value={defensiveVolume} onChange={this.handleInputChange} />
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="offensiveVolumeInput" className="form-label">Offensive</label>
-                                                <input type="number" className="form-control" id="offensiveVolumeInput" name="offensiveVolume" value={offensiveVolume} onChange={this.handleInputChange} />
+                                                <input type="number" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-control"} id="offensiveVolumeInput" name="offensiveVolume" value={offensiveVolume} onChange={this.handleInputChange} />
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="propulsionVolumeInput" className="form-label">Propulsion</label>
-                                                <input type="number" className="form-control" id="propulsionVolumeInput" name="propulsionVolume" value={propulsionVolume} onChange={this.handleInputChange} />
+                                                <input type="number" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-control"} id="propulsionVolumeInput" name="propulsionVolume" value={propulsionVolume} onChange={this.handleInputChange} />
                                             </div>
                                             <Divider className="my-4" />
                                             <h5>Character</h5>
                                             <div className="mb-3">
                                                 <label htmlFor="numSlots" className="form-label">Reaction Slots</label>
-                                                <input type="number" className="form-control" id="numSlots" name="numSlots" value={numSlots} onChange={this.handleInputChange} min="1" />
+                                                <input type="number" className={darkMode ? "form-control bg-dark text-light border-secondary" : "form-control"} id="numSlots" name="numSlots" value={numSlots} onChange={this.handleInputChange} min="1" />
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="skillLevel" className="form-label">Skill Level</label>
@@ -380,7 +360,7 @@ class Build extends React.Component {
                                             </div>
                                             <div className="mb-3">
                                                 <label htmlFor="implant" className="form-label">Implant</label>
-                                                <select id="implant" className="form-select" name="implant" value={implant} onChange={this.handleInputChange}>
+                                                <select id="implant" className={darkMode ? "form-select bg-dark text-light border-secondary" : "form-select"} name="implant" value={implant} onChange={this.handleInputChange}>
                                                     <option value="None">None</option>
                                                     <option value="1%">1%</option>
                                                     <option value="2%">2%</option>
