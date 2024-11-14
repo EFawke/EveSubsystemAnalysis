@@ -25,7 +25,7 @@ export default function FreeSolo() {
         renderInput={(params) => (
           <TextField 
             {...params} 
-            label="Search..." 
+            label="Find subsystems..." 
             sx={{ 
               '& .MuiInputBase-root': {
                 padding: '0',

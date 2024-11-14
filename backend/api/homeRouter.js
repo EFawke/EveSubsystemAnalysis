@@ -39,7 +39,8 @@ homeRouter.get('/', async (req, res) => {
             FROM subsystems
             WHERE killtime >= $1
             GROUP BY type_id, type_name
-            ORDER BY loss_count DESC;
+            ORDER BY loss_count DESC
+            LIMIT 10;
         `, [oneWeekAgo]);
 
         const topSubsystems = topLostSubsystems.rows;

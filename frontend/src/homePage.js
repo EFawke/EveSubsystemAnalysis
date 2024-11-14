@@ -57,18 +57,22 @@ export default class HomePage extends React.Component {
             <div>
                 <div className={darkMode ? "row " + darkModeClass : "row"}>
                     <div className="col-lg-12">
+                    {/* <div className={`card ${!darkMode ? "" : "bg-dark text-white"}`}> */}
+                    {/* <div className="card-body"> */}
                         {loading ? (
                             <div className = "d-flex justify-content-center">
                             <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
                                 <Skeleton count={10}
                                     height={50}
-                                    width={width * 0.8}
+                                    width={width < 768 ? 300 : 800}
                                 />
                             </SkeletonTheme>
                             </div>
                         ) : (
                             <HomePageTable data={data} darkMode={darkMode} table={"Losses"} />
                         )}
+                        {/* </div>
+                        </div> */}
                     </div>
                 </div>
             </div>

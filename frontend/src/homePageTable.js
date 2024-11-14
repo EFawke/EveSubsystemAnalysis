@@ -9,6 +9,7 @@ class HomePageTable extends React.Component {
             isLoaded: false,
             table: null,
             darkMode: false,
+            sortConfig: { key: null, direction: 'ascending' },
         };
     }
 
@@ -33,6 +34,29 @@ class HomePageTable extends React.Component {
         }
     }
 
+    handleSort = (key) => {
+        let direction = 'ascending';
+        if (this.state.sortConfig.key === key && this.state.sortConfig.direction === 'ascending') {
+            direction = 'descending';
+        }
+        this.setState({ sortConfig: { key, direction } });
+    }
+
+    sortData = (data) => {
+        const { key, direction } = this.state.sortConfig;
+        if (!key) return data;
+
+        return [...data].sort((a, b) => {
+            if (a[key] < b[key]) {
+                return direction === 'ascending' ? -1 : 1;
+            }
+            if (a[key] > b[key]) {
+                return direction === 'ascending' ? 1 : -1;
+            }
+            return 0;
+        });
+    }
+
     render() {
         const { data, isLoaded, table, darkMode } = this.state
 
@@ -40,21 +64,20 @@ class HomePageTable extends React.Component {
 
         if (data) {
             rows = data.map((item) => {
-                console.log(item);
                 return {
                     type_id: item.type_id,
                     name: item.type_name,
-                    buy: item.buy,
-                    sell: item.sell,
-                    volRatio: item.volRatio,
-                    sellVolume: item.sellVolume,
-                    buyVolume: item.buyVolume,
-                    losses: item.losses,
+                    buy: Number(item.buy),
+                    sell: Number(item.sell),
+                    volRatio: Number(item.volRatio),
+                    sellVolume: Number(item.sellVolume),
+                    buyVolume: Number(item.buyVolume),
+                    losses: Number(item.losses),
                 }
             })
         }
 
-        // const paginationModel = { page: 0, pageSize: 5 };
+        rows = this.sortData(rows);
 
         return (
             <div>
@@ -62,19 +85,24 @@ class HomePageTable extends React.Component {
                     <thead>
                         <tr>
                             <th>Item</th>
-                            <th>Name</th>
-                            <th>Buy</th>
-                            <th>Sell</th>
-                            <th>Buy Volume</th>
-                            <th>Sell Volume</th>
-                            <th>Losses</th>
+                            <th onClick={() => this.handleSort('name')}>Name</th>
+                            <th onClick={() => this.handleSort('buy')}>Buy</th>
+                            <th onClick={() => this.handleSort('sell')}>Sell</th>
+                            <th onClick={() => this.handleSort('buyVolume')}>Buy Volume</th>
+                            <th onClick={() => this.handleSort('sellVolume')}>Sell Volume</th>
+                            <th onClick={() => this.handleSort('losses')}>Losses</th>
                         </tr>
                     </thead>
                     <tbody>
                         {rows.map((row) => (
-                            <tr key={row.id}>
+                            <tr key={row.type_id}>
                                 <td><img src={`https://images.evetech.net/types/${row.type_id}/icon?size=32`} alt="Item" /></td>
-                                <td><a href={`/subsystem/${row.type_id}`}>{row.name}</a></td><td>{row.buy}</td><td>{row.sell}</td><td>{row.buyVolume}</td><td>{row.sellVolume}</td><td>{row.losses}</td>
+                                <td><a href={`/subsystem/${row.type_id}`}>{row.name}</a></td>
+                                <td>{Number(row.buy).toLocaleString()}</td>
+                                <td>{Number(row.sell).toLocaleString()}</td>
+                                <td>{Number(row.buyVolume).toLocaleString()}</td>
+                                <td>{Number(row.sellVolume).toLocaleString()}</td>
+                                <td>{Number(row.losses).toLocaleString()}</td>
                             </tr>
                         ))}
                     </tbody>

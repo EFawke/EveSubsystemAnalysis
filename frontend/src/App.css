@@ -33,10 +33,10 @@ button:focus,
 button:active,
 button.focus,
 button.active {
-  outline: none !important;
-  box-shadow: none !important;
-  background-color: #212529 !important;
-  border: none !important;
+    outline: none !important;
+    box-shadow: none !important;
+    /* background-color: #212529 !important; */
+    border: none !important;
 }
 
 .MuiTablePagination-root {
@@ -67,7 +67,15 @@ button.active {
     display: none;
 }
 
-.card {
+.accordion-button {
+    color: black !important;
+}
+
+.accordion-button.bg-dark {
+    color: white !important;
+}
+
+.card, .accordion {
     margin-bottom: 1.5rem;
     box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 }
@@ -76,8 +84,28 @@ button.active {
     box-shadow: 0px 2px 1px -1px rgba(0, 0, 0, 0.2), 0px 1px 1px 0px rgba(0, 0, 0, 0.14), 0px 1px 3px 0px rgba(0, 0, 0, 0.12);
 }
 
-.card.bg-dark {
+.card.bg-dark, .accordion-button.bg-dark {
     background: rgb(55, 64, 74) !important;
+}
+
+.accordion.bg-dark {
+    border: none;
+}
+
+#settings_accordion {
+    margin-bottom: 1.5rem;
+}
+
+.accordion-button:not(.collapsed) {
+    background-color: unset;
+    background: unset;
+}
+
+.accordion {
+    border-top-left-radius: var(--bs-accordion-border-radius);
+    border-top-right-radius: var(--bs-accordion-border-radius);
+    border-bottom-left-radius: var(--bs-accordion-border-radius);
+    border-bottom-right-radius: var(--bs-accordion-border-radius);
 }
 
 .home-heading {
@@ -116,7 +144,7 @@ body {
     margin: 2.25rem 0rem;
     font-weight: 600;
     /* text-align: center; */
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     /* text-decoration: underline; */
 }
 
@@ -124,7 +152,7 @@ body {
     margin: 2.25rem 0rem;
     font-weight: 600;
     /* text-align: center; */
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     /* text-decoration: underline; */
 }
 
@@ -132,7 +160,7 @@ body {
     margin: 2.25rem 0rem;
     font-weight: 600;
     /* text-align: center; */
-    font-size: 1.4rem;
+    font-size: 1.3rem;
     /* text-decoration: underline; */
     display: flex;
     /* justify-content: center; */
@@ -160,6 +188,7 @@ body {
     margin: 0;
     width: 100%;
 }
+
 /* 
 #search-box {
     background: "white";
@@ -200,12 +229,12 @@ body {
     font-weight: 500;
 }
 
-div.bg-dark > div > div > div > p > span.text-success {
+div.bg-dark>div>div>div>p>span.text-success {
     color: #12c471 !important;
     font-weight: 500;
 }
 
-div.bg-dark > div > div > div > h5.text-muted {
+div.bg-dark>div>div>div>h5.text-muted {
     color: #a0abb4 !important;
 }
 
@@ -213,7 +242,7 @@ div.bg-dark > div > div > div > h5.text-muted {
     color: #889197 !important;
 }
 
-div.bg-dark > div > h4.header-title {
+div.bg-dark>div>h4.header-title {
     color: #a0abb4 !important;
 }
 
@@ -236,63 +265,83 @@ h4.header-title {
 
 /* Mobile adjustments */
 @media (max-width: 768px) {
+
     /* Navbar adjustments */
     .navbar .container {
-      flex-direction: column;
-      align-items: start;
+        flex-direction: column;
+        align-items: start;
     }
+
     .navbar .navbar-brand {
-      font-size: 1.2em;
+        font-size: 1.2em;
     }
+
     .navbar .d-flex {
-      width: 100%;
-      justify-content: space-between;
+        width: 100%;
+        justify-content: space-between;
     }
-  
+
     /* Search bar adjustments */
     .MuiAutocomplete-root {
-      width: 100%;
-      margin-top: 10px;
+        width: 100%;
+        margin-top: 10px;
     }
-  
+
     /* Title adjustments */
     .subsystem_title h1 {
-      font-size: 1.5em;
-      text-align: center;
+        font-size: 1.5em;
+        text-align: center;
     }
-  
+
     /* Table adjustments */
     .table {
-      font-size: 0.85em;
+        font-size: 0.85em;
     }
+
     .table thead th {
-      font-size: 0.9em;
+        font-size: 0.9em;
     }
+
     .table tbody tr td {
-      padding: 8px;
-      font-size: 0.85em;
+        padding: 8px;
+        font-size: 0.85em;
     }
-  
+
     /* Table column visibility for small screens */
     .table th:nth-child(5),
     .table td:nth-child(5),
     .table th:nth-child(6),
     .table td:nth-child(6) {
-      display: none;
+        display: none;
     }
-  
+
     /* Footer adjustments */
     footer .container {
-      text-align: center;
+        text-align: center;
     }
+
     footer .text-muted {
-      font-size: 0.85em;
+        font-size: 0.85em;
     }
-  
+
     /* Adjust button size */
     .btn {
-      padding: 0.5em;
-      font-size: 0.9em;
+        padding: 0.5em;
+        font-size: 0.9em;
     }
-  }
-  
+}
+
+.content-page {
+    transform: scale(0.9);
+    transform-origin: top center;
+}
+
+#header_main {
+    transform: scale(0.9);
+    transform-origin: top center;
+}
+
+#footer_main {
+    transform: scale(0.9);
+    transform-origin: bottom center;
+}

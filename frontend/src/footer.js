@@ -3,7 +3,7 @@ import React from 'react';
 const Footer = () => {
     return (
         <footer className="bg-dark text-white mt-5">
-            <div className="container py-4">
+            <div id = "footer_main" className="container py-4">
                 <div className="row" id = "footer_row">
                     <div className="col-md-6">
                         <p className="text-muted">All EVE related materials are property of <a href="https://www.ccpgames.com/">CCP Games</a></p>
