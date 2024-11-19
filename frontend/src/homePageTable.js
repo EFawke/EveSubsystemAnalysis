@@ -67,7 +67,6 @@ class HomePageTable extends React.Component {
 
     setButtonVariant = (hub, button) => {
         if (hub.tradeHub == button || hub == button) {
-            console.log("true")
             return "primary";
         } else {
             return "dark";
