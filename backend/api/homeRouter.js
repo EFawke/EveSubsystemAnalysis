@@ -60,7 +60,7 @@ homeRouter.post('/', async (req, res) => {
                 FROM price_data
                 WHERE type_id = $1
                 AND region = '${tradeHub}'
-                AND date >= $2
+                AND date <= $2
                 ORDER BY date DESC;
             `, [type_id, thirtyDaysAgo]);
 

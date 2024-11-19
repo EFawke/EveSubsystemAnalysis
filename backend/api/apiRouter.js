@@ -1,7 +1,6 @@
 const express = require('express');
 const apiRouter = express.Router();
 
-// require('./MaterialCalculator/getMaterialRequirements.js');
 require('./updater.js');
 require('./zkillUpdater.js');
 
