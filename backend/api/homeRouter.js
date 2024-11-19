@@ -1,5 +1,6 @@
 const express = require('express');
 const homeRouter = express.Router();
+const axios = require('axios');
 const { Client } = require('pg');
 
 let client;
@@ -20,6 +21,8 @@ if (!process.env.DATABASE_URL) {
 }
 client.connect();
 
+homeRouter.use(express.json());
+
 // Helper function to calculate the median of an array
 const calculateMedian = (arr) => {
     const sorted = arr.slice().sort((a, b) => a - b);
@@ -29,7 +32,8 @@ const calculateMedian = (arr) => {
         : (sorted[mid - 1] + sorted[mid]) / 2;
 };
 
-homeRouter.get('/', async (req, res) => {
+homeRouter.post('/', async (req, res) => {
+    const tradeHub = req.body.tradeHub;
     try {
         const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000); // One week ago in milliseconds
 
@@ -51,62 +55,47 @@ homeRouter.get('/', async (req, res) => {
         for (const subsystem of topSubsystems) {
             const { type_id, type_name } = subsystem;
 
-            const priceData = await client.query(`
+            const historicalPriceData = await client.query(`
                 SELECT *
                 FROM price_data
                 WHERE type_id = $1
-                AND region = '10000002'
+                AND region = '${tradeHub}'
                 AND date >= $2
                 ORDER BY date DESC;
             `, [type_id, thirtyDaysAgo]);
 
-            if (priceData.rows.length === 0) continue;
+            const histData = historicalPriceData.rows;
 
-            // Calculate daily percentage changes for maxBuy, minSell, and sellBuyRatio
-            const maxBuyPercentageChanges = [];
-            const minSellPercentageChanges = [];
-            const sellBuyRatioPercentageChanges = [];
+            const medianSell = calculateMedian(histData.map(row => row.minsell));
+            const medianBuy = calculateMedian(histData.map(row => row.maxbuy));
+            const medianSellVolume = calculateMedian(histData.map(row => row.sellvolume));
+            const medianBuyVolume = calculateMedian(histData.map(row => row.buyvolume));
 
-            for (let i = 1; i < priceData.rows.length; i++) {
-                const prev = priceData.rows[i - 1];
-                const curr = priceData.rows[i];
+            const response = await axios.get(`https://evetycoon.com/api/v1/market/stats/${tradeHub}/${type_id}`);
+            const priceData = response.data;
 
-                // Calculate percentage change for maxBuy
-                const maxBuyChange = ((curr.maxbuy - prev.maxbuy) / prev.maxbuy) * 100;
-                maxBuyPercentageChanges.push(Math.abs(maxBuyChange));
+            const minSellPercentageChange = ((priceData.minSell - medianSell) / medianSell) * 100;
+            const minBuyPercentageChange = ((priceData.maxBuy - medianBuy) / medianBuy) * 100;
+            const minSellVolumePercentageChange = ((priceData.sellVolume - medianSellVolume) / medianSellVolume) * 100;
+            const minBuyVolumePercentageChange = ((priceData.buyVolume - medianBuyVolume) / medianBuyVolume) * 100;
+            // if (priceData.rows.length === 0) continue;
 
-                // Calculate percentage change for minSell
-                const minSellChange = ((curr.minsell - prev.minsell) / prev.minsell) * 100;
-                minSellPercentageChanges.push(Math.abs(minSellChange));
-
-                // Calculate percentage change for sellBuyRatio
-                const currRatio = curr.sellvolume && curr.buyvolume
-                    ? curr.sellvolume / curr.buyvolume
-                    : 0;
-                const prevRatio = prev.sellvolume && prev.buyvolume
-                    ? prev.sellvolume / prev.buyvolume
-                    : 0;
-                const ratioChange = ((currRatio - prevRatio) / (prevRatio || 1)) * 100;
-                sellBuyRatioPercentageChanges.push(Math.abs(ratioChange));
-            }
-
-            // Calculate the median of absolute percentage changes for each metric
-            const medianMaxBuyDeltaPercentage = calculateMedian(maxBuyPercentageChanges).toFixed(2);
-            const medianMinSellDeltaPercentage = calculateMedian(minSellPercentageChanges).toFixed(2);
-            const medianSellBuyRatioDeltaPercentage = calculateMedian(sellBuyRatioPercentageChanges).toFixed(2);
+            if(!priceData) continue;
 
             priceDataResults.push({
                 type_id,
                 type_name,
-                buy: priceData.rows[0].maxbuy,
-                sell: priceData.rows[0].minsell,
-                volRatio: Number(priceData.rows[0].sellvolume / priceData.rows[0].buyvolume).toFixed(2),
-                buyVolume : priceData.rows[0].buyvolume,
-                sellVolume : priceData.rows[0].sellvolume,
+                buy: priceData.maxBuy,
+                sell: priceData.minSell,
+                sellPercentageChange: minSellPercentageChange.toFixed(2),
+                buyPercentageChange: minBuyPercentageChange.toFixed(2),
+                sellVolumePercentageChange: minSellVolumePercentageChange.toFixed(2),
+                buyVolumePercentageChange: minBuyVolumePercentageChange.toFixed(2),
+                volRatio: Number(priceData.sellVolume / priceData.buyVolume).toFixed(2),
+                buyVolume : priceData.buyVolume,
+                sellVolume : priceData.sellVolume,
                 losses: subsystem.loss_count,
-                price_data: priceData.rows,
-                medianMaxBuyDeltaPercentage: `${medianMaxBuyDeltaPercentage}%`,
-                medianMinSellDeltaPercentage: `${medianMinSellDeltaPercentage}%`,
+                price_data: priceData,
             });
         }
 

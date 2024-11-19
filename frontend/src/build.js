@@ -2,6 +2,8 @@ import React from "react";
 import axios from 'axios';
 import Divider from '@mui/material/Divider';
 import Cookies from 'js-cookie';
+import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import 'react-loading-skeleton/dist/skeleton.css';
 
 class Build extends React.Component {
     constructor(props) {
@@ -37,7 +39,9 @@ class Build extends React.Component {
             reactionFacilityTax: 1,
             complexFacilityTax: 1,
             buildResponseData: null,  // new state variable for response data
-        };
+            loading: true,
+        }
+        this.renderMatsTable = this.renderMatsTable.bind(this);
     }
 
     componentDidMount() {
@@ -50,7 +54,6 @@ class Build extends React.Component {
             this.submitBuildData();
         }
     }
-
 
     componentDidUpdate(prevProps, prevState) {
         // Save settings to a cookie whenever the state updates
@@ -77,44 +80,122 @@ class Build extends React.Component {
     }
 
     submitBuildData = () => {
+        this.setState({ loading: true });
         axios.post('/api/build', this.state)
             .then(response => {
-                console.log('Data sent successfully:', response.data);
-                // Store the response data in state
                 this.setState({ buildResponseData: response.data }, () => {
-                    // Save updated state to the cookie
-                    console.log("Setting cookie");
-                    console.log(this.state);
                     const buildSettings = Object.keys(this.state).reduce((acc, key) => {
                         if (typeof this.state[key] !== 'object') {
                             acc[key] = this.state[key];
                         }
                         return acc;
                     }, {});
-
                     Cookies.set('buildSettings', JSON.stringify(buildSettings));
-                    console.log("Cookie value after setting:", Cookies.get('buildSettings'));
                 });
+                this.setState({ loading: false });
             })
             .catch(error => {
                 console.error('Error sending data:', error);
             });
     }
 
+    renderBuildQuantities = () => {
+        const { buildResponseData, darkMode, loading } = this.state;
 
+        console.log(loading);
+
+        const numRuns = buildResponseData?.blueprints.numRuns;
+
+        return (
+            <div className="container my-4">
+                <div className="row text-center g-3">
+                    <div className="col-md-3">
+                        <div className="sub_counter_container">
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <img className="counter_icon" src={`https://images.evetech.net/types/45589/icon?size=32`} alt="Defensive"/>}
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <p className="sub_counter">{numRuns * this.state.defensiveVolume}</p>}
+                        </div>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="sub_counter_container">
+                            {/* <img className="counter_icon" src={`https://images.evetech.net/types/45626/icon?size=32`} alt="Core" /> */}
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <img className="counter_icon" src={`https://images.evetech.net/types/45626/icon?size=32`} alt="Core"/>}
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <p className="sub_counter">{numRuns * this.state.coreVolume}</p>}
+                        </div>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="sub_counter_container">
+                            {/* <img className="counter_icon" src={`https://images.evetech.net/types/45621/icon?size=32`} alt="Propulsion" /> */}
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <img className="counter_icon" src={`https://images.evetech.net/types/45621/icon?size=32`} alt="Propulsion"/>}
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <p className="sub_counter">{numRuns * this.state.propulsionVolume}</p>}
+                        </div>
+                    </div>
+                    <div className="col-md-3">
+                        <div className="sub_counter_container">
+                            {/* <img className="counter_icon" src={`https://images.evetech.net/types/45601/icon?size=32`} alt="Offensive" /> */}
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <img className="counter_icon" src={`https://images.evetech.net/types/45601/icon?size=32`} alt="Offensive"/>}
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <p className="sub_counter">{numRuns * this.state.offensiveVolume}</p>}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        );
+    }
+
+    renderTableLoading = () => {
+        const darkMode = this.state.darkMode;
+        return (
+            [...Array(11)].map((_, index) => (
+                    <tr key={index}>
+                        <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
+                        <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
+                        <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
+                        <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
+                        <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
+                    </tr>
+            ))
+        )
+    }
+
+    renderMatsTable = (filteredMaterials) => {
+        const { buildResponseData, darkMode, loading } = this.state;
+        return (
+            <table className={`mats_table table ${darkMode ? "table-dark" : "table"}`}>
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th>Name</th>
+                        <th>Quantity</th>
+                        <th>Unit Price</th>
+                        <th>Line Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {filteredMaterials?.map((material, index) => (
+                        <tr key={index}>
+                            <td><img src={`https://image.eveonline.com/Type/${material.id}_32.png`} alt="Item" className="img-fluid" /></td>
+                            <td>{material.name}</td>
+                            <td>{Number(material.quantity).toLocaleString()}</td>
+                            <td>{Number(material.unitPrice).toLocaleString()}</td>
+                            <td>{Math.round(material.lineTotal).toLocaleString()}</td>
+                        </tr>
+                    ))}
+                </tbody>
+            </table>
+        )
+    }
 
     renderRequiredMaterialsTable = () => {
-        const { buildResponseData, darkMode } = this.state;
+        const { buildResponseData, darkMode, loading } = this.state;
 
-        if (!buildResponseData || !buildResponseData.requiredMaterialsForAll) return null;
+        // if (!buildResponseData || !buildResponseData.requiredMaterialsForAll) return null;
 
         // Filter out components with quantity 0, name "None," or specified component IDs
-        const filteredMaterials = buildResponseData.requiredMaterialsForAll
+        const filteredMaterials = buildResponseData?.requiredMaterialsForAll
             .filter(material => material.quantity !== 0 && material.name !== "None" && ![30002, 30476, 30464, 30474, 30470, 29992, 29994, 30478, 30008].includes(material.id));
 
         // Set default values for maxBuys and totalTax, handling null or undefined cases
-        const materialBuyCost = buildResponseData.maxBuys != null ? buildResponseData.maxBuys : 0;
-        const industryTaxTotal = buildResponseData.totalTax != null ? buildResponseData.totalTax : 0;
+        const materialBuyCost = buildResponseData?.maxBuys != null ? buildResponseData?.maxBuys : 0;
+        const industryTaxTotal = buildResponseData?.totalTax != null ? buildResponseData?.totalTax : 0;
         const totalBuildCost = materialBuyCost + industryTaxTotal;
 
         return (
@@ -123,22 +204,29 @@ class Build extends React.Component {
                 <div className="container my-4">
                     <div className="row text-center g-3">
                         <div className="col-md-4">
-                            <h5 className="fw-bold">Material Buy Cost</h5>
-                            <p className="fs-5">{materialBuyCost.toLocaleString()} ISK</p>
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <h5 className="fw-bold">Material Buy Cost</h5>}
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <p className="fs-5">{materialBuyCost.toLocaleString()} ISK </p>}
                         </div>
                         <div className="col-md-4">
-                            <h5 className="fw-bold">Industry Tax Total</h5>
-                            <p className="fs-5">{industryTaxTotal.toLocaleString()} ISK</p>
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <h5 className="fw-bold">Industry Tax Total</h5>}
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <p className="fs-5">{industryTaxTotal.toLocaleString()} ISK </p>}
                         </div>
                         <div className="col-md-4">
-                            <h5 className="fw-bold">Total Build Cost</h5>
-                            <p className="fs-5">{totalBuildCost.toLocaleString()} ISK</p>
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <h5 className="fw-bold">Total Build Cost</h5>}
+                            {loading ? <SkeletonTheme height={25} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme> : <p className="fs-5">{totalBuildCost.toLocaleString()} ISK </p>}
                         </div>
                     </div>
                 </div>
 
-                {/* Required Materials Table */}
-                <table className={`table ${darkMode ? "table-dark" : "table"}`}>
+                <Divider />
+
+                {this.renderBuildQuantities()}
+
+                <Divider />
+
+                {loading ? <table>{this.renderTableLoading()}</table> : this.renderMatsTable(filteredMaterials)}
+
+                {/* <table className={`mats_table table ${darkMode ? "table-dark" : "table"}`}>
                     <thead>
                         <tr>
                             <th></th>
@@ -153,24 +241,23 @@ class Build extends React.Component {
                             <tr key={index}>
                                 <td><img src={`https://image.eveonline.com/Type/${material.id}_32.png`} alt="Item" className="img-fluid" /></td>
                                 <td>{material.name}</td>
-                                <td>{material.quantity}</td>
-                                <td>{material.unitPrice} ISK</td>
-                                <td>{Math.round(material.lineTotal)} ISK</td>
+                                <td>{Number(material.quantity).toLocaleString()}</td>
+                                <td>{Number(material.unitPrice).toLocaleString()}</td>
+                                <td>{Math.round(material.lineTotal).toLocaleString()}</td>
                             </tr>
                         ))}
                     </tbody>
-                </table>
+                </table> */}
             </div>
         );
     }
-
 
     render() {
         const { darkMode, refinery, teRig, meRig, system, tataraRig, complex, complexTeRig, complexMeRig, complexSystem, complexLargeRig, componentMaterialEfficiency, componentTimeEfficiency, ancientRelic, decryptor, coreVolume, defensiveVolume, offensiveVolume, propulsionVolume, numSlots, skillLevel, implant, buildingComponents, runningReactions, reactionCostIndex, buildCostIndex, reactionFacilityTax, complexFacilityTax } = this.state;
 
         return (
             <div>
-                <div className={!darkMode ? "row" : "row bg-dark text-white"}>
+                <div className={!darkMode ? "row subsystem_title" : "row bg-dark text-white"}>
                     <div className="col-12">
                         <div className="page-title-box">
                             <h1 id="build-title" className={!darkMode ? "page-title" : "page-title bg-dark text-white"}>Build Tool</h1>
@@ -424,7 +511,9 @@ class Build extends React.Component {
                                         </div>
                                     </div>
                                 </div>
+
                                 <div className="col-md-8">
+
                                     {/* {this.renderSummaryFigures()} */}
 
                                     <div className={`card ${!darkMode ? "" : "bg-dark text-white"}`}>

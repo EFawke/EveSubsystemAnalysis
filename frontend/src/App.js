@@ -26,7 +26,7 @@ class App extends React.Component {
             subsystem: null,
             marketData: null,
             costData: null,
-            darkMode: Cookies.get('darkMode') === 'true' ? true : false,
+            darkMode: Cookies.get('darkMode') === 'false' ? false : true,
         };
         this.source = axios.CancelToken.source();
         this.toggleDarkMode = this.toggleDarkMode.bind(this);
@@ -43,19 +43,19 @@ class App extends React.Component {
             this.setState({ isLoaded: false })
         }
         const location = window.location.pathname
-        if (location === "/") {
-            axios.get(`/api/home`)
-                .then(response => {
-                    // console.log(response.data);
-                    this.setState({ profit: response.data.profit })
-                })
-                .catch(err => {
-                    console.log(err);
-                })
-                .then(() => {
-                    this.setState({ isLoaded: true })
-                })
-        }
+        // if (location === "/") {
+        //     axios.get(`/api/home`)
+        //         .then(response => {
+        //             // console.log(response.data);
+        //             this.setState({ profit: response.data.profit })
+        //         })
+        //         .catch(err => {
+        //             console.log(err);
+        //         })
+        //         .then(() => {
+        //             this.setState({ isLoaded: true })
+        //         })
+        // }
         if (location.includes("/subsystem/")) {
             const itemId = location.split('/')[2];
             const item = namesAndIds.find(x => x.id == itemId);
@@ -74,7 +74,7 @@ class App extends React.Component {
                 mode: 'dark',
             },
         });
-        const { darkMode, profit, jitaRank, amarrRank } = this.state;
+        const { darkMode, profit } = this.state;
         const isValidUrl = (url, array) => {
             const urlParts = url.split('/');
             let id = parseInt(urlParts[urlParts.length - 1], 10);
@@ -107,10 +107,6 @@ class App extends React.Component {
             )
         }
         if (window.location.pathname === "/") {
-            axios.get(`/api/home`)
-                .then((res) => {
-                    console.log(res.data);
-                })
             return (
                 <ThemeProvider theme={darkMode ? darkTheme : ""}>
                     <div className={darkMode ? "wrapper bg-dark text-white" : "wrapper"}>
@@ -125,7 +121,7 @@ class App extends React.Component {
                                             </div>
                                         </div>
                                     </div>
-                                    <HomePage profit={profit} jitaRank={jitaRank} amarrRank={amarrRank} darkMode={darkMode} />
+                                    <HomePage profit={profit} darkMode={darkMode} />
                                 </div>
                             </div>
                         </div>
@@ -171,6 +167,7 @@ class App extends React.Component {
                                         </div>
                                     </div>
                                     <MarketData
+                                        // name={name.name}
                                         id={this.state.id}
                                         darkMode={darkMode}
                                     />

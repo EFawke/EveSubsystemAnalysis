@@ -103,7 +103,7 @@ class MicroCard extends React.Component {
                                                 <Skeleton count={4} height={80 / 4} />
                                             </SkeletonTheme>
                                         ) : (
-                                            <Chart options={options} series={series} type="line" width={150} height={80} />
+                                            <Chart options={options} series={series} type="line" width={140} height={80} />
                                         )}
                                     </div>
                                 </div>

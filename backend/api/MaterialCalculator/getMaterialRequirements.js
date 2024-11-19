@@ -1020,6 +1020,11 @@ const getMaterialRequirements = (settings) => {
     // console.log(uniqueReactions)
 
     function scheduleReactions(reactions, slots) {
+
+        if(slots < reactions.length) {
+            slots = reactions.length;
+        }
+
         // Initialize slots with empty schedule entries
         const schedule = Array.from({ length: slots }, (_, i) => ({
             slot: i,

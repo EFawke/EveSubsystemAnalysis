@@ -6,12 +6,17 @@ import 'react-loading-skeleton/dist/skeleton.css';
 import Button from 'react-bootstrap/Button';
 import MicroCard from './micro_card';
 import { mode } from 'crypto-js';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
+import namesAndIds from './namesAndIds.js';
 
 class MarketData extends Component {
   constructor(props) {
     super(props);
     this.state = {
       loading: true,
+      id: this.props.id,
+      name: namesAndIds.find(x => x.id == this.props.id).name,
 
       darkMode: this.props.darkMode,
 
@@ -25,7 +30,7 @@ class MarketData extends Component {
           toolbar: {
             show: false,
           },
-          background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+          background: this.props.darkMode ? '#1d1d1f' : 'white',
         },
         xaxis: {
           categories: [],
@@ -33,7 +38,7 @@ class MarketData extends Component {
         },
         yaxis: [{
           title: {
-            text: 'Price in Millions'
+            text: 'ISK'
           }
         }],
         tooltip: {
@@ -43,7 +48,7 @@ class MarketData extends Component {
         theme: {
           mode: this.props.darkMode ? 'dark' : 'light',
         },
-        responsive:[{
+        responsive: [{
           breakpoint: 1000,
           options: {
             xaxis: {
@@ -65,7 +70,7 @@ class MarketData extends Component {
         },
         chart: {
           type: 'pie',
-          background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+          background: this.props.darkMode ? '#1d1d1f' : 'white',
         },
         colors: [],
         dataLabels: {
@@ -94,7 +99,7 @@ class MarketData extends Component {
         },
         labels: [],
         stroke: {
-          colors: this.props.darkMode ? ['rgb(55, 64, 74)'] : ['white'],
+          colors: this.props.darkMode ? ['#1d1d1f'] : ['white'],
           width: 2.5,
         },
         responsive: [{
@@ -109,6 +114,8 @@ class MarketData extends Component {
       },
       pieSeries: [],
 
+      lossesData: [],
+
       // Recent Losses (Micro Card)
       recentLossesOptions: {
         grid: {
@@ -116,11 +123,12 @@ class MarketData extends Component {
         },
         chart: {
           type: 'line',
-          height: 104,
+          height: 90,
+          width: "90%",
           toolbar: {
             show: false,
           },
-          background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+          background: this.props.darkMode ? '#1d1d1f' : 'white',
         },
         xaxis: {
           categories: [],
@@ -176,11 +184,12 @@ class MarketData extends Component {
         },
         chart: {
           type: 'line',
-          height: 104,
+          height: 90,
+          width: "90%",
           toolbar: {
             show: false,
           },
-          background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+          background: this.props.darkMode ? '#1d1d1f' : 'white',
         },
         theme: {
           mode: this.props.darkMode ? 'dark' : 'light',
@@ -236,11 +245,12 @@ class MarketData extends Component {
         },
         chart: {
           type: 'line',
-          height: 104,
+          height: 90,
+          width: "90%",
           toolbar: {
             show: false,
           },
-          background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+          background: this.props.darkMode ? '#1d1d1f' : 'white',
         },
         theme: {
           mode: this.props.darkMode ? 'dark' : 'light',
@@ -299,11 +309,12 @@ class MarketData extends Component {
         },
         chart: {
           type: 'line',
-          height: 104,
+          height: 90,
+          width: "90%",
           toolbar: {
             show: false,
           },
-          background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+          background: this.props.darkMode ? '#1d1d1f' : 'white',
         },
         xaxis: {
           categories: [],
@@ -358,6 +369,26 @@ class MarketData extends Component {
   componentDidUpdate(prevProps) {
     if (this.props.darkMode !== prevProps.darkMode) {
       const darkMode = this.props.darkMode;
+
+      //floop
+
+      // const currentSubColor = this.state.darkMode ? "#b6db63" : "#03e496";
+      // const otherSubColor = this.state.darkMode ? "#46ada8" : "#038ffb";
+
+      const currentColors = this.state.pieOptions.colors
+
+      console.log(currentColors)
+
+      const newColors = currentColors.map(color => {
+        if (color == "#b6db63" || color == "#03e496") {
+          return darkMode ? "#b6db63" : "#03e496";
+        } else {
+          return darkMode ? "#46ada8" : "#038ffb";
+        }
+      });
+
+      
+
       this.setState({
         darkMode: this.props.darkMode,
         pieOptions: {
@@ -366,12 +397,13 @@ class MarketData extends Component {
           },
           chart: {
             type: 'pie',
-            background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+            background: this.props.darkMode ? '#1d1d1f' : 'white',
           },
           stroke: {
-            colors: this.props.darkMode ? ['rgb(55, 64, 74)'] : ['white'],
+            colors: this.props.darkMode ? ['#1d1d1f'] : ['white'],
             width: 2.5,
-          }
+          },
+          colors: newColors,
         },
         options: {
           chart: {
@@ -380,7 +412,7 @@ class MarketData extends Component {
             toolbar: {
               show: false,
             },
-            background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+            background: this.props.darkMode ? '#1d1d1f' : 'white',
           },
           theme: {
             mode: this.props.darkMode ? 'dark' : 'light',
@@ -397,11 +429,12 @@ class MarketData extends Component {
         recentLossesOptions: {
           chart: {
             type: 'line',
-            height: 104,
+            height: 90,
+            width: "90%",
             toolbar: {
               show: false,
             },
-            background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+            background: this.props.darkMode ? '#1d1d1f' : 'white',
           },
           theme: {
             mode: this.props.darkMode ? 'dark' : 'light',
@@ -410,11 +443,12 @@ class MarketData extends Component {
         jitaSellOptions: {
           chart: {
             type: 'line',
-            height: 104,
+            height: 90,
+            width: "90%",
             toolbar: {
               show: false,
             },
-            background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+            background: this.props.darkMode ? '#1d1d1f' : 'white',
           },
           theme: {
             mode: this.props.darkMode ? 'dark' : 'light',
@@ -423,11 +457,12 @@ class MarketData extends Component {
         sellVolumeOptions: {
           chart: {
             type: 'line',
-            height: 104,
+            height: 90,
+            width: "90%",
             toolbar: {
               show: false,
             },
-            background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+            background: this.props.darkMode ? '#1d1d1f' : 'white',
           },
           theme: {
             mode: this.props.darkMode ? 'dark' : 'light',
@@ -436,11 +471,12 @@ class MarketData extends Component {
         profitOptions: {
           chart: {
             type: 'line',
-            height: 104,
+            height: 90,
+            width: "90%",
             toolbar: {
               show: false,
             },
-            background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+            background: this.props.darkMode ? '#1d1d1f' : 'white',
           },
           theme: {
             mode: this.props.darkMode ? 'dark' : 'light',
@@ -450,6 +486,7 @@ class MarketData extends Component {
     }
     if (this.props.id !== prevProps.id) {
       this.setState({
+        id: this.props.id,
         loading: true,
         marketData: [],
         options: {
@@ -459,7 +496,7 @@ class MarketData extends Component {
             toolbar: {
               show: false,
             },
-            background: this.props.darkMode ? 'rgb(55, 64, 74)' : 'white',
+            background: this.props.darkMode ? '#1d1d1f' : 'white',
           },
           xaxis: {
             tickAmount: 5,
@@ -470,7 +507,7 @@ class MarketData extends Component {
           },
           yaxis: [{
             title: {
-              text: 'Price in Millions',
+              text: 'ISK',
             },
           }],
           tooltip: {
@@ -480,7 +517,7 @@ class MarketData extends Component {
           theme: {
             mode: this.state.darkMode ? 'dark' : 'light',
           },
-          responsive:[{
+          responsive: [{
             breakpoint: 1000,
             options: {
               xaxis: {
@@ -503,6 +540,19 @@ class MarketData extends Component {
     const { id } = this.props;
     axios.get(`/api/subsystem/${id}`)
       .then(response => {
+        const lossesDataArray = [];
+
+        for(let i = 0; i < Object.values(response.data.pieChartData).length; i++) {
+          lossesDataArray.push({
+            name: Object.values(response.data.pieChartData)[i].name,
+            value: Object.values(response.data.pieChartData)[i].value,
+          });
+        }
+
+        this.setState({
+          lossesData: lossesDataArray
+        });
+
         let jitaSellData = [];
         let profitData = [];
         const marketData = response.data.marketData;
@@ -548,12 +598,15 @@ class MarketData extends Component {
         const colors = [];
         const fillColors = [];
         for (const key in pieChartData) {
-          const currentSub = window.location.pathname.split('/')[2];
-          const currentSubColor = "#e74535";
-          const otherSubColor = "#3ca1fc";
+          const currentSub = this.state.id;
+          // const currentSubColor = "#e74535";
+          const currentSubColor = this.state.darkMode ? "#b6db63" : "#03e496";
+          const otherSubColor = this.state.darkMode ? "#46ada8" : "#038ffb";
+
+          // const otherSubColor = "#3ca1fc";
           if (pieChartData.hasOwnProperty(key)) {
             const value = pieChartData[key].value;
-            if (key === currentSub) {
+            if (Number(key) === currentSub) {
               colors.push(currentSubColor);
               fillColors.push(currentSubColor);
             } else {
@@ -593,7 +646,7 @@ class MarketData extends Component {
           recentLossesOptions: {
             ...this.state.recentLossesOptions,
             chart: {
-              background: this.state.darkMode ? 'rgb(55, 64, 74)' : 'white',
+              background: this.state.darkMode ? '#1d1d1f' : 'white',
               toolbar: {
                 show: false,
               },
@@ -878,10 +931,101 @@ class MarketData extends Component {
     });
   }
 
+  toggleOptionsPieChart = (opt1, opt2, opt3) => {
+    this.setState({
+      showOptionsDialog: !this.state.showOptionsDialog,
+      optionsDialogData: {
+        opt1,
+        opt2,
+        opt3
+      }
+    });
+  }
+
+  filterPieChart = (option) => {
+    const { pieOptions, lossesData, id, name, darkMode } = this.state;
+
+    if(option == "all") {
+      this.setState({
+        pieSeries: lossesData.map(item => item.value),
+        pieOptions: {
+          ...pieOptions,
+          colors: lossesData.map(item => {
+            if(item.name == name ) {
+              if(darkMode) {
+                return "#b6db63";
+              } else {
+                return "#03e496";
+              }
+            } else {
+              if(darkMode) {
+                return "#46ada8";
+              } else {
+                return "#038ffb";
+              }
+            }
+          }),
+          labels: lossesData.map(item => item.name)
+        },
+        showOptionsDialog: false
+      });
+      return;
+    }
+  
+    // Filter the lossesData array based on the option
+    const filteredData = lossesData.filter(item => item.name.includes(option));
+  
+    // Extract the series (numeric values) and labels from the filtered data
+    const filteredSeries = filteredData.map(item => item.value); // Assuming `value` is the numeric property
+    const filteredLabels = filteredData.map(item => item.name);
+
+    const colors = [];
+
+    for(let i = 0; i < filteredLabels.length; i++) {
+      if(filteredLabels[i] == name){
+        if(darkMode) {
+          colors.push("#b6db63");
+        } else {
+          colors.push("#03e496");
+        }
+      } else {
+        if(darkMode) {
+          colors.push("#46ada8");
+        } else {
+          colors.push("#038ffb");
+        }
+      }
+    }
+
+
+  
+    // Update the state
+    this.setState({
+      pieSeries: filteredSeries, // Update with the numeric series
+      pieOptions: {
+        ...pieOptions,
+        colors: colors,
+        labels: filteredLabels // Update the labels
+      },
+      showOptionsDialog: false // Close the options dialog
+    });
+  };
+  
+
   render() {
-    const { darkMode, pieOptions, pieSeries, loading, options, series, recentLossesOptions, recentLossesSeries, recentLossesBigNum, recentLossesPercentage, jitaSellBigNum, jitaSellPercentage, jitaSellOptions, jitaSellSeries, sellVolumeBigNum, sellVolumePercentage, sellVolumeOptions, sellVolumeSeries, profitBigNum, profitPercentage, profitOptions, profitSeries } = this.state;
+    const { id, darkMode, pieOptions, pieSeries, loading, options, series, recentLossesOptions, recentLossesSeries, recentLossesBigNum, recentLossesPercentage, jitaSellBigNum, jitaSellPercentage, jitaSellOptions, jitaSellSeries, sellVolumeBigNum, sellVolumePercentage, sellVolumeOptions, sellVolumeSeries, profitBigNum, profitPercentage, profitOptions, profitSeries } = this.state;
     const darkModeClass = "bg-dark text-white";
-    console.log(options);
+
+    const name = namesAndIds.find(x => x.id == id).name;
+
+    //get the first word in name
+    const firstWord = name.split(' ')[0];
+    const secondWord = name.split(' ')[1];
+    const bothWords = firstWord + " " + secondWord;
+
+
+    //split the 
+
     return (
       <div>
         <div className={darkMode ? "row " + darkModeClass : "row"} id="micro_cards">
@@ -895,17 +1039,23 @@ class MarketData extends Component {
             <div className={darkMode ? "card " + darkModeClass : "card"}>
               <div className="card-header d-flex justify-content-between align-items-center">
                 <h4 className="header-title">Losses</h4>
-                <div className="dropdown">
-                  <a href="#" className="dropdown-toggle arrow-none card-drop" data-bs-toggle="dropdown" aria-expanded="false">
-                    <i className="mdi mdi-dots-vertical"></i>
-                  </a>
-                  <div className="dropdown-menu dropdown-menu-end">
-                    <a className="dropdown-item">Today</a>
-                    <a className="dropdown-item">Yesterday</a>
-                    <a className="dropdown-item">Last Week</a>
-                    <a className="dropdown-item">Last Month</a>
-                  </div>
+                <div>
+                  <Button variant={darkMode ? "dark" : "dark"} onClick={() => this.toggleOptionsPieChart(firstWord, secondWord, bothWords)}>
+                    <FontAwesomeIcon icon={faEllipsis} />
+                  </Button>
                 </div>
+                {this.state.showOptionsDialog && (
+                  <div className={darkMode ? "options-dialog" : "options-dialog-light"}>
+                    <div className="options-dialog-content">
+                      <ul>
+                        <li onClick={() => this.filterPieChart(this.state.optionsDialogData.opt1)}><Button variant={darkMode ? "dark" : "light"} className="me-2">{this.state.optionsDialogData.opt1}</Button></li>
+                        <li onClick={() => this.filterPieChart(this.state.optionsDialogData.opt2)}><Button variant={darkMode ? "dark" : "light"} className="me-2">{this.state.optionsDialogData.opt2}</Button></li>
+                        <li onClick={() => this.filterPieChart(this.state.optionsDialogData.opt3)}><Button variant={darkMode ? "dark" : "light"} className="me-2">{this.state.optionsDialogData.opt3}</Button></li>
+                        <li onClick={() => this.filterPieChart("all")}><Button variant={darkMode ? "dark" : "light"} className="me-2">All</Button></li>
+                      </ul>
+                    </div>
+                  </div>
+                )}
               </div>
               <div className="card-body pt-0"
                 id="pieChart"
@@ -913,14 +1063,14 @@ class MarketData extends Component {
                 {loading ? (
                   <SkeletonTheme borderRadius={'50%'} baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
                     <Skeleton count={1}
-                      height={376}
-                      width={376}
+                      height={300}
+                      width={300}
                     />
                   </SkeletonTheme>
                 ) : (
                   <Chart options={pieOptions} series={pieSeries} type="donut"
-                    height={386}
-                    width={386}
+                    height={350}
+                    width={350}
                   />
                 )}
               </div>
@@ -931,28 +1081,28 @@ class MarketData extends Component {
               <div className="card-header d-flex justify-content-between align-items-center">
                 <h4 className="header-title">Market</h4>
                 <div>
-                  <Button variant="dark" className="me-2" onClick={() => this.handleClick(30)}>
-                    1M
+                  <Button variant={darkMode ? "dark" : "dark"} className="me-2" onClick={() => this.handleClick(30)}>
+                    1m
                   </Button>
-                  <Button variant="dark" className="me-2" onClick={() => this.handleClick(90)}>
-                    3M
+                  <Button variant={darkMode ? "dark" : "dark"} className="me-2" onClick={() => this.handleClick(90)}>
+                    3m
                   </Button>
-                  <Button variant="dark" className="me-2" onClick={() => this.handleClick(360)}>
-                    1Y
+                  <Button variant={darkMode ? "dark" : "dark"} className="me-2" id="oneyearmktbtn" onClick={() => this.handleClick(360)}>
+                    1y
                   </Button>
                 </div>
               </div>
               <div className="card-body pt-0">
                 {loading ? (
                   <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
-                    <Skeleton count={7} height={350 / 7} />
+                    <Skeleton count={7} height={309 / 7} />
                   </SkeletonTheme>
                 ) : (
                   <Chart
                     options={options}
                     series={series}
                     type="line"
-                    height={350}
+                    height={309}
                   />
                 )}
               </div>

@@ -15,8 +15,10 @@ export default class HomePage extends React.Component {
             darkMode: this.props.darkMode,
             isLoaded: false,
             data: null,
-            loading: true
+            loading: true,
+            hub: 10000002,
         }
+        this.refreshData = this.refreshData.bind(this);
     }
 
     componentDidUpdate(prevProps) {
@@ -29,7 +31,11 @@ export default class HomePage extends React.Component {
 
     componentDidMount() {
         // Fetch data from the backend
-        axios.get('/api/home')
+        axios.post('/api/home', { tradeHub: 10000002 }, {
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        })
             .then((response) => {
                 this.setState({
                     data: response.data,
@@ -43,8 +49,24 @@ export default class HomePage extends React.Component {
             });
     }
 
+    refreshData = (tradeHub) => {
+        this.setState({ isLoaded: false });
+        this.setState({ loading: true });
+        axios.post('/api/home', tradeHub).then((response) => {
+            this.setState({
+                data: response.data,
+                isLoaded: true,
+                loading: false,
+                hub: tradeHub,
+            });
+        }).catch((error) => {
+            console.error("Error fetching data:", error);
+            this.setState({ loading: false });
+        });
+    }
+
     render() {
-        const { darkMode, data, loading } = this.state;
+        const { darkMode, data, loading, hub } = this.state;
 
         // const loading = true;
 
@@ -57,22 +79,41 @@ export default class HomePage extends React.Component {
             <div>
                 <div className={darkMode ? "row " + darkModeClass : "row"}>
                     <div className="col-lg-12">
-                    {/* <div className={`card ${!darkMode ? "" : "bg-dark text-white"}`}> */}
-                    {/* <div className="card-body"> */}
                         {loading ? (
-                            <div className = "d-flex justify-content-center">
-                            <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
-                                <Skeleton count={10}
-                                    height={50}
-                                    width={width < 768 ? 300 : 800}
-                                />
-                            </SkeletonTheme>
+                            <div className={darkMode ? "card " + "bg-dark" : "card"}>
+                                <div className="card-body">
+                                    <div className="card-header d-flex justify-content-between align-items-center">
+                                        <SkeletonTheme baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}>
+                                            <h5 className={darkMode ? "md-dark text-white home_page_header" : "md-light home_page_header_light"}><Skeleton width={width > 600 ? 400 : 200} /></h5>
+                                        </SkeletonTheme>
+                                        <div className="trade_hub_container_loading">
+                                            <SkeletonTheme baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}>
+                                                <Skeleton width={40} />
+                                                <Skeleton width={40} />
+                                                <Skeleton width={40} />
+                                                <Skeleton width={40} />
+                                                <Skeleton width={40} />
+                                            </SkeletonTheme>
+                                        </div>
+                                    </div>
+                                    <table className={darkMode ? "table table-hover table-dark" : "table table-hover"}>
+                                        <tbody>
+                                            {[...Array(11)].map((_, index) => (
+                                                <tr key={index}>
+                                                    <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
+                                                    <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
+                                                    <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
+                                                    <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
+                                                    <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
+                                                </tr>
+                                            ))}
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
                         ) : (
-                            <HomePageTable data={data} darkMode={darkMode} table={"Losses"} />
+                            <HomePageTable hub={hub} loading={loading} refreshData={this.refreshData} data={data} darkMode={darkMode} table={"Losses"} />
                         )}
-                        {/* </div>
-                        </div> */}
                     </div>
                 </div>
             </div>
