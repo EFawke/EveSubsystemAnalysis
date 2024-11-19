@@ -53,6 +53,7 @@ export default class HomePage extends React.Component {
         this.setState({ isLoaded: false });
         this.setState({ loading: true });
         axios.post('/api/home', tradeHub).then((response) => {
+            console.log(response.data);
             this.setState({
                 data: response.data,
                 isLoaded: true,
