@@ -102,15 +102,7 @@ class MarketData extends Component {
           colors: this.props.darkMode ? ['#1d1d1f'] : ['white'],
           width: 2.5,
         },
-        responsive: [{
-          breakpoint: 900,
-          options: {
-            chart: {
-              height: 250,
-              width: 250,
-            }
-          }
-        }]
+        
       },
       pieSeries: [],
 
@@ -1069,8 +1061,8 @@ class MarketData extends Component {
                   </SkeletonTheme>
                 ) : (
                   <Chart options={pieOptions} series={pieSeries} type="donut"
-                    height={350}
-                    width={350}
+                    height={"100%"}
+                    width={"100%"}
                   />
                 )}
               </div>
