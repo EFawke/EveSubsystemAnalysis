@@ -15,8 +15,13 @@ class MarketData extends Component {
     super(props);
     this.state = {
       loading: true,
+
+      descriptionClass: "text-truncate",
+
       id: this.props.id,
       name: namesAndIds.find(x => x.id == this.props.id).name,
+
+      description: null,
 
       darkMode: this.props.darkMode,
 
@@ -102,7 +107,7 @@ class MarketData extends Component {
           colors: this.props.darkMode ? ['#1d1d1f'] : ['white'],
           width: 2.5,
         },
-        
+
       },
       pieSeries: [],
 
@@ -351,26 +356,24 @@ class MarketData extends Component {
       ],
       profitBigNum: null,
       profitPercentage: null,
-    };
+    }
+    this.toggleTruncate = this.toggleTruncate.bind(this);
   }
 
   componentDidMount() {
     this.fetchMarketData();
   }
 
+  toggleTruncate() {
+    this.setState({
+      descriptionClass: this.state.descriptionClass === "text-truncate" ? "" : "text-truncate"
+    });
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.darkMode !== prevProps.darkMode) {
       const darkMode = this.props.darkMode;
-
-      //floop
-
-      // const currentSubColor = this.state.darkMode ? "#b6db63" : "#03e496";
-      // const otherSubColor = this.state.darkMode ? "#46ada8" : "#038ffb";
-
-      const currentColors = this.state.pieOptions.colors
-
-      console.log(currentColors)
-
+      const currentColors = this.state.pieOptions.colors;
       const newColors = currentColors.map(color => {
         if (color == "#b6db63" || color == "#03e496") {
           return darkMode ? "#b6db63" : "#03e496";
@@ -378,8 +381,6 @@ class MarketData extends Component {
           return darkMode ? "#46ada8" : "#038ffb";
         }
       });
-
-      
 
       this.setState({
         darkMode: this.props.darkMode,
@@ -534,7 +535,7 @@ class MarketData extends Component {
       .then(response => {
         const lossesDataArray = [];
 
-        for(let i = 0; i < Object.values(response.data.pieChartData).length; i++) {
+        for (let i = 0; i < Object.values(response.data.pieChartData).length; i++) {
           lossesDataArray.push({
             name: Object.values(response.data.pieChartData)[i].name,
             value: Object.values(response.data.pieChartData)[i].value,
@@ -875,6 +876,16 @@ class MarketData extends Component {
         console.error('Error fetching market data:', error);
         this.setState({ loading: false });
       });
+
+    const url = `https://esi.evetech.net/latest/universe/types/${id}`;
+
+    axios.get(url)
+      .then(response => {
+        this.setState({ description: response.data.description });
+      })
+      .catch(err => {
+        console.log(err);
+      })
   }
 
   handleClick = (days) => {
@@ -937,20 +948,20 @@ class MarketData extends Component {
   filterPieChart = (option) => {
     const { pieOptions, lossesData, id, name, darkMode } = this.state;
 
-    if(option == "all") {
+    if (option == "all") {
       this.setState({
         pieSeries: lossesData.map(item => item.value),
         pieOptions: {
           ...pieOptions,
           colors: lossesData.map(item => {
-            if(item.name == name ) {
-              if(darkMode) {
+            if (item.name == name) {
+              if (darkMode) {
                 return "#b6db63";
               } else {
                 return "#03e496";
               }
             } else {
-              if(darkMode) {
+              if (darkMode) {
                 return "#46ada8";
               } else {
                 return "#038ffb";
@@ -963,25 +974,25 @@ class MarketData extends Component {
       });
       return;
     }
-  
+
     // Filter the lossesData array based on the option
     const filteredData = lossesData.filter(item => item.name.includes(option));
-  
+
     // Extract the series (numeric values) and labels from the filtered data
     const filteredSeries = filteredData.map(item => item.value); // Assuming `value` is the numeric property
     const filteredLabels = filteredData.map(item => item.name);
 
     const colors = [];
 
-    for(let i = 0; i < filteredLabels.length; i++) {
-      if(filteredLabels[i] == name){
-        if(darkMode) {
+    for (let i = 0; i < filteredLabels.length; i++) {
+      if (filteredLabels[i] == name) {
+        if (darkMode) {
           colors.push("#b6db63");
         } else {
           colors.push("#03e496");
         }
       } else {
-        if(darkMode) {
+        if (darkMode) {
           colors.push("#46ada8");
         } else {
           colors.push("#038ffb");
@@ -990,7 +1001,7 @@ class MarketData extends Component {
     }
 
 
-  
+
     // Update the state
     this.setState({
       pieSeries: filteredSeries, // Update with the numeric series
@@ -1002,7 +1013,7 @@ class MarketData extends Component {
       showOptionsDialog: false // Close the options dialog
     });
   };
-  
+
 
   render() {
     const { id, darkMode, pieOptions, pieSeries, loading, options, series, recentLossesOptions, recentLossesSeries, recentLossesBigNum, recentLossesPercentage, jitaSellBigNum, jitaSellPercentage, jitaSellOptions, jitaSellSeries, sellVolumeBigNum, sellVolumePercentage, sellVolumeOptions, sellVolumeSeries, profitBigNum, profitPercentage, profitOptions, profitSeries } = this.state;
@@ -1020,6 +1031,15 @@ class MarketData extends Component {
 
     return (
       <div>
+        <div className={darkMode ? "row " + darkModeClass : "row"} id = "description_card">
+          <div className="col-lg-12">
+            <div className={darkMode ? "card " + darkModeClass : "card"} onClick = {this.toggleTruncate}>
+              <div className="card-body">
+                <p className = {this.state.descriptionClass}>{this.state.description}</p>
+              </div>
+            </div>
+          </div>
+        </div>
         <div className={darkMode ? "row " + darkModeClass : "row"} id="micro_cards">
           <MicroCard darkMode={darkMode} cardTitle={"Sell"} options={jitaSellOptions} series={jitaSellSeries} loading={loading} bigNum={jitaSellBigNum} percentage={jitaSellPercentage} />
           <MicroCard darkMode={darkMode} cardTitle={"Losses"} options={recentLossesOptions} series={recentLossesSeries} loading={loading} bigNum={recentLossesBigNum} percentage={recentLossesPercentage} />

@@ -110,7 +110,7 @@ class App extends React.Component {
             return (
                 <ThemeProvider theme={darkMode ? darkTheme : ""}>
                     <div className={darkMode ? "wrapper bg-dark text-white" : "wrapper"}>
-                        <Header toggleTheme={this.toggleDarkMode} darkMode={darkMode}/>
+                        <Header toggleTheme={this.toggleDarkMode} darkMode={darkMode} />
                         <div className={!darkMode ? "content-page" : "content-page bg-dark text-white"}>
                             <div className="content">
                                 <div className="container">
@@ -134,7 +134,7 @@ class App extends React.Component {
             return (
                 <ThemeProvider theme={darkMode ? darkTheme : ""}>
                     <div className={darkMode ? "wrapper bg-dark text-white" : "wrapper"}>
-                        <Header toggleTheme={this.toggleDarkMode} darkMode={darkMode}/>
+                        <Header toggleTheme={this.toggleDarkMode} darkMode={darkMode} />
                         <div className={!darkMode ? "content-page" : "content-page bg-dark text-white"}>
                             <div className="content">
                                 <div className="container">
@@ -150,10 +150,11 @@ class App extends React.Component {
 
         if (isValidUrl(window.location.pathname, namesAndIds)) {
             const name = namesAndIds.find(x => x.id == window.location.pathname.split('/')[2]);
+
             return (
                 <ThemeProvider theme={darkMode ? darkTheme : ""}>
                     <div className={darkMode ? "wrapper bg-dark text-white" : "wrapper"}>
-                        <Header toggleTheme={this.toggleDarkMode} darkMode={darkMode}/>
+                        <Header toggleTheme={this.toggleDarkMode} darkMode={darkMode} />
                         <div className={!darkMode ? "content-page" : "content-page bg-dark text-white"}>
                             <div className="content">
                                 <div className="container">
