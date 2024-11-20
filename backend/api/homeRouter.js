@@ -142,7 +142,7 @@ homeRouter.use(express.json());
 
 // Helper function to calculate the median of an array
 const calculateMedian = (arr) => {
-    const sorted = arr.slice().sort((a, b) => a - b);
+    const sorted = arr.slice().map(Number).sort((a, b) => a - b); // Ensure all elements are numbers
     const mid = Math.floor(sorted.length / 2);
     return sorted.length % 2 !== 0
         ? sorted[mid]

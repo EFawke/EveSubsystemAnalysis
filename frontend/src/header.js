@@ -2,6 +2,7 @@ import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import Button from 'react-bootstrap/Button';
 import { faSun } from '@fortawesome/free-solid-svg-icons'
+import { faMoon } from '@fortawesome/free-solid-svg-icons'
 import { faHammer } from '@fortawesome/free-solid-svg-icons'
 import FreeSolo from './searchbox.js';
 import { Flex } from "antd";
@@ -30,8 +31,8 @@ class Header extends React.Component {
                         <a variant="dark" className="me-2 btn btn-dark" href = "/build/">
                             <FontAwesomeIcon icon={faHammer} />
                         </a>
-                        <Button variant="dark" className="me-2" onClick={this.props.toggleTheme}>
-                            <FontAwesomeIcon icon={faSun} onClick = {this.props.toggleTheme}/>
+                        <Button id="toggleDark" variant="dark" className="me-2" onClick={this.props.toggleTheme}>
+                            <FontAwesomeIcon icon={this.props.darkMode ? faSun : faMoon} onClick = {this.props.toggleTheme}/>
                         </Button>
                         <FreeSolo />
                     </div>

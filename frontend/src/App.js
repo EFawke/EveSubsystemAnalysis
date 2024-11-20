@@ -110,7 +110,7 @@ class App extends React.Component {
             return (
                 <ThemeProvider theme={darkMode ? darkTheme : ""}>
                     <div className={darkMode ? "wrapper bg-dark text-white" : "wrapper"}>
-                        <Header toggleTheme={this.toggleDarkMode} />
+                        <Header toggleTheme={this.toggleDarkMode} darkMode={darkMode}/>
                         <div className={!darkMode ? "content-page" : "content-page bg-dark text-white"}>
                             <div className="content">
                                 <div className="container">
@@ -134,7 +134,7 @@ class App extends React.Component {
             return (
                 <ThemeProvider theme={darkMode ? darkTheme : ""}>
                     <div className={darkMode ? "wrapper bg-dark text-white" : "wrapper"}>
-                        <Header toggleTheme={this.toggleDarkMode} />
+                        <Header toggleTheme={this.toggleDarkMode} darkMode={darkMode}/>
                         <div className={!darkMode ? "content-page" : "content-page bg-dark text-white"}>
                             <div className="content">
                                 <div className="container">
@@ -153,7 +153,7 @@ class App extends React.Component {
             return (
                 <ThemeProvider theme={darkMode ? darkTheme : ""}>
                     <div className={darkMode ? "wrapper bg-dark text-white" : "wrapper"}>
-                        <Header toggleTheme={this.toggleDarkMode} />
+                        <Header toggleTheme={this.toggleDarkMode} darkMode={darkMode}/>
                         <div className={!darkMode ? "content-page" : "content-page bg-dark text-white"}>
                             <div className="content">
                                 <div className="container">

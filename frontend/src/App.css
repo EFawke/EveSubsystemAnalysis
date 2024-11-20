@@ -273,6 +273,23 @@ h4.header-title {
 /* Mobile adjustments */
 @media (max-width: 768px) {
 
+    .percentage_span {
+        display: none !important;
+    }
+
+    .justify-content-between.align-items-center {
+        height: 8rem;
+    }
+
+    .trade_hub_container {
+        display: flex;
+        justify-content: flex-end;
+        height: 100%;
+        flex-wrap: wrap;
+        align-items: center;
+        align-content: space-around;
+    }
+
     /* Navbar adjustments */
     .navbar .container {
         flex-direction: column;
@@ -333,29 +350,14 @@ h4.header-title {
 
     /* Adjust button size */
     .btn {
-        padding: 0.5em;
-        font-size: 0.9em;
+        /* padding: 0.5em;
+        font-size: 0.9em; */
     }
 }
 
-/* .content-page {
-    zoom: 0.9;
-    transform-origin: top center;
+#toggleDark {
+    width: 3rem;
 }
-
-#header_main {
-    zoom: 0.9;
-    transform-origin: top center;
-}
-
-#footer_main {
-    zoom: 0.9;
-    transform-origin: bottom center;
-} */
-/* 
-.accordion-item {
-    border: none;
-} */
 
 .bg-dark {
     background: #161616 !important;
@@ -383,10 +385,6 @@ h4.header-title {
     zoom: 0.9;
 }
 
-/* .subsystem_title {
-    zoom: 0.9;
-} */
-
 .page-title-box {
     zoom: 0.9;
 }
@@ -412,8 +410,6 @@ h3 {
     padding: 0rem;
     margin-bottom: 0rem;
 }
-
-
 
 .options-dialog {
     display: flex;
@@ -453,22 +449,10 @@ h3 {
     margin-right: 0 !important;
 }
 
-
-.accordion-button {
+.accordion-button.bg-dark {
     --bs-accordion-btn-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M2 5L8 11L14 5'%3e%3c/path%3e%3c/svg%3e");
     --bs-accordion-btn-active-icon: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16' fill='none' stroke='%23ffffff' stroke-linecap='round' stroke-linejoin='round'%3e%3cpath d='M2 5L8 11L14 5'%3e%3c/path%3e%3c/svg%3e");
 }
-
-/* .percentage_span {
-    font-size: 0.7rem;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-}
-
-.home_page_td {
-    padding: 0.5rem;
-} */
 
 .percentage_span {
     font-size: 0.7rem;
@@ -476,7 +460,6 @@ h3 {
     flex-direction: column;
     align-items: center;
     margin-right: 1rem;
-    /* Space between percentage and number */
 }
 
 .home_page_td {
@@ -485,12 +468,9 @@ h3 {
 
 .cell-content {
     display: flex;
-    /* Enable flexbox for the left and right contents */
     justify-content: flex-start;
-    /* Align items on the left */
     align-items: center;
     width: 100%;
-    /* Ensure content spans the entire cell */
 }
 
 .value-container {
@@ -554,7 +534,6 @@ h3 {
     justify-content: center;
     align-items: center;
     flex-direction: row;
-    margin: 1rem 0rem;
 }
 
 .sub_counter {
