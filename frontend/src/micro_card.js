@@ -96,14 +96,14 @@ class MicroCard extends React.Component {
                                         : <span className={classText}><i className="mdi mdi-arrow-down-bold"></i> {percentage} %</span>}
                                     </p>
                                 </div>
-                                <div className={loading ? "col-6" : "col-4"}>
+                                <div className={loading ? "col-6" : "col-7"}>
                                     <div className="text-end">
                                         {loading ? (
                                             <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
                                                 <Skeleton count={4} height={80 / 4} />
                                             </SkeletonTheme>
                                         ) : (
-                                            <Chart options={options} series={series} type="line" width={140} height={80} />
+                                            <Chart options={options} series={series} type="line" width={'100%'} height={80} />
                                         )}
                                     </div>
                                 </div>
