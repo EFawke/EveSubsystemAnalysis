@@ -85,15 +85,15 @@ export default class HomePage extends React.Component {
                                 <div className="card-body">
                                     <div className="card-header d-flex justify-content-between align-items-center">
                                         <SkeletonTheme baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}>
-                                            <h5 className={darkMode ? "md-dark text-white home_page_header" : "md-light home_page_header_light"}><Skeleton width={width > 600 ? 400 : 200} /></h5>
+                                            <h5 className={darkMode ? "md-dark text-white home_page_header" : "md-light home_page_header_light"}><Skeleton width={width > 600 ? 400 : 100} /></h5>
                                         </SkeletonTheme>
                                         <div className="trade_hub_container_loading">
                                             <SkeletonTheme baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}>
-                                                <Skeleton width={40} />
-                                                <Skeleton width={40} />
-                                                <Skeleton width={40} />
-                                                <Skeleton width={40} />
-                                                <Skeleton width={40} />
+                                                <Skeleton width={width < 769 ? 20 : 40} />
+                                                <Skeleton width={width < 769 ? 20 : 40} />
+                                                <Skeleton width={width < 769 ? 20 : 40} />
+                                                <Skeleton width={width < 769 ? 20 : 40} />
+                                                <Skeleton width={width < 769 ? 20 : 40} />
                                             </SkeletonTheme>
                                         </div>
                                     </div>

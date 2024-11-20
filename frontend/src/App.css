@@ -335,9 +335,13 @@ h4.header-title {
     .table th:nth-child(5),
     .table td:nth-child(5),
     .table th:nth-child(6),
-    .table td:nth-child(6) {
+    .table td:nth-child(6),
+    .table th:nth-child(7),
+    .table td:nth-child(7){
         display: none;
     }
+
+
 
     /* Footer adjustments */
     footer .container {
@@ -374,13 +378,6 @@ h4.header-title {
         max-width: 1026px;
     }
 }
-
-/* @media only screen and (max-width: 1300px) {
-    .col-md-6 {
-        flex: 0 0 auto;
-        width: 50%;
-    }
-} */
 
 @media only screen and (min-width: 1400px) {
     .container {
@@ -556,4 +553,20 @@ h3 {
 .counter_icon {
     height: 1.5rem;
     width: 1.5rem;
+}
+
+/* CSS to toggle visibility based on screen size */
+
+/* Hide the desktop menu on mobile */
+@media (max-width: 768px) {
+    #desktop_trade_hub_menu {
+        display: none;
+    }
+}
+
+/* Hide the mobile menu on desktop */
+@media (min-width: 769px) {
+    .trade_hub_container_mobile {
+        display: none;
+    }
 }

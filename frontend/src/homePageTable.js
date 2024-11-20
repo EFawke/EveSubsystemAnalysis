@@ -4,6 +4,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { faEquals } from '@fortawesome/free-solid-svg-icons'
+import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
 import Button from 'react-bootstrap/Button';
 import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
@@ -17,8 +18,10 @@ class HomePageTable extends React.Component {
             table: null,
             darkMode: false,
             sortConfig: { key: null, direction: 'ascending' },
+            showOptionsDialog: false,
         }
         this.setButtonVariant = this.setButtonVariant.bind(this);
+        this.toggleMobileMarketMenu = this.toggleMobileMarketMenu.bind(this);
     }
 
     componentDidMount() {
@@ -73,6 +76,12 @@ class HomePageTable extends React.Component {
         }
     }
 
+    toggleMobileMarketMenu = () => {
+        this.setState({
+            showOptionsDialog: !this.state.showOptionsDialog
+        });
+    }
+
     render() {
         const { isLoaded, table, darkMode } = this.state
         const { data, hub } = this.props;
@@ -107,7 +116,7 @@ class HomePageTable extends React.Component {
                 <div className="card-body">
                     <div className="card-header d-flex justify-content-between align-items-center">
                         <h5 className={darkMode ? "md-dark text-white home_page_header" : "md-light home_page_header_light"}>Suggested Subsystems</h5>
-                        <div className="trade_hub_container">
+                        <div id = "desktop_trade_hub_menu" className="trade_hub_container">
                             <Button variant={this.setButtonVariant(hub, 10000002)} onClick={() => this.props.refreshData({ tradeHub: 10000002 })}>
                                 Jita
                             </Button>
@@ -123,6 +132,46 @@ class HomePageTable extends React.Component {
                             <Button variant={this.setButtonVariant(hub, 10000030)} onClick={() => this.props.refreshData({ tradeHub: 10000030 })}>
                                 Rens
                             </Button>
+                        </div>
+                        <div className="trade_hub_container_mobile">
+                            <div>
+                                <Button variant={darkMode ? "dark" : "dark"} onClick={() => this.toggleMobileMarketMenu()}>
+                                    <FontAwesomeIcon icon={faEllipsis} />
+                                </Button>
+                            </div>
+                            {this.state.showOptionsDialog && (
+                                <div id = "mobile_trade_hub_menu" className={darkMode ? "options-dialog" : "options-dialog-light"}>
+                                    <div className="options-dialog-content">
+                                        <ul>
+                                            <li>
+                                                <Button variant={this.setButtonVariant(hub, 10000002)} onClick={() => this.props.refreshData({ tradeHub: 10000002 })}>
+                                                    Jita
+                                                </Button>
+                                            </li>
+                                            <li>
+                                                <Button variant={this.setButtonVariant(hub, 10000043)} onClick={() => this.props.refreshData({ tradeHub: 10000043 })}>
+                                                    Amarr
+                                                </Button>
+                                            </li>
+                                            <li>
+                                                <Button variant={this.setButtonVariant(hub, 10000032)} onClick={() => this.props.refreshData({ tradeHub: 10000032 })}>
+                                                    Dodixie
+                                                </Button>
+                                            </li>
+                                            <li>
+                                                <Button variant={this.setButtonVariant(hub, 10000042)} onClick={() => this.props.refreshData({ tradeHub: 10000042 })}>
+                                                    Hek
+                                                </Button>
+                                            </li>
+                                            <li>
+                                                <Button variant={this.setButtonVariant(hub, 10000030)} onClick={() => this.props.refreshData({ tradeHub: 10000030 })}>
+                                                    Rens
+                                                </Button>
+                                            </li>
+                                        </ul>
+                                    </div>
+                                </div>
+                            )}
                         </div>
                     </div>
                     <table className={darkMode ? "table table-hover table-dark" : "table table-hover"}>
