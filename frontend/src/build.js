@@ -9,35 +9,34 @@ class Build extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            numSlots: 1,
+            numSlots: JSON.parse(Cookies.get('buildSettings'))?.numSlots || 1,
             darkMode: this.props.darkMode || false,
-            refinery: 'Tatara',  // default refinery
-            refineryTeRig: 'None',
-            refineryMeRig: 'None',
-            refinerySystem: 'wormhole',
-            complex: 'Azbel',  // default complex
-            complexLargeRig: 'None', // Only for Azbel
-            complexTeRig: 'None',    // Only for Raitaru
-            complexMeRig: 'None',    // Only for Raitaru
-            complexSystem: 'wormhole',
-            tataraRig: 'None',
-            componentMaterialEfficiency: 0,
-            componentTimeEfficiency: 0,
-            ancientRelic: 'Intact',
-            decryptor: 'None',
-            coreVolume: 1,
-            defensiveVolume: 1,
-            offensiveVolume: 1,
-            propulsionVolume: 1,
-            numSlots: 1,
-            skillLevel: 1,
-            implant: 'None',
+            refinery: JSON.parse(Cookies.get('buildSettings'))?.refinery || 'Tatara',  // default refinery
+            refineryTeRig: JSON.parse(Cookies.get('buildSettings'))?.refineryTeRig || 'None',
+            refineryMeRig: JSON.parse(Cookies.get('buildSettings'))?.refineryMeRig || 'None',
+            refinerySystem: JSON.parse(Cookies.get('buildSettings'))?.refinerySystem || 'wormhole',
+            complex: JSON.parse(Cookies.get('buildSettings'))?.complex || 'Azbel',  // default complex
+            complexLargeRig: JSON.parse(Cookies.get('buildSettings'))?.complexLargeRig || 'None', // Only for Azbel
+            complexTeRig: JSON.parse(Cookies.get('buildSettings'))?.complexTeRig || 'None',    // Only for Raitaru
+            complexMeRig: JSON.parse(Cookies.get('buildSettings'))?.complexMeRig || 'None',    // Only for Raitaru
+            complexSystem: JSON.parse(Cookies.get('buildSettings'))?.complexSystem || 'wormhole',
+            tataraRig: JSON.parse(Cookies.get('buildSettings'))?.tataraRig || 'None',
+            componentMaterialEfficiency: JSON.parse(Cookies.get('buildSettings'))?.componentMaterialEfficiency || 0,
+            componentTimeEfficiency: JSON.parse(Cookies.get('buildSettings'))?.componentTimeEfficiency || 0,
+            ancientRelic: JSON.parse(Cookies.get('buildSettings'))?.ancientRelic || 'Intact',
+            decryptor: JSON.parse(Cookies.get('buildSettings'))?.decryptor || 'None',
+            coreVolume: JSON.parse(Cookies.get('buildSettings'))?.coreVolume || 1,
+            defensiveVolume: JSON.parse(Cookies.get('buildSettings'))?.defensiveVolume || 1,
+            offensiveVolume: JSON.parse(Cookies.get('buildSettings'))?.offensiveVolume || 1,
+            propulsionVolume: JSON.parse(Cookies.get('buildSettings'))?.propulsionVolume || 1,
+            skillLevel: JSON.parse(Cookies.get('buildSettings'))?.skillLevel || 1,
+            implant: JSON.parse(Cookies.get('buildSettings'))?.implant || 'None',
             buildingComponents: false,
             runningReactions: false,
-            buildCostIndex: 0.14,
-            reactionCostIndex: 0.14,
-            reactionFacilityTax: 1,
-            complexFacilityTax: 1,
+            buildCostIndex: JSON.parse(Cookies.get('buildSettings'))?.buildCostIndex || 0.14,
+            reactionCostIndex: JSON.parse(Cookies.get('buildSettings'))?.reactionCostIndex || 0.14,
+            reactionFacilityTax: JSON.parse(Cookies.get('buildSettings'))?.reactionFacilityTax || 1,
+            complexFacilityTax: JSON.parse(Cookies.get('buildSettings'))?.complexFacilityTax || 1,
             buildResponseData: null,  // new state variable for response data
             loading: true,
         }
@@ -101,8 +100,6 @@ class Build extends React.Component {
 
     renderBuildQuantities = () => {
         const { buildResponseData, darkMode, loading } = this.state;
-
-        console.log(loading);
 
         const numRuns = buildResponseData?.blueprints.numRuns;
 

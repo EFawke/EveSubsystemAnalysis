@@ -1104,7 +1104,7 @@ class MarketData extends Component {
                   </Button>
                 </div>
               </div>
-              <div className="card-body pt-0">
+              <div className="card-body pt-0" id="market_history">
                 {loading ? (
                   <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
                     <Skeleton count={7} height={309 / 7} />
@@ -1114,7 +1114,8 @@ class MarketData extends Component {
                     options={options}
                     series={series}
                     type="line"
-                    height={309}
+                    height={"100%"}
+                    width={"100%"}
                   />
                 )}
               </div>
