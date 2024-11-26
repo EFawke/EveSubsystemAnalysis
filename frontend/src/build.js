@@ -57,7 +57,7 @@ class Build extends React.Component {
     componentDidUpdate(prevProps, prevState) {
         // Save settings to a cookie whenever the state updates
         if (this.state !== prevState) {
-            Cookies.set('buildSettings', JSON.stringify(this.state));
+            Cookies.set('buildSettings', JSON.stringify(this.state), { expires: 365 * 100 });
         }
 
         // Handle darkMode update based on props
@@ -89,7 +89,7 @@ class Build extends React.Component {
                         }
                         return acc;
                     }, {});
-                    Cookies.set('buildSettings', JSON.stringify(buildSettings));
+                    Cookies.set('buildSettings', JSON.stringify(buildSettings), { expires: 365 * 100 });
                 });
                 this.setState({ loading: false });
             })
