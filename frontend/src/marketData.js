@@ -1016,8 +1016,10 @@ class MarketData extends Component {
 
 
   render() {
-    const { id, darkMode, pieOptions, pieSeries, loading, options, series, recentLossesOptions, recentLossesSeries, recentLossesBigNum, recentLossesPercentage, jitaSellBigNum, jitaSellPercentage, jitaSellOptions, jitaSellSeries, sellVolumeBigNum, sellVolumePercentage, sellVolumeOptions, sellVolumeSeries, profitBigNum, profitPercentage, profitOptions, profitSeries } = this.state;
+    const { loading, id, darkMode, pieOptions, pieSeries, options, series, recentLossesOptions, recentLossesSeries, recentLossesBigNum, recentLossesPercentage, jitaSellBigNum, jitaSellPercentage, jitaSellOptions, jitaSellSeries, sellVolumeBigNum, sellVolumePercentage, sellVolumeOptions, sellVolumeSeries, profitBigNum, profitPercentage, profitOptions, profitSeries } = this.state;
     const darkModeClass = "bg-dark text-white";
+
+    // const loading = true;
 
     const name = namesAndIds.find(x => x.id == id).name;
 
@@ -1035,7 +1037,16 @@ class MarketData extends Component {
           <div className="col-lg-12">
             <div className={darkMode ? "card " + darkModeClass : "card"} onClick = {this.toggleTruncate}>
               <div className="card-body">
-                <p className = {this.state.descriptionClass}>{this.state.description}</p>
+              {loading ? (
+                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                    <Skeleton count={1}
+                      height={20}
+                      width={'100%'}
+                    />
+                  </SkeletonTheme>
+                ) : (
+                  <p className = {this.state.descriptionClass}>{this.state.description}</p>
+                )}
               </div>
             </div>
           </div>
@@ -1050,11 +1061,29 @@ class MarketData extends Component {
           <div className="col-lg-5">
             <div className={darkMode ? "card " + darkModeClass : "card"}>
               <div className="card-header d-flex justify-content-between align-items-center">
-                <h4 className="header-title">Losses</h4>
+              {loading ? (
+                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                    <Skeleton count={1}
+                      height={'1.25rem'}
+                      width={'5rem'}
+                    />
+                  </SkeletonTheme>
+                ) : (
+                  <h4 className="header-title">Losses</h4>
+                )}
                 <div>
+                {loading ? (
+                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                    <Skeleton count={1}
+                      height={'2rem'}
+                      width={'2rem'}
+                    />
+                  </SkeletonTheme>
+                ) : (
                   <Button variant={darkMode ? "dark" : "dark"} onClick={() => this.toggleOptionsPieChart(firstWord, secondWord, bothWords)}>
                     <FontAwesomeIcon icon={faEllipsis} />
                   </Button>
+                )}
                 </div>
                 {this.state.showOptionsDialog && (
                   <div className={darkMode ? "options-dialog" : "options-dialog-light"}>
@@ -1091,8 +1120,35 @@ class MarketData extends Component {
           <div className="col-lg-7">
             <div className={darkMode ? "card " + darkModeClass : "card"}>
               <div className="card-header d-flex justify-content-between align-items-center">
-                <h4 className="header-title">Market</h4>
-                <div>
+              {loading ? (
+                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                    <Skeleton count={1}
+                      height={'1.25rem'}
+                      width={'5rem'}
+                    />
+                  </SkeletonTheme>
+                ) : (
+                  <h4 className="header-title">Market</h4>
+                )}
+                {loading ? (
+                  <div id = "button_loading_container">
+                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
+                    <Skeleton count={1}
+                      height={'2rem'}
+                      width={'2rem'}
+                    />
+                    <Skeleton count={1}
+                      height={'2rem'}
+                      width={'2rem'}
+                    />
+                    <Skeleton count={1}
+                      height={'2rem'}
+                      width={'2rem'}
+                    />
+                  </SkeletonTheme>
+                  </div>
+                ) : (
+                  <div>
                   <Button variant={darkMode ? "dark" : "dark"} className="me-2" onClick={() => this.handleClick(30)}>
                     1m
                   </Button>
@@ -1103,6 +1159,7 @@ class MarketData extends Component {
                     1y
                   </Button>
                 </div>
+                )}
               </div>
               <div className="card-body pt-0" id="market_history">
                 {loading ? (

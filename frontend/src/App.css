@@ -219,7 +219,6 @@ body {
 
 .text-success {
     color: #12c471 !important;
-    /* color: #00f784 !important; */
     font-weight: 500;
 }
 
@@ -407,10 +406,6 @@ h3 {
     --bs-body-font-size: 0.9rem;
 }
 
-.accordion {
-    --bs-accordion-border-color: unset;
-}
-
 .options-dialog-content>ul {
     list-style: none;
     padding: 0rem;
@@ -466,6 +461,7 @@ h3 {
     flex-direction: column;
     align-items: center;
     margin-right: 1rem;
+    font-weight: 800;
 }
 
 .home_page_td {
@@ -483,7 +479,6 @@ h3 {
     display: flex;
     flex-direction: column;
     align-items: flex-end;
-    /* Align value to the right */
     justify-content: center;
 }
 
@@ -499,24 +494,19 @@ h3 {
     font-size: 1.25rem;
     font-weight: 600;
     color: #ffffff;
-    /* background-color: #2c2c2c; */
     padding: 8px 16px;
     border-radius: 4px;
     text-align: left;
     margin-bottom: 16px;
-    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); */
 }
 
 .home_page_header_light {
     font-size: 1.25rem;
     font-weight: 600;
-    /* color: #ffffff; */
-    /* background-color: #2c2c2c; */
     padding: 8px 16px;
     border-radius: 4px;
     text-align: left;
     margin-bottom: 16px;
-    /* box-shadow: 0 1px 3px rgba(0, 0, 0, 0.3); */
 }
 
 .trade_hub_container > button {
@@ -571,6 +561,25 @@ h3 {
     }
 }
 
-.accordion:not(.bg-dark) {
+/* .accordion:not(.bg-dark) {
     border: 1px solid rgba(0, 0, 0, .175);
+} */
+
+.card {
+    --bs-card-border-color: transparent;
+}
+
+.accordion {
+    --bs-accordion-border-color: transparent;
+}
+
+#button_loading_container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+}
+
+#button_loading_container > * {
+    margin-right: 0.5rem;
 }

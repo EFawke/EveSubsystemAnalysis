@@ -116,7 +116,7 @@ class HomePageTable extends React.Component {
                 <div className="card-body">
                     <div className="card-header d-flex justify-content-between align-items-center">
                         <h5 className={darkMode ? "md-dark text-white home_page_header" : "md-light home_page_header_light"}>Suggested Subsystems</h5>
-                        <div id = "desktop_trade_hub_menu" className="trade_hub_container">
+                        <div id="desktop_trade_hub_menu" className="trade_hub_container">
                             <Button variant={this.setButtonVariant(hub, 10000002)} onClick={() => this.props.refreshData({ tradeHub: 10000002 })}>
                                 Jita
                             </Button>
@@ -140,7 +140,7 @@ class HomePageTable extends React.Component {
                                 </Button>
                             </div>
                             {this.state.showOptionsDialog && (
-                                <div id = "mobile_trade_hub_menu" className={darkMode ? "options-dialog" : "options-dialog-light"}>
+                                <div id="mobile_trade_hub_menu" className={darkMode ? "options-dialog" : "options-dialog-light"}>
                                     <div className="options-dialog-content">
                                         <ul>
                                             <li>
@@ -190,7 +190,13 @@ class HomePageTable extends React.Component {
                             {rows.map((row) => (
                                 <tr key={row.type_id}>
                                     <td className="home_page_td"><img src={`https://images.evetech.net/types/${row.type_id}/icon?size=32`} alt="Item" /></td>
-                                    <td className="home_page_td"><a href={`/subsystem/${row.type_id}`}>{row.name}</a></td>
+                                    <td className="home_page_td">
+                                        <div className="cell-content">
+                                            <div className="value-container">
+                                                <a href={`/subsystem/${row.type_id}`}>{row.name}</a>
+                                            </div>
+                                        </div>
+                                    </td>
                                     <td className="home_page_td">
                                         <div className="cell-content">
                                             <span className={row.buyPercentageChange >= 0 ? "text-success percentage_span" : "text-danger percentage_span"}>
@@ -231,7 +237,13 @@ class HomePageTable extends React.Component {
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="home_page_td">{Number(row.losses).toLocaleString()}</td>
+                                    <td className="home_page_td">
+                                        <div className="cell-content">
+                                            <div className="value-container">
+                                                {Number(row.losses).toLocaleString()}
+                                            </div>
+                                        </div>
+                                    </td>
                                 </tr>
                             ))}
                         </tbody>

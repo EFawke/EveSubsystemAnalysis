@@ -16,9 +16,9 @@ class Build extends React.Component {
             refineryMeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.refineryMeRig : 'None',
             refinerySystem: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.refinerySystem : 'wormhole',
             complex: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complex : 'Azbel',
-            complexLargeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexLargeRig : 'None', // Only for Azbel
-            complexTeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexTeRig : 'None',    // Only for Raitaru
-            complexMeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexMeRig : 'None',    // Only for Raitaru
+            complexLargeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexLargeRig : 'None',
+            complexTeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexTeRig : 'None',
+            complexMeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexMeRig : 'None',
             complexSystem: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexSystem : 'wormhole',
             tataraRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.tataraRig : 'None',
             componentMaterialEfficiency: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.componentMaterialEfficiency : 0,
