@@ -31,9 +31,9 @@ class Header extends React.Component {
                         <a variant="dark" className="me-2 btn btn-dark" href = "/build/">
                             <FontAwesomeIcon icon={faHammer} />
                         </a>
-                        <Button id="toggleDark" variant="dark" className="me-2" onClick={this.props.toggleTheme}>
+                        {/* <Button id="toggleDark" variant="dark" className="me-2" onClick={this.props.toggleTheme}>
                             <FontAwesomeIcon icon={this.props.darkMode ? faSun : faMoon} onClick = {this.props.toggleTheme}/>
-                        </Button>
+                        </Button> */}
                         <FreeSolo />
                     </div>
                 </div>

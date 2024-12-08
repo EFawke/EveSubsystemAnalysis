@@ -47,6 +47,7 @@ const {
     getPricePerUnit,
     calculateSpecComponentRequirements,
     calculateMainComponentRequirements } = require('./staticVars.js');
+const { scheduleReactions } = require('./scheduleReactions.js');
 const { materialsNamesAndIds } = require('../namesAndIds.js');
 
 const getMaterialRequirements = (settings) => {
@@ -1019,36 +1020,27 @@ const getMaterialRequirements = (settings) => {
 
     // console.log(uniqueReactions)
 
-    function scheduleReactions(reactions, slots) {
+    function scheduleReactionsOld(reactions, slots) {
 
-        if(slots < reactions.length) {
-            slots = reactions.length;
-        }
+        slots = reactions.length;
 
-        // Initialize slots with empty schedule entries
         const schedule = Array.from({ length: slots }, (_, i) => ({
             slot: i,
             numRuns: 0,
             reactionName: "",
         }));
-    
-        // Calculate total runs
+
         const totalRuns = reactions.reduce((acc, cur) => acc + cur.runs, 0);
     
-        // Sort reactions by runs in descending order to allocate largest ones first
         reactions.sort((a, b) => b.runs - a.runs);
     
-        // Greedy allocation
         reactions.forEach((reaction) => {
             while (reaction.runs > 0) {
-                // Find the slot with the fewest numRuns
                 const targetSlot = schedule.reduce((minSlot, slot) =>
                     slot.numRuns < minSlot.numRuns ? slot : minSlot, schedule[0]);
     
-                // Determine runs to assign to this slot (up to available runs or slot max)
                 const runsToAssign = Math.min(reaction.runs, Math.ceil(totalRuns / slots));
     
-                // Assign runs to the slot
                 targetSlot.numRuns += runsToAssign;
                 targetSlot.reactionName = reaction.name;
                 reaction.runs -= runsToAssign;
@@ -1057,8 +1049,10 @@ const getMaterialRequirements = (settings) => {
     
         return schedule;
     }
+
+    // scheduleReactions(uniqueReactions, slots);
     
-    const schedule = scheduleReactions(uniqueReactions, slots);
+    const schedule = scheduleReactionsOld(uniqueReactions, slots);
 
     // console.log(schedule);
 

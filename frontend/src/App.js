@@ -26,7 +26,8 @@ class App extends React.Component {
             subsystem: null,
             marketData: null,
             costData: null,
-            darkMode: Cookies.get('darkMode') === 'false' ? false : true,
+            // darkMode: Cookies.get('darkMode') === 'false' ? false : true,
+            darkMode: true,
         };
         this.source = axios.CancelToken.source();
         this.toggleDarkMode = this.toggleDarkMode.bind(this);

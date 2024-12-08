@@ -583,3 +583,7 @@ h3 {
 #button_loading_container > * {
     margin-right: 0.5rem;
 }
+
+.accordion-item {
+    border: none;
+}
