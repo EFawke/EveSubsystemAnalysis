@@ -27,7 +27,6 @@ if (!process.env.DATABASE_URL) {
     });
 }
 
-
 const componentIds = [30002, 30476, 30464, 30474, 30470, 29992, 29994, 30478, 30008];
 
 client.connect();

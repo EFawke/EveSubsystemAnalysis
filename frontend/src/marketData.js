@@ -1,1185 +1,423 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Chart from 'react-apexcharts';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
-import Button from 'react-bootstrap/Button';
-import MicroCard from './micro_card';
-import { mode } from 'crypto-js';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
-import namesAndIds from './namesAndIds.js';
+import { Text, Table, Flex, IconButton, Card, HoverCard, Box, Link, Heading } from "@radix-ui/themes";
+import Cookies from 'js-cookie';
+import namesAndIds from './namesAndIds';
+import {
+  ArrowRightIcon,
+  ArrowLeftIcon,
+  InfoCircledIcon,
+  DoubleArrowDownIcon,
+  DoubleArrowUpIcon
+} from "@radix-ui/react-icons";
+import InteractiveChart from './interactiveChart';
+
+/**
+ * If the dataset name includes "volume" or "loss", treat it as bar data (small scale).
+ * (Make sure this logic matches what you do in interactiveChart.jsx)
+ */
+function isSmallScale(name = "") {
+  const lower = name.toLowerCase();
+  return lower.includes("volume") || lower.includes("loss");
+}
 
 class MarketData extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      loading: true,
+      buyVolume: null,
+      sellVolume: null,
+      maxBuy: null,
+      minSell: null,
+      profit: null,
+      materialsCost: null,
+      tradeVolume: null,
+      lossesLastTwentyFourHours: null,
+      tableArr: [],
+      isLoading: true,
+      settings: {},
+      name: this.props.name,
+      colorBlindMode: this.props.colorBlindMode,
+    };
 
-      descriptionClass: "text-truncate",
-
-      id: this.props.id,
-      name: namesAndIds.find(x => x.id == this.props.id).name,
-
-      description: null,
-
-      darkMode: this.props.darkMode,
-
-      // Market Data
-      marketData: [],
-      subsystemCosts: [],
-      options: {
-        chart: {
-          type: 'line',
-          height: 350,
-          toolbar: {
-            show: false,
-          },
-          background: this.props.darkMode ? '#1d1d1f' : 'white',
-        },
-        xaxis: {
-          categories: [],
-          tickAmount: 5,
-        },
-        yaxis: [{
-          title: {
-            text: 'ISK'
-          }
-        }],
-        tooltip: {
-          shared: true,
-          intersect: false,
-        },
-        theme: {
-          mode: this.props.darkMode ? 'dark' : 'light',
-        },
-        responsive: [{
-          breakpoint: 1000,
-          options: {
-            xaxis: {
-              tickAmount: 2,
-            }
-          }
-        }]
-      },
-      series: [
-        {
-          name: 'Sell Price',
-          data: [],
-        },
-      ],
-      // Pie Chart
-      pieOptions: {
-        theme: {
-          mode: this.props.darkMode ? 'dark' : 'light',
-        },
-        chart: {
-          type: 'pie',
-          background: this.props.darkMode ? '#1d1d1f' : 'white',
-        },
-        colors: [],
-        dataLabels: {
-          enabled: false,
-        },
-        legend: {
-          show: false,
-        },
-        plotOptions: {
-          pie: {
-            donut: {
-              size: '65%',
-              labels: {
-                show: true,
-                total: {
-                  show: true,
-                  showAlways: true,
-                  label: 'Total',
-                  formatter: function (w) {
-                    return w.globals.seriesTotals.reduce((a, b) => a + b, 0);
-                  },
-                },
-              },
-            },
-          },
-        },
-        labels: [],
-        stroke: {
-          colors: this.props.darkMode ? ['#1d1d1f'] : ['white'],
-          width: 2.5,
-        },
-
-      },
-      pieSeries: [],
-
-      lossesData: [],
-
-      // Recent Losses (Micro Card)
-      recentLossesOptions: {
-        grid: {
-          show: false,
-        },
-        chart: {
-          type: 'line',
-          height: 90,
-          width: "90%",
-          toolbar: {
-            show: false,
-          },
-          background: this.props.darkMode ? '#1d1d1f' : 'white',
-        },
-        xaxis: {
-          categories: [],
-          labels: {
-            show: false,
-          },
-          lines: {
-            show: false,
-          },
-          axisBorder: {
-            show: false,
-          },
-          axisTicks: {
-            show: false,
-          }
-        },
-        yaxis: [{
-          title: {
-            text: '',
-          },
-          labels: {
-            show: false,
-          },
-          lines: {
-            show: false,
-          },
-          axisBorder: {
-            show: false,
-          },
-        }],
-        tooltip: {
-          enabled: true,
-          shared: true,
-          intersect: false,
-        },
-        theme: {
-          mode: this.props.darkMode ? 'dark' : 'light',
-        }
-      },
-      recentLossesSeries: [
-        {
-          name: 'Losses',
-          data: [],
-        },
-      ],
-      recentLossesBigNum: null,
-      recentLossesPercentage: null,
-
-      // Jita Sell (Micro Card)
-      jitaSellOptions: {
-        grid: {
-          show: false,
-        },
-        chart: {
-          type: 'line',
-          height: 90,
-          width: "90%",
-          toolbar: {
-            show: false,
-          },
-          background: this.props.darkMode ? '#1d1d1f' : 'white',
-        },
-        theme: {
-          mode: this.props.darkMode ? 'dark' : 'light',
-        },
-        xaxis: {
-          categories: [],
-          labels: {
-            show: false,
-          },
-          lines: {
-            show: false,
-          },
-          axisBorder: {
-            show: false,
-          },
-          axisTicks: {
-            show: false,
-          }
-        },
-        yaxis: [{
-          title: {
-            text: '',
-          },
-          labels: {
-            show: false,
-          },
-          lines: {
-            show: false,
-          },
-          axisBorder: {
-            show: false,
-          },
-        }],
-        tooltip: {
-          enabled: true,
-          shared: true,
-          intersect: false,
-        },
-      },
-      jitaSellSeries: [
-        {
-          name: 'Jita Sell',
-          data: [],
-        },
-      ],
-      jitaSellBigNum: null,
-      jitaSellPercentage: null,
-
-      // Trade Volume (Micro Card)
-      sellVolumeOptions: {
-        grid: {
-          show: false,
-        },
-        chart: {
-          type: 'line',
-          height: 90,
-          width: "90%",
-          toolbar: {
-            show: false,
-          },
-          background: this.props.darkMode ? '#1d1d1f' : 'white',
-        },
-        theme: {
-          mode: this.props.darkMode ? 'dark' : 'light',
-        },
-        xaxis: {
-          categories: [],
-          labels: {
-            show: false,
-          },
-          lines: {
-            show: false,
-          },
-          axisBorder: {
-            show: false,
-          },
-          axisTicks: {
-            show: false,
-          }
-        },
-        yaxis: [{
-          title: {
-            text: '',
-          },
-          labels: {
-            show: false,
-          },
-          lines: {
-            show: false,
-          },
-          axisBorder: {
-            show: false,
-          },
-        }],
-        tooltip: {
-          enabled: true,
-          shared: true,
-          intersect: false,
-        },
-      },
-      sellVolumeSeries: [
-        {
-          name: 'Trade Volume',
-          data: [],
-        },
-      ],
-      sellVolumeBigNum: null,
-      sellVolumePercentage: null,
-
-      // Profit (Micro Card)
-      profitOptions: {
-        grid: {
-          show: false,
-        },
-        theme: {
-          mode: this.props.darkMode ? 'dark' : 'light',
-        },
-        chart: {
-          type: 'line',
-          height: 90,
-          width: "90%",
-          toolbar: {
-            show: false,
-          },
-          background: this.props.darkMode ? '#1d1d1f' : 'white',
-        },
-        xaxis: {
-          categories: [],
-          labels: {
-            show: false,
-          },
-          lines: {
-            show: false,
-          },
-          axisBorder: {
-            show: false,
-          },
-          axisTicks: {
-            show: false,
-          }
-        },
-        yaxis: [{
-          title: {
-            text: '',
-          },
-          labels: {
-            show: false,
-          },
-          lines: {
-            show: false,
-          },
-          axisBorder: {
-            show: false,
-          },
-        }],
-        tooltip: {
-          enabled: true,
-          shared: true,
-          intersect: false,
-        },
-      },
-      profitSeries: [
-        {
-          name: 'Profit',
-          data: [],
-        },
-      ],
-      profitBigNum: null,
-      profitPercentage: null,
-    }
-    this.toggleTruncate = this.toggleTruncate.bind(this);
+    // Bind methods
+    this.renderIconButton = this.renderIconButton.bind(this);
+    this.renderChart = this.renderChart.bind(this);
+    this.handleIconClick = this.handleIconClick.bind(this);
+    this.handleBarClick = this.handleBarClick.bind(this);
+    this.getClassName = this.getClassName.bind(this);
   }
 
   componentDidMount() {
-    this.fetchMarketData();
-  }
+    const { id } = this.props;
+    const settings = {
+      numSlots: Cookies.get('numSlots') || '8',
+      refinery: Cookies.get('refinery') || 'Tatara',
+      refineryTeRig: Cookies.get('refineryTeRig') || 'None',
+      refineryMeRig: Cookies.get('refineryMeRig') || 'None',
+      refinerySystem: Cookies.get('refinerySystem') || 'wormhole',
+      complex: Cookies.get('complex') || 'Azbel',
+      complexLargeRig: Cookies.get('complexLargeRig') || 'T1',
+      complexTeRig: Cookies.get('complexTeRig') || 'None',
+      complexMeRig: Cookies.get('complexMeRig') || 'None',
+      complexSystem: Cookies.get('complexSystem') || 'wormhole',
+      tataraRig: Cookies.get('tataraRig') || 'T1',
+      componentMaterialEfficiency: Cookies.get('componentMaterialEfficiency') || 10,
+      componentTimeEfficiency: Cookies.get('componentTimeEfficiency') || 20,
+      ancientRelic: Cookies.get('ancientRelic') || 'Intact',
+      decryptor: Cookies.get('decryptor') || 'Optimized Attainment Decryptor',
+      coreVolume: Cookies.get('coreVolume') || 0,
+      defensiveVolume: Cookies.get('defensiveVolume') || 0,
+      offensiveVolume: Cookies.get('offensiveVolume') || 0,
+      propulsionVolume: Cookies.get('propulsionVolume') || 0,
+      skillLevel: Cookies.get('skillLevel') || 4,
+      implant: Cookies.get('implant') || '4%',
+      buildCostIndex: Cookies.get('buildCostIndex') || '0.14',
+      reactionCostIndex: Cookies.get('reactionCostIndex') || '0.14',
+      reactionFacilityTax: Cookies.get('reactionFacilityTax') || 0.25,
+      complexFacilityTax: Cookies.get('complexFacilityTax') || 0.25,
+      system: Cookies.get('system') || 'wormhole',
+      materialsLocation:
+        Cookies.get('materialsLocation') != null
+          ? Cookies.get('materialsLocation')
+          : "10000002",
+      materialsOrderType:
+        Cookies.get('materialsOrderType') != null
+          ? Cookies.get('materialsOrderType')
+          : "buy",
+      subsystemsLocation:
+        Cookies.get('subsystemsLocation') != null
+          ? Cookies.get('subsystemsLocation')
+          : "10000002",
+      subsystemsOrderType:
+        Cookies.get('subsystemsOrderType') != null
+          ? Cookies.get('subsystemsOrderType')
+          : "sell",
+    };
 
-  toggleTruncate() {
-    this.setState({
-      descriptionClass: this.state.descriptionClass === "text-truncate" ? "" : "text-truncate"
-    });
+    this.setState({ settings });
+
+    const subsystemName = namesAndIds.find(
+      (obj) => Number(obj.id) === Number(id)
+    ).name;
+    settings.name = subsystemName;
+    settings.id = id;
+
+    let type = "";
+    if (subsystemName.includes("Core")) {
+      type = "core";
+    } else if (subsystemName.includes("Defensive")) {
+      type = "defensive";
+    } else if (subsystemName.includes("Propulsion")) {
+      type = "propulsion";
+    } else if (subsystemName.includes("Offensive")) {
+      type = "offensive";
+    }
+
+    if (type === "core") {
+      settings.coreVolume = 1;
+    } else if (type === "defensive") {
+      settings.defensiveVolume = 1;
+    } else if (type === "offensive") {
+      settings.offensiveVolume = 1;
+    } else if (type === "propulsion") {
+      settings.propulsionVolume = 1;
+    }
+
+    axios
+      .post(`/api/subsystem/${id}`, settings)
+      .then((response) => {
+        const data = response.data;
+        const convertDates = (arr) => arr.map((d) => String(d));
+
+        this.setState({
+          buyVolume: {
+            name: data.buyVolume.title,
+            value: data.buyVolume.currentValue,
+            dates: convertDates(data.buyVolume.dates),
+            dataValues: data.buyVolume.dataValues,
+            percentageChange: data.buyVolume.thirtyDayMedianDelta,
+            addToGraph: false,
+          },
+          sellVolume: {
+            name: data.sellVolume.title,
+            value: data.sellVolume.currentValue,
+            dates: convertDates(data.sellVolume.dates),
+            dataValues: data.sellVolume.dataValues,
+            percentageChange: data.sellVolume.thirtyDayMedianDelta,
+            addToGraph: false,
+          },
+          maxBuy: {
+            name: data.maxBuy.title,
+            value: data.maxBuy.currentValue,
+            dates: convertDates(data.maxBuy.dates),
+            dataValues: data.maxBuy.dataValues,
+            percentageChange: data.maxBuy.thirtyDayMedianDelta,
+            addToGraph: false,
+          },
+          minSell: {
+            name: data.minSell.title,
+            value: data.minSell.currentValue,
+            dates: convertDates(data.minSell.dates),
+            dataValues: data.minSell.dataValues,
+            percentageChange: data.minSell.thirtyDayMedianDelta,
+            addToGraph: false,
+          },
+          profit: {
+            name: data.profit.title,
+            value: data.profit.currentValue,
+            dates: convertDates(data.profit.dates),
+            dataValues: data.profit.dataValues,
+            percentageChange: data.profit.thirtyDayMedianDelta,
+            addToGraph: true,
+          },
+          materialsCost: {
+            name: data.matCosts.title,
+            value: data.matCosts.currentValue,
+            dates: convertDates(data.matCosts.dates),
+            dataValues: data.matCosts.dataValues,
+            percentageChange: data.matCosts.thirtyDayMedianDelta,
+            addToGraph: false,
+          },
+          tradeVolume: {
+            name: data.tradeVolume.title,
+            value: data.tradeVolume.currentValue,
+            dates: convertDates(data.tradeVolume.dates),
+            dataValues: data.tradeVolume.dataValues,
+            percentageChange: data.tradeVolume.thirtyDayMedianDelta,
+            addToGraph: false,
+          },
+          lossesLastTwentyFourHours: {
+            name: data.lossesData.title,
+            value: data.lossesData.currentValue,
+            dates: convertDates(data.lossesData.dates),
+            dataValues: data.lossesData.dataValues,
+            percentageChange: data.lossesData.thirtyDayMedianDelta,
+            addToGraph: false,
+          },
+        });
+      })
+      .catch((error) => {
+        console.error("Error fetching market data:", error);
+      })
+      .finally(() => {
+        const arr = [];
+        arr.push(this.state.minSell);
+        arr.push(this.state.maxBuy);
+        arr.push(this.state.materialsCost);
+        arr.push(this.state.profit);
+        arr.push(this.state.buyVolume);
+        arr.push(this.state.sellVolume);
+        arr.push(this.state.tradeVolume);
+        arr.push(this.state.lossesLastTwentyFourHours);
+
+        this.setState({
+          tableArr: arr,
+          isLoading: false,
+        });
+      });
   }
 
   componentDidUpdate(prevProps) {
-    if (this.props.darkMode !== prevProps.darkMode) {
-      const darkMode = this.props.darkMode;
-      const currentColors = this.state.pieOptions.colors;
-      const newColors = currentColors.map(color => {
-        if (color == "#b6db63" || color == "#03e496") {
-          return darkMode ? "#b6db63" : "#03e496";
-        } else {
-          return darkMode ? "#46ada8" : "#038ffb";
+    if (this.props.name !== prevProps.name) {
+      this.componentDidMount();
+    }
+  }
+
+  // Toggles a row's addToGraph from the "arrow button"
+  handleIconClick(index) {
+    this.setState((prevState) => {
+      const updatedTableArr = prevState.tableArr.map((item, i) => {
+        if (!item) return item;
+        if (i === index) {
+          return {
+            ...item,
+            addToGraph: !item.addToGraph,
+          };
         }
+        return item;
       });
-
-      this.setState({
-        darkMode: this.props.darkMode,
-        pieOptions: {
-          theme: {
-            mode: this.props.darkMode ? 'dark' : 'light',
-          },
-          chart: {
-            type: 'pie',
-            background: this.props.darkMode ? '#1d1d1f' : 'white',
-          },
-          stroke: {
-            colors: this.props.darkMode ? ['#1d1d1f'] : ['white'],
-            width: 2.5,
-          },
-          colors: newColors,
-        },
-        options: {
-          chart: {
-            type: 'line',
-            height: 350,
-            toolbar: {
-              show: false,
-            },
-            background: this.props.darkMode ? '#1d1d1f' : 'white',
-          },
-          theme: {
-            mode: this.props.darkMode ? 'dark' : 'light',
-          },
-          responsive: [{
-            breakpoint: 1000,
-            options: {
-              xaxis: {
-                tickAmount: 2,
-              }
-            }
-          }]
-        },
-        recentLossesOptions: {
-          chart: {
-            type: 'line',
-            height: 90,
-            width: "90%",
-            toolbar: {
-              show: false,
-            },
-            background: this.props.darkMode ? '#1d1d1f' : 'white',
-          },
-          theme: {
-            mode: this.props.darkMode ? 'dark' : 'light',
-          }
-        },
-        jitaSellOptions: {
-          chart: {
-            type: 'line',
-            height: 90,
-            width: "90%",
-            toolbar: {
-              show: false,
-            },
-            background: this.props.darkMode ? '#1d1d1f' : 'white',
-          },
-          theme: {
-            mode: this.props.darkMode ? 'dark' : 'light',
-          },
-        },
-        sellVolumeOptions: {
-          chart: {
-            type: 'line',
-            height: 90,
-            width: "90%",
-            toolbar: {
-              show: false,
-            },
-            background: this.props.darkMode ? '#1d1d1f' : 'white',
-          },
-          theme: {
-            mode: this.props.darkMode ? 'dark' : 'light',
-          },
-        },
-        profitOptions: {
-          chart: {
-            type: 'line',
-            height: 90,
-            width: "90%",
-            toolbar: {
-              show: false,
-            },
-            background: this.props.darkMode ? '#1d1d1f' : 'white',
-          },
-          theme: {
-            mode: this.props.darkMode ? 'dark' : 'light',
-          },
-        },
-      })
-    }
-    if (this.props.id !== prevProps.id) {
-      this.setState({
-        id: this.props.id,
-        loading: true,
-        marketData: [],
-        options: {
-          chart: {
-            type: 'line',
-            height: 350,
-            toolbar: {
-              show: false,
-            },
-            background: this.props.darkMode ? '#1d1d1f' : 'white',
-          },
-          xaxis: {
-            tickAmount: 5,
-            categories: [],
-            labels: {
-              rotate: 0,
-            },
-          },
-          yaxis: [{
-            title: {
-              text: 'ISK',
-            },
-          }],
-          tooltip: {
-            shared: true,
-            intersect: false,
-          },
-          theme: {
-            mode: this.state.darkMode ? 'dark' : 'light',
-          },
-          responsive: [{
-            breakpoint: 1000,
-            options: {
-              xaxis: {
-                tickAmount: 2,
-              }
-            }
-          }]
-        },
-        series: [
-          {
-            name: 'Sell Price',
-            data: [],
-          },
-        ],
-      }, this.fetchMarketData);
-    }
+      return { tableArr: updatedTableArr };
+    });
   }
 
-  fetchMarketData = () => {
-    const { id } = this.props;
-    axios.get(`/api/subsystem/${id}`)
-      .then(response => {
-        const lossesDataArray = [];
-
-        for (let i = 0; i < Object.values(response.data.pieChartData).length; i++) {
-          lossesDataArray.push({
-            name: Object.values(response.data.pieChartData)[i].name,
-            value: Object.values(response.data.pieChartData)[i].value,
-          });
+  /**
+   * If a bar is clicked in the chart, we "just toggle the addToGraph
+   * of all OTHER bar data," leaving lines and the clicked bar alone.
+   */
+  handleBarClick(clickedName) {
+    console.log(`Bar clicked: ${clickedName}`);
+    this.setState((prevState) => {
+      const updatedTableArr = prevState.tableArr.map((item) => {
+        if (!item || !isSmallScale(item.name)) {
+          // If it's not bar data, do nothing
+          return item;
         }
-
-        this.setState({
-          lossesData: lossesDataArray
-        });
-
-        let jitaSellData = [];
-        let profitData = [];
-        const marketData = response.data.marketData;
-        const tradeVolume = response.data.tradeVolume;
-        this.setState({ marketData: marketData });
-        const subsystemCosts = response.data.subsystemCosts;
-        this.setState({ subsystemCosts: subsystemCosts });
-        for (let i = 0; i < marketData.length; i++) {
-          if (i >= marketData.length - 7) {
-            jitaSellData.push({ date: marketData[i].date, price: (marketData[i].average_price / 1000000).toFixed(2) });
-            profitData.push({ date: marketData[i].date, price: ((marketData[i].average_price - subsystemCosts[i].totalCost) / 1000000).toFixed(2) });
-          }
+        if (item.name === clickedName) {
+          // If it's the bar we actually clicked, do nothing
+          return item;
         }
-        const recentLosses = response.data.recentLossData;
-        const categories = marketData.map((item) => {
-          let date = new Date(Number(item.date));
-          let dd = date.getDate();
-          let mm = date.getMonth() + 1;
-          let yy = date.getFullYear();
-          return `${dd}/${mm}/${yy}`;
-        }); // Assuming each data point has a 'date' field
-        const data = marketData.map((item) => {
-          return (item.average_price / 1000000).toFixed(2);
-        }); // Assuming each data point has a 'value' field
-
-        // QUICK FIX BUT NEEDS LOOKING INTO LATER
-        const mktDataLength = marketData.length;
-        //if subsystemCosts.length is greater than mktdatalength, then remove the last few elements of subsystemCosts
-
-        if (subsystemCosts.length > mktDataLength) {
-          const diff = subsystemCosts.length - mktDataLength;
-          subsystemCosts.splice(mktDataLength, diff);
-        }
-
-        const costData = subsystemCosts.map((item) => {
-          return (item.totalCost / 1000000).toFixed(2);
-        });
-
-        const pieChartData = response.data.pieChartData;
-        const valuesArray = Object.values(pieChartData).map(item => item.value);
-        const namesArray = Object.values(pieChartData).map(item => item.name);
-
-        const colors = [];
-        const fillColors = [];
-        for (const key in pieChartData) {
-          const currentSub = this.state.id;
-          // const currentSubColor = "#e74535";
-          const currentSubColor = this.state.darkMode ? "#b6db63" : "#03e496";
-          const otherSubColor = this.state.darkMode ? "#46ada8" : "#038ffb";
-
-          // const otherSubColor = "#3ca1fc";
-          if (pieChartData.hasOwnProperty(key)) {
-            const value = pieChartData[key].value;
-            if (Number(key) === currentSub) {
-              colors.push(currentSubColor);
-              fillColors.push(currentSubColor);
-            } else {
-              colors.push(otherSubColor);
-              fillColors.push(otherSubColor);
-            }
-          }
-        }
-
-        // Recent Losses
-        let recentLossesBigNum = 0;
-        let recentLossesCompareNum = 0;
-        const recentLossesSeriesData = [];
-        const recentLossesDays = [];
-        for (let i = 0; i < recentLosses.length; i++) {
-          if (i > 7) {
-            recentLossesSeriesData.push(recentLosses[i].losses);
-            recentLossesDays.push(recentLosses[i].day);
-            recentLossesBigNum += recentLosses[i].losses;
-          } else {
-            recentLossesCompareNum += recentLosses[i].losses;
-          }
-        }
-        this.setState({
-          recentLossesBigNum: recentLossesBigNum,
-        })
-        this.setState({
-          recentLossesPercentage: ((recentLossesBigNum - recentLossesCompareNum) / recentLossesCompareNum * 100).toFixed(2),
-        })
-        this.setState({
-          recentLossesSeries: [
-            {
-              name: 'Losses',
-              data: recentLossesSeriesData,
-            },
-          ],
-          recentLossesOptions: {
-            ...this.state.recentLossesOptions,
-            chart: {
-              background: this.state.darkMode ? '#1d1d1f' : 'white',
-              toolbar: {
-                show: false,
-              },
-            },
-            xaxis: {
-              categories: recentLossesDays,
-              labels: {
-                show: false,
-              },
-              lines: {
-                show: false,
-              },
-              axisBorder: {
-                show: false,
-              },
-              axisTicks: {
-                show: false,
-              }
-            },
-            stroke: {
-              curve: 'smooth',
-              width: 2,
-            },
-            tooltip: {
-              enabled: true,
-              x: {
-                show: false,
-              }
-            },
-            theme: {
-              mode: this.props.darkMode ? 'dark' : 'light',
-            }
-          },
-        })
-
-        // Jita Sell
-        const jitaSellBigNum = jitaSellData[jitaSellData.length - 1].price;
-        const jitaSellSeriesData = [];
-        const jitaSellDays = [];
-        for (let i = 0; i < jitaSellData.length; i++) {
-          jitaSellSeriesData.push(jitaSellData[i].price);
-          const date = new Date(Number(jitaSellData[i].date));
-          const dd = date.getDate();
-          const mm = date.getMonth() + 1;
-          const yy = date.getFullYear();
-          const formattedDate = `${dd}/${mm}/${yy}`;
-          jitaSellDays.push(formattedDate);
-        }
-        const jitaSellCompareNum = jitaSellData[0].price;
-        const jitaSellPercentage = ((jitaSellBigNum - jitaSellCompareNum) / jitaSellCompareNum * 100).toFixed(2);
-        this.setState({
-          jitaSellBigNum: jitaSellBigNum,
-          jitaSellPercentage: jitaSellPercentage,
-          jitaSellSeries: [
-            {
-              name: 'Jita Sell',
-              data: jitaSellSeriesData,
-            },
-          ],
-          jitaSellOptions: {
-            ...this.state.jitaSellOptions,
-            xaxis: {
-              categories: jitaSellDays,
-              labels: {
-                show: false,
-              },
-              lines: {
-                show: false,
-              },
-              axisBorder: {
-                show: false,
-              },
-              axisTicks: {
-                show: false,
-              }
-            },
-            stroke: {
-              curve: 'smooth',
-              width: 2,
-            },
-            tooltip: {
-              enabled: true,
-              x: {
-                show: false,
-              }
-            },
-          },
-        })
-
-        // Trade Volume Refactor
-        const getAverageVolume = (data) => data.reduce((sum, item) => sum + item.volume, 0) / data.length;
-
-        // Extract last 7 and 14 days data
-        const last14DaysData = tradeVolume.slice(-14);
-        const last7DaysData = tradeVolume.slice(-7);
-
-        // Calculate volumes and averages
-        const thisWeekSellVolumeAverage = getAverageVolume(last7DaysData);
-        const lastWeekSellVolumeAverage = getAverageVolume(last14DaysData.slice(0, 7));
-        const sellVolumePercentage = ((thisWeekSellVolumeAverage - lastWeekSellVolumeAverage) / lastWeekSellVolumeAverage * 100).toFixed(2);
-        const sellVolumeBigNum = last7DaysData.reduce((sum, item) => sum + item.volume, 0);
-
-        // Prepare data for series and x-axis
-        const sellVolumeData = last7DaysData.map(item => ({ date: item.date, volume: item.volume }));
-        const formattedCategories = sellVolumeData.map(item => {
-          const date = new Date(item.date);
-          return `${date.getDate()}/${date.getMonth() + 1}/${date.getFullYear()}`;
-        });
-
-        this.setState({
-          sellVolumeBigNum,
-          sellVolumePercentage,
-          sellVolumeSeries: [
-            {
-              name: 'Trade Volume',
-              data: sellVolumeData.map(item => item.volume),
-            },
-          ],
-          sellVolumeOptions: {
-            ...this.state.sellVolumeOptions,
-            xaxis: {
-              categories: formattedCategories,
-              labels: { show: false },
-              lines: { show: false },
-              axisBorder: { show: false },
-              axisTicks: { show: false }
-            },
-            stroke: {
-              curve: 'smooth',
-              width: 2,
-            },
-            tooltip: {
-              enabled: true,
-              x: { show: false }
-            },
-          },
-        });
-
-        // Profit
-        let profitBigNum = profitData[profitData.length - 1].price;
-        let profitCompareNum = profitData[0].price;
-        let profitPercentage = ((profitBigNum - profitCompareNum) / profitCompareNum * 100).toFixed(2);
-        this.setState({
-          profitBigNum: profitBigNum,
-          profitPercentage: profitPercentage,
-          profitSeries: [
-            {
-              name: 'Profit',
-              data: profitData.map(item => item.price),
-            },
-          ],
-          profitOptions: {
-            ...this.state.profitOptions,
-            xaxis: {
-              categories: profitData.map(item => {
-                let date = new Date(Number(item.date));
-                let dd = date.getDate();
-                let mm = date.getMonth() + 1;
-                let yy = date.getFullYear();
-                return `${dd}/${mm}/${yy}`;
-              }),
-              labels: {
-                show: false,
-              },
-              lines: {
-                show: false,
-              },
-              axisBorder: {
-                show: false,
-              },
-              axisTicks: {
-                show: false,
-              }
-            },
-            stroke: {
-              curve: 'smooth',
-              width: 2,
-            },
-            tooltip: {
-              enabled: true,
-              x: {
-                show: false,
-              }
-            },
-          },
-        })
-
-        this.setState({
-          loading: false,
-          options: {
-            ...this.state.options,
-            xaxis: {
-              tickAmount: 5,
-              categories: categories,
-              labels: {
-                rotate: 0,
-              },
-            },
-          },
-          series: [
-            {
-              name: 'Sell Price',
-              data: data,
-            },
-            {
-              name: 'Cost of Materials',
-              data: costData,
-            },
-          ],
-          responsive: [{
-            breakpoint: 1000,
-            options: {
-              xaxis: {
-                tickAmount: 1,
-              }
-            }
-          }]
-        });
-
-        this.setState({
-          pieOptions: {
-            ...this.state.pieOptions,
-            colors: colors,
-            labels: namesArray,
-          },
-        })
-
-        this.setState({
-          pieSeries: valuesArray,
-        });
-
-      })
-      .catch(error => {
-        console.error('Error fetching market data:', error);
-        this.setState({ loading: false });
+        // For any other bar dataset, toggle its addToGraph
+        return { ...item, addToGraph: !item.addToGraph };
       });
-
-    const url = `https://esi.evetech.net/latest/universe/types/${id}`;
-
-    axios.get(url)
-      .then(response => {
-        this.setState({ description: response.data.description });
-      })
-      .catch(err => {
-        console.log(err);
-      })
-  }
-
-  handleClick = (days) => {
-    const { marketData, subsystemCosts } = this.state;
-    const newMarketData = marketData.filter((item, index) => {
-      return index >= marketData.length - days;
-    });
-    const categories = newMarketData.map((item) => {
-      let date = new Date(Number(item.date));
-      let dd = date.getDate();
-      let mm = date.getMonth() + 1;
-      let yy = date.getFullYear();
-      return `${dd}/${mm}/${yy}`;
-    }); // Assuming each data point has a 'date' field
-    const data = newMarketData.map((item) => {
-      return (item.average_price / 1000000).toFixed(2);
-    }); // Assuming each data point has a 'value' field
-    const newCostData = subsystemCosts.filter((item, index) => {
-      return index >= subsystemCosts.length - days;
-    });
-    const costData = newCostData.map((item) => {
-      return (item.totalCost / 1000000).toFixed(2);
-    });
-
-    this.setState({
-      options: {
-        ...this.state.options,
-        xaxis: {
-          tickAmount: 5,
-          categories: categories,
-          labels: {
-            rotate: 0,
-          },
-        },
-      },
-      series: [
-        {
-          name: 'Sell Price',
-          data: data,
-        },
-        {
-          name: 'Cost of Materials',
-          data: costData,
-        },
-      ],
+      return { tableArr: updatedTableArr };
     });
   }
 
-  toggleOptionsPieChart = (opt1, opt2, opt3) => {
-    this.setState({
-      showOptionsDialog: !this.state.showOptionsDialog,
-      optionsDialogData: {
-        opt1,
-        opt2,
-        opt3
-      }
-    });
-  }
-
-  filterPieChart = (option) => {
-    const { pieOptions, lossesData, id, name, darkMode } = this.state;
-
-    if (option == "all") {
-      this.setState({
-        pieSeries: lossesData.map(item => item.value),
-        pieOptions: {
-          ...pieOptions,
-          colors: lossesData.map(item => {
-            if (item.name == name) {
-              if (darkMode) {
-                return "#b6db63";
-              } else {
-                return "#03e496";
-              }
-            } else {
-              if (darkMode) {
-                return "#46ada8";
-              } else {
-                return "#038ffb";
-              }
-            }
-          }),
-          labels: lossesData.map(item => item.name)
-        },
-        showOptionsDialog: false
-      });
-      return;
-    }
-
-    // Filter the lossesData array based on the option
-    const filteredData = lossesData.filter(item => item.name.includes(option));
-
-    // Extract the series (numeric values) and labels from the filtered data
-    const filteredSeries = filteredData.map(item => item.value); // Assuming `value` is the numeric property
-    const filteredLabels = filteredData.map(item => item.name);
-
-    const colors = [];
-
-    for (let i = 0; i < filteredLabels.length; i++) {
-      if (filteredLabels[i] == name) {
-        if (darkMode) {
-          colors.push("#b6db63");
-        } else {
-          colors.push("#03e496");
-        }
-      } else {
-        if (darkMode) {
-          colors.push("#46ada8");
-        } else {
-          colors.push("#038ffb");
-        }
-      }
-    }
-
-
-
-    // Update the state
-    this.setState({
-      pieSeries: filteredSeries, // Update with the numeric series
-      pieOptions: {
-        ...pieOptions,
-        colors: colors,
-        labels: filteredLabels // Update the labels
-      },
-      showOptionsDialog: false // Close the options dialog
-    });
-  };
-
-
-  render() {
-    const { loading, id, darkMode, pieOptions, pieSeries, options, series, recentLossesOptions, recentLossesSeries, recentLossesBigNum, recentLossesPercentage, jitaSellBigNum, jitaSellPercentage, jitaSellOptions, jitaSellSeries, sellVolumeBigNum, sellVolumePercentage, sellVolumeOptions, sellVolumeSeries, profitBigNum, profitPercentage, profitOptions, profitSeries } = this.state;
-    const darkModeClass = "bg-dark text-white";
-
-    // const loading = true;
-
-    const name = namesAndIds.find(x => x.id == id).name;
-
-    //get the first word in name
-    const firstWord = name.split(' ')[0];
-    const secondWord = name.split(' ')[1];
-    const bothWords = firstWord + " " + secondWord;
-
-
-    //split the 
+  renderIconButton(item, index) {
+    const { addToGraph } = item;
+    const variant = addToGraph ? "classic" : "outline";
+    const Icon = addToGraph ? ArrowLeftIcon : ArrowRightIcon;
 
     return (
-      <div>
-        <div className={darkMode ? "row " + darkModeClass : "row"} id = "description_card">
-          <div className="col-lg-12">
-            <div className={darkMode ? "card " + darkModeClass : "card"} onClick = {this.toggleTruncate}>
-              <div className="card-body">
-              {loading ? (
-                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
-                    <Skeleton count={1}
-                      height={20}
-                      width={'100%'}
-                    />
-                  </SkeletonTheme>
-                ) : (
-                  <p className = {this.state.descriptionClass}>{this.state.description}</p>
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-        <div className={darkMode ? "row " + darkModeClass : "row"} id="micro_cards">
-          <MicroCard darkMode={darkMode} cardTitle={"Sell"} options={jitaSellOptions} series={jitaSellSeries} loading={loading} bigNum={jitaSellBigNum} percentage={jitaSellPercentage} />
-          <MicroCard darkMode={darkMode} cardTitle={"Losses"} options={recentLossesOptions} series={recentLossesSeries} loading={loading} bigNum={recentLossesBigNum} percentage={recentLossesPercentage} />
-          <MicroCard darkMode={darkMode} cardTitle={"Trade Volume"} options={sellVolumeOptions} series={sellVolumeSeries} loading={loading} bigNum={sellVolumeBigNum} percentage={sellVolumePercentage} />
-          <MicroCard darkMode={darkMode} cardTitle={"Profit"} options={profitOptions} series={profitSeries} loading={loading} bigNum={profitBigNum} percentage={profitPercentage} />
-        </div>
-        <div className={darkMode ? "row " + darkModeClass : "row"}>
-          <div className="col-lg-5">
-            <div className={darkMode ? "card " + darkModeClass : "card"}>
-              <div className="card-header d-flex justify-content-between align-items-center">
-              {loading ? (
-                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
-                    <Skeleton count={1}
-                      height={'1.25rem'}
-                      width={'5rem'}
-                    />
-                  </SkeletonTheme>
-                ) : (
-                  <h4 className="header-title">Losses</h4>
-                )}
-                <div>
-                {loading ? (
-                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
-                    <Skeleton count={1}
-                      height={'2rem'}
-                      width={'2rem'}
-                    />
-                  </SkeletonTheme>
-                ) : (
-                  <Button variant={darkMode ? "dark" : "dark"} onClick={() => this.toggleOptionsPieChart(firstWord, secondWord, bothWords)}>
-                    <FontAwesomeIcon icon={faEllipsis} />
-                  </Button>
-                )}
-                </div>
-                {this.state.showOptionsDialog && (
-                  <div className={darkMode ? "options-dialog" : "options-dialog-light"}>
-                    <div className="options-dialog-content">
-                      <ul>
-                        <li onClick={() => this.filterPieChart(this.state.optionsDialogData.opt1)}><Button variant={darkMode ? "dark" : "light"} className="me-2">{this.state.optionsDialogData.opt1}</Button></li>
-                        <li onClick={() => this.filterPieChart(this.state.optionsDialogData.opt2)}><Button variant={darkMode ? "dark" : "light"} className="me-2">{this.state.optionsDialogData.opt2}</Button></li>
-                        <li onClick={() => this.filterPieChart(this.state.optionsDialogData.opt3)}><Button variant={darkMode ? "dark" : "light"} className="me-2">{this.state.optionsDialogData.opt3}</Button></li>
-                        <li onClick={() => this.filterPieChart("all")}><Button variant={darkMode ? "dark" : "light"} className="me-2">All</Button></li>
-                      </ul>
-                    </div>
-                  </div>
-                )}
-              </div>
-              <div className="card-body pt-0"
-                id="pieChart"
-              >
-                {loading ? (
-                  <SkeletonTheme borderRadius={'50%'} baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
-                    <Skeleton count={1}
-                      height={300}
-                      width={300}
-                    />
-                  </SkeletonTheme>
-                ) : (
-                  <Chart options={pieOptions} series={pieSeries} type="donut"
-                    height={"100%"}
-                    width={"100%"}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-          <div className="col-lg-7">
-            <div className={darkMode ? "card " + darkModeClass : "card"}>
-              <div className="card-header d-flex justify-content-between align-items-center">
-              {loading ? (
-                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
-                    <Skeleton count={1}
-                      height={'1.25rem'}
-                      width={'5rem'}
-                    />
-                  </SkeletonTheme>
-                ) : (
-                  <h4 className="header-title">Market</h4>
-                )}
-                {loading ? (
-                  <div id = "button_loading_container">
-                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
-                    <Skeleton count={1}
-                      height={'2rem'}
-                      width={'2rem'}
-                    />
-                    <Skeleton count={1}
-                      height={'2rem'}
-                      width={'2rem'}
-                    />
-                    <Skeleton count={1}
-                      height={'2rem'}
-                      width={'2rem'}
-                    />
-                  </SkeletonTheme>
-                  </div>
-                ) : (
-                  <div>
-                  <Button variant={darkMode ? "dark" : "dark"} className="me-2" onClick={() => this.handleClick(30)}>
-                    1m
-                  </Button>
-                  <Button variant={darkMode ? "dark" : "dark"} className="me-2" onClick={() => this.handleClick(90)}>
-                    3m
-                  </Button>
-                  <Button variant={darkMode ? "dark" : "dark"} className="me-2" id="oneyearmktbtn" onClick={() => this.handleClick(360)}>
-                    1y
-                  </Button>
-                </div>
-                )}
-              </div>
-              <div className="card-body pt-0" id="market_history">
-                {loading ? (
-                  <SkeletonTheme baseColor={darkMode ? '#313131' : '#ebebeb'} highlightColor={darkMode ? '#313131' : '#f5f5f5'}>
-                    <Skeleton count={7} height={309 / 7} />
-                  </SkeletonTheme>
-                ) : (
-                  <Chart
-                    options={options}
-                    series={series}
-                    type="line"
-                    height={"100%"}
-                    width={"100%"}
-                  />
-                )}
-              </div>
-            </div>
-          </div>
-        </div>
-      </div>
+      <IconButton
+        style={{ width: "100%" }}
+        variant={variant}
+        onClick={() => this.handleIconClick(index)}
+      >
+        <Icon />
+      </IconButton>
+    );
+  }
+
+  getClassName(value, colorBlindMode) {
+    if (value >= 0 && !colorBlindMode) return "success";
+    if (value < 0 && !colorBlindMode) return "danger";
+    if (value >= 0 && colorBlindMode) return "success colorBlind";
+    if (value < 0 && colorBlindMode) return "danger colorBlind";
+  }
+
+  renderChart() {
+    const { tableArr } = this.state;
+    const chartData = tableArr.filter((row) => row && row.addToGraph);
+
+    if (chartData.length === 0) {
+      return (
+        <Card height="100%" style={{ width: "100%", flex: "2" }}>
+          <Flex align="center" justify="center" style={{ height: "100%" }}>
+            <Text>No data selected.</Text>
+          </Flex>
+        </Card>
+      );
+    }
+
+    return (
+      <Card height="100%" style={{ width: "100%", flex: "2" }}>
+        <Flex align="center" justify="center" style={{ height: "100%" }}>
+          <InteractiveChart
+            data={chartData}
+            onBarClick={this.handleBarClick}
+          />
+        </Flex>
+      </Card>
+    );
+  }
+
+  render() {
+    const { tableArr, isLoading, colorBlindMode } = this.state;
+
+    if (isLoading) {
+      return (
+        <Flex>
+          <Text>Loading...</Text>
+        </Flex>
+      );
+    }
+
+    return (
+      <Flex
+        id="detailed_analysis_page_main_container"
+        style={{ width: "100%" }}
+        direction="row"
+        gap="4"
+      >
+        <Card className="market_data_table">
+          <Flex>
+            <Table.Root>
+              <Table.Header>
+                <Table.Row>
+                  <Table.ColumnHeaderCell>Data</Table.ColumnHeaderCell>
+                  <Table.ColumnHeaderCell>Value</Table.ColumnHeaderCell>
+                  <Table.ColumnHeaderCell>Add to graph</Table.ColumnHeaderCell>
+                </Table.Row>
+              </Table.Header>
+              <Table.Body>
+                {tableArr.map((item, index) => {
+                  if (!item) return null;
+
+                  return (
+                    <Table.Row key={index}>
+                      <Table.Cell>
+                        <Flex height="100%" align="center">
+                          {item.info ? (
+                            <Text>
+                              {item.name}{" "}
+                              <HoverCard.Root>
+                                <HoverCard.Trigger>
+                                  <InfoCircledIcon height="13px" width="13px" />
+                                </HoverCard.Trigger>
+                                <HoverCard.Content maxWidth="300px">
+                                  <Flex gap="4">
+                                    <Box>
+                                      <Heading size="3" as="h3">
+                                        {item.name}
+                                      </Heading>
+                                      <Text as="div" size="2" color="gray" mb="2">
+                                        {item.info}
+                                      </Text>
+                                      <Text as="div" size="2">
+                                        Material costs based on your{" "}
+                                        <Link size="2" href="/build" target="_blank">
+                                          build
+                                        </Link>{" "}
+                                        settings.
+                                      </Text>
+                                    </Box>
+                                  </Flex>
+                                </HoverCard.Content>
+                              </HoverCard.Root>
+                            </Text>
+                          ) : (
+                            <Text>{item.name}</Text>
+                          )}
+                        </Flex>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Flex gap="2" align="center">
+                          <Flex
+                            direction="column"
+                            justify="center"
+                            width="fit-content"
+                            align="center"
+                            className={this.getClassName(
+                              item.percentageChange,
+                              colorBlindMode
+                            )}
+                          >
+                            {item.percentageChange >= 0 ? (
+                              <DoubleArrowUpIcon height="15px" width="15px" />
+                            ) : (
+                              <DoubleArrowDownIcon height="15px" width="15px" />
+                            )}
+                            <Text size="1">{item.percentageChange}%</Text>
+                          </Flex>
+                          <Text>{Number(item.value).toLocaleString()}</Text>
+                        </Flex>
+                      </Table.Cell>
+                      <Table.Cell>
+                        <Flex height="100%" align="center">
+                          {this.renderIconButton(item, index)}
+                        </Flex>
+                      </Table.Cell>
+                    </Table.Row>
+                  );
+                })}
+              </Table.Body>
+            </Table.Root>
+          </Flex>
+        </Card>
+        {this.renderChart()}
+      </Flex>
     );
   }
 }

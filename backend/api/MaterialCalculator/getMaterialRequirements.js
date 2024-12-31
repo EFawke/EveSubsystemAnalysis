@@ -1020,41 +1020,46 @@ const getMaterialRequirements = (settings) => {
 
     // console.log(uniqueReactions)
 
-    function scheduleReactionsOld(reactions, slots) {
+    // function scheduleReactionsOld(reactions, slots) {
 
-        slots = reactions.length;
+    //     slots = reactions.length;
 
-        const schedule = Array.from({ length: slots }, (_, i) => ({
-            slot: i,
-            numRuns: 0,
-            reactionName: "",
-        }));
+    //     const schedule = Array.from({ length: slots }, (_, i) => ({
+    //         slot: i,
+    //         numRuns: 0,
+    //         reactionName: "",
+    //     }));
 
-        const totalRuns = reactions.reduce((acc, cur) => acc + cur.runs, 0);
+    //     const totalRuns = reactions.reduce((acc, cur) => acc + cur.runs, 0);
     
-        reactions.sort((a, b) => b.runs - a.runs);
+    //     reactions.sort((a, b) => b.runs - a.runs);
     
-        reactions.forEach((reaction) => {
-            while (reaction.runs > 0) {
-                const targetSlot = schedule.reduce((minSlot, slot) =>
-                    slot.numRuns < minSlot.numRuns ? slot : minSlot, schedule[0]);
+    //     reactions.forEach((reaction) => {
+    //         while (reaction.runs > 0) {
+    //             const targetSlot = schedule.reduce((minSlot, slot) =>
+    //                 slot.numRuns < minSlot.numRuns ? slot : minSlot, schedule[0]);
     
-                const runsToAssign = Math.min(reaction.runs, Math.ceil(totalRuns / slots));
+    //             const runsToAssign = Math.min(reaction.runs, Math.ceil(totalRuns / slots));
     
-                targetSlot.numRuns += runsToAssign;
-                targetSlot.reactionName = reaction.name;
-                reaction.runs -= runsToAssign;
-            }
-        });
+    //             targetSlot.numRuns += runsToAssign;
+    //             targetSlot.reactionName = reaction.name;
+    //             reaction.runs -= runsToAssign;
+    //         }
+    //     });
     
-        return schedule;
-    }
+    //     return schedule;
+    // }
 
     // scheduleReactions(uniqueReactions, slots);
     
-    const schedule = scheduleReactionsOld(uniqueReactions, slots);
+    // const schedule = scheduleReactionsOld(uniqueReactions, slots);
 
     // console.log(schedule);
+    //just make schedule an array with the reactions
+    const schedule = [];
+    for(let i = 0; i < uniqueReactions.length; i++) {
+        schedule.push({numRuns: uniqueReactions[i].runs, reactionName: uniqueReactions[i].name});
+    }
 
     //add more data about the reactions to the schedule
     for (let i = 0; i < schedule.length; i++) {

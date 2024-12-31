@@ -3,6 +3,9 @@ import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
 import 'react-loading-skeleton/dist/skeleton.css';
 import axios from "axios";
 import HomePageTable from "./homePageTable.js";
+import { Table, Flex, Card, Section, Heading } from "@radix-ui/themes";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 export default class HomePage extends React.Component {
     constructor(props) {
@@ -14,17 +17,20 @@ export default class HomePage extends React.Component {
             underSupplied: [],
             darkMode: this.props.darkMode,
             isLoaded: false,
+            colorBlindMode: this.props.colorBlindMode,
             data: null,
             loading: true,
-            hub: 10000002,
+            hub: {
+                tradeHub: 10000002,
+            },
         }
         this.refreshData = this.refreshData.bind(this);
     }
 
     componentDidUpdate(prevProps) {
-        if (this.props.darkMode !== prevProps.darkMode) {
+        if (this.props.colorBlindMode !== prevProps.colorBlindMode) {
             this.setState({
-                darkMode: this.props.darkMode
+                colorBlindMode: this.props.colorBlindMode
             });
         }
     }
@@ -53,7 +59,6 @@ export default class HomePage extends React.Component {
         this.setState({ isLoaded: false });
         this.setState({ loading: true });
         axios.post('/api/home', tradeHub).then((response) => {
-            console.log(response.data);
             this.setState({
                 data: response.data,
                 isLoaded: true,
@@ -67,57 +72,20 @@ export default class HomePage extends React.Component {
     }
 
     render() {
-        const { darkMode, data, loading, hub } = this.state;
-
-        // const loading = true;
-
-        const darkModeClass = "bg-dark text-white";
-
-        //get the window width
-        const width = window.innerWidth;
+        const { data, loading, hub, colorBlindMode } = this.state;
 
         return (
-            <div>
-                <div className={darkMode ? "row " + darkModeClass : "row"}>
-                    <div className="col-lg-12">
-                        {loading ? (
-                            <div className={darkMode ? "card " + "bg-dark" : "card"}>
-                                <div className="card-body">
-                                    <div className="card-header d-flex justify-content-between align-items-center">
-                                        <SkeletonTheme baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}>
-                                            <h5 className={darkMode ? "md-dark text-white home_page_header" : "md-light home_page_header_light"}><Skeleton width={width > 600 ? 400 : 100} /></h5>
-                                        </SkeletonTheme>
-                                        <div className="trade_hub_container_loading">
-                                            <SkeletonTheme baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}>
-                                                <Skeleton width={width < 769 ? 20 : 40} />
-                                                <Skeleton width={width < 769 ? 20 : 40} />
-                                                <Skeleton width={width < 769 ? 20 : 40} />
-                                                <Skeleton width={width < 769 ? 20 : 40} />
-                                                <Skeleton width={width < 769 ? 20 : 40} />
-                                            </SkeletonTheme>
-                                        </div>
-                                    </div>
-                                    <table className={darkMode ? "table table-hover table-dark" : "table table-hover"}>
-                                        <tbody>
-                                            {[...Array(11)].map((_, index) => (
-                                                <tr key={index}>
-                                                    <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
-                                                    <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
-                                                    <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
-                                                    <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
-                                                    <td><SkeletonTheme height={40} baseColor={darkMode ? "#313131" : "#ebebeb"} highlightColor={darkMode ? "#313131" : "#ebebeb"}><Skeleton /></SkeletonTheme></td>
-                                                </tr>
-                                            ))}
-                                        </tbody>
-                                    </table>
-                                </div>
-                            </div>
-                        ) : (
-                            <HomePageTable hub={hub} loading={loading} refreshData={this.refreshData} data={data} darkMode={darkMode} table={"Losses"} />
-                        )}
-                    </div>
-                </div>
-            </div>
+            <Flex>
+                {loading ? (
+                    <Card style={{ width: "100%", height: "90vh" }}>
+                        <Flex justify="center" align="center" height="100%">
+                            <FontAwesomeIcon icon={faCircleNotch} spin size="xl" />
+                        </Flex>
+                    </Card>
+                ) : (
+                    <HomePageTable hub={hub} loading={loading} refreshData={this.refreshData} data={data} table={"Losses"} colorBlindMode={colorBlindMode} />
+                )}
+            </Flex>
         )
     }
 }

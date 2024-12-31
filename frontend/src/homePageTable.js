@@ -5,9 +5,9 @@ import { faChevronUp } from '@fortawesome/free-solid-svg-icons'
 import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
 import { faEquals } from '@fortawesome/free-solid-svg-icons'
 import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
-import Button from 'react-bootstrap/Button';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
+import { Table, Flex, Card, Section, Heading, AspectRatio, Link, Text, Button, Box } from "@radix-ui/themes";
+import { DoubleArrowUpIcon, DoubleArrowDownIcon, DotsHorizontalIcon, ArrowUpIcon, ArrowDownIcon } from "@radix-ui/react-icons"
+
 
 class HomePageTable extends React.Component {
     constructor(props) {
@@ -17,23 +17,21 @@ class HomePageTable extends React.Component {
             isLoaded: false,
             table: null,
             darkMode: false,
+            colorBlindMode: this.props.colorBlindMode,
             sortConfig: { key: null, direction: 'ascending' },
             showOptionsDialog: false,
         }
-        this.setButtonVariant = this.setButtonVariant.bind(this);
         this.toggleMobileMarketMenu = this.toggleMobileMarketMenu.bind(this);
+        this.renderArrow = this.renderArrow.bind(this);
+        this.getClassName = this.getClassName.bind(this);
     }
 
     componentDidMount() {
-        // this.setState({ data: this.props.data });
         this.setState({ table: this.props.table });
         this.setState({ darkMode: this.props.darkMode });
     }
 
     componentDidUpdate(prevProps) {
-        // if (this.props.data !== prevProps.data) {
-        //     this.setState({ data: this.props.data });
-        // }
         if (this.props.table !== prevProps.table) {
             this.setState({ table: this.props.table });
         }
@@ -43,12 +41,27 @@ class HomePageTable extends React.Component {
         if (this.props.isLoaded !== prevProps.isLoaded) {
             this.setState({ isLoaded: this.props.isLoaded })
         }
+        if(this.props.colorBlindMode !== prevProps.colorBlindMode) {
+            this.setState({ colorBlindMode: this.props.colorBlindMode });
+        }
+    }
+
+    renderArrow = (sortConfig, key) => {
+        if (sortConfig.key === key) {
+            if (sortConfig.direction === 'ascending') {
+                return <ArrowDownIcon height="15px" width="15px" />
+            } else {
+                return <ArrowUpIcon height="15px" width="15px" />
+            }
+        } else {
+            return null;
+        }
     }
 
     handleSort = (key) => {
-        let direction = 'ascending';
-        if (this.state.sortConfig.key === key && this.state.sortConfig.direction === 'ascending') {
-            direction = 'descending';
+        let direction = 'descending';
+        if (this.state.sortConfig.key === key && this.state.sortConfig.direction === 'descending') {
+            direction = 'ascending';
         }
         this.setState({ sortConfig: { key, direction } });
     }
@@ -68,22 +81,29 @@ class HomePageTable extends React.Component {
         });
     }
 
-    setButtonVariant = (hub, button) => {
-        if (hub.tradeHub == button || hub == button) {
-            return "primary";
-        } else {
-            return "dark";
-        }
-    }
-
     toggleMobileMarketMenu = () => {
         this.setState({
             showOptionsDialog: !this.state.showOptionsDialog
         });
     }
 
+    getClassName = (value, colorBlindMode) => {
+        if (value >= 0 && !colorBlindMode) {
+            return "success";
+        }
+        if (value < 0 && !colorBlindMode) {
+            return "danger";
+        }
+        if (value >= 0 && colorBlindMode) {
+            return "success colorBlind";
+        }
+        if (value < 0 && colorBlindMode) {
+            return "danger colorBlind";
+        }
+    }
+
     render() {
-        const { isLoaded, table, darkMode } = this.state
+        const { isLoaded, table, darkMode, sortConfig, colorBlindMode } = this.state
         const { data, hub } = this.props;
 
         let rows = [];
@@ -112,144 +132,96 @@ class HomePageTable extends React.Component {
         const width = window.innerWidth;
 
         return (
-            <div className={darkMode ? "card " + "bg-dark" : "card"}>
-                <div className="card-body">
-                    <div className="card-header d-flex justify-content-between align-items-center">
-                        <h5 className={darkMode ? "md-dark text-white home_page_header" : "md-light home_page_header_light"}>Suggested Subsystems</h5>
-                        <div id="desktop_trade_hub_menu" className="trade_hub_container">
-                            <Button variant={this.setButtonVariant(hub, 10000002)} onClick={() => this.props.refreshData({ tradeHub: 10000002 })}>
-                                Jita
-                            </Button>
-                            <Button variant={this.setButtonVariant(hub, 10000043)} onClick={() => this.props.refreshData({ tradeHub: 10000043 })}>
-                                Amarr
-                            </Button>
-                            <Button variant={this.setButtonVariant(hub, 10000032)} onClick={() => this.props.refreshData({ tradeHub: 10000032 })}>
-                                Dodixie
-                            </Button>
-                            <Button variant={this.setButtonVariant(hub, 10000042)} onClick={() => this.props.refreshData({ tradeHub: 10000042 })}>
-                                Hek
-                            </Button>
-                            <Button variant={this.setButtonVariant(hub, 10000030)} onClick={() => this.props.refreshData({ tradeHub: 10000030 })}>
-                                Rens
-                            </Button>
-                        </div>
-                        <div className="trade_hub_container_mobile">
-                            <div>
-                                <Button variant={darkMode ? "dark" : "dark"} onClick={() => this.toggleMobileMarketMenu()}>
-                                    <FontAwesomeIcon icon={faEllipsis} />
-                                </Button>
-                            </div>
-                            {this.state.showOptionsDialog && (
-                                <div id="mobile_trade_hub_menu" className={darkMode ? "options-dialog" : "options-dialog-light"}>
-                                    <div className="options-dialog-content">
-                                        <ul>
-                                            <li>
-                                                <Button variant={this.setButtonVariant(hub, 10000002)} onClick={() => this.props.refreshData({ tradeHub: 10000002 })}>
-                                                    Jita
-                                                </Button>
-                                            </li>
-                                            <li>
-                                                <Button variant={this.setButtonVariant(hub, 10000043)} onClick={() => this.props.refreshData({ tradeHub: 10000043 })}>
-                                                    Amarr
-                                                </Button>
-                                            </li>
-                                            <li>
-                                                <Button variant={this.setButtonVariant(hub, 10000032)} onClick={() => this.props.refreshData({ tradeHub: 10000032 })}>
-                                                    Dodixie
-                                                </Button>
-                                            </li>
-                                            <li>
-                                                <Button variant={this.setButtonVariant(hub, 10000042)} onClick={() => this.props.refreshData({ tradeHub: 10000042 })}>
-                                                    Hek
-                                                </Button>
-                                            </li>
-                                            <li>
-                                                <Button variant={this.setButtonVariant(hub, 10000030)} onClick={() => this.props.refreshData({ tradeHub: 10000030 })}>
-                                                    Rens
-                                                </Button>
-                                            </li>
-                                        </ul>
-                                    </div>
-                                </div>
-                            )}
-                        </div>
-                    </div>
-                    <table className={darkMode ? "table table-hover table-dark" : "table table-hover"}>
-                        <thead>
-                            <tr>
-                                <th>Item</th>
-                                <th onClick={() => this.handleSort('name')}>Name</th>
-                                <th onClick={() => this.handleSort('buy')}>Buy</th>
-                                <th onClick={() => this.handleSort('sell')}>Sell</th>
-                                <th onClick={() => this.handleSort('buyVolume')}>Buy Volume</th>
-                                <th onClick={() => this.handleSort('sellVolume')}>Sell Volume</th>
-                                <th onClick={() => this.handleSort('losses')}>Losses</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {rows.map((row) => (
-                                <tr key={row.type_id}>
-                                    <td className="home_page_td"><img src={`https://images.evetech.net/types/${row.type_id}/icon?size=32`} alt="Item" /></td>
-                                    <td className="home_page_td">
-                                        <div className="cell-content">
-                                            <div className="value-container">
-                                                <a href={`/subsystem/${row.type_id}`}>{row.name}</a>
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="home_page_td">
-                                        <div className="cell-content">
-                                            <span className={row.buyPercentageChange >= 0 ? "text-success percentage_span" : "text-danger percentage_span"}>
-                                                {row.buyPercentageChange >= 0 ? <FontAwesomeIcon icon={faChevronUp} /> : <FontAwesomeIcon icon={faChevronDown} />} {row.buyPercentageChange}%
-                                            </span>
-                                            <div className="value-container">
-                                                {Number(row.buy).toLocaleString()}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="home_page_td">
-                                        <div className="cell-content">
-                                            <span className={row.sellPercentageChange >= 0 ? "text-success percentage_span" : "text-danger percentage_span"}>
-                                                {row.sellPercentageChange >= 0 ? <FontAwesomeIcon icon={faChevronUp} /> : <FontAwesomeIcon icon={faChevronDown} />} {row.sellPercentageChange}%
-                                            </span>
-                                            <div className="value-container">
-                                                {Number(row.sell).toLocaleString()}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="home_page_td">
-                                        <div className="cell-content">
-                                            <span className={row.buyVolumePercentageChange >= 0 ? "text-success percentage_span" : "text-danger percentage_span"}>
-                                                {row.buyVolumePercentageChange >= 0 ? <FontAwesomeIcon icon={faChevronUp} /> : <FontAwesomeIcon icon={faChevronDown} />} {row.buyVolumePercentageChange}%
-                                            </span>
-                                            <div className="value-container">
-                                                {Number(row.buyVolume).toLocaleString()}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="home_page_td">
-                                        <div className="cell-content">
-                                            <span className={row.sellVolumePercentageChange >= 0 ? "text-success percentage_span" : "text-danger percentage_span"}>
-                                                {row.sellVolumePercentageChange >= 0 ? <FontAwesomeIcon icon={faChevronUp} /> : <FontAwesomeIcon icon={faChevronDown} />} {row.sellVolumePercentageChange}%
-                                            </span>
-                                            <div className="value-container">
-                                                {Number(row.sellVolume).toLocaleString()}
-                                            </div>
-                                        </div>
-                                    </td>
-                                    <td className="home_page_td">
-                                        <div className="cell-content">
-                                            <div className="value-container">
-                                                {Number(row.losses).toLocaleString()}
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            ))}
-                        </tbody>
-                    </table>
-                </div>
-            </div>
+            <Card style={{width: "100%"}}>
+            <Flex justify="between" align="center">
+                <Heading mb="4" mt="4" size="5" style={{color: "#ffffffc4"}}>Suggested Subsystems</Heading>
+                <Flex justify="between" gap="2" height="100%" align="center">
+                <Button variant={hub.tradeHub == "10000002" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000002 })}>Jita</Button>
+                <Button variant={hub.tradeHub == "10000043" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000043 })}>Amarr</Button>
+                <Button variant={hub.tradeHub == "10000032" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000032 })}>Dodixie</Button>
+                <Button variant={hub.tradeHub == "10000042" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000042 })}>Hek</Button>
+                <Button variant={hub.tradeHub == "10000030" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000030 })}>Rens</Button>
+                </Flex>
+            </Flex>
+            <Table.Root>
+                <Table.Header>
+                <Table.Row>
+                    <Table.ColumnHeaderCell>Item</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell onClick={() => this.handleSort('name')}>Name {this.renderArrow(sortConfig, 'name')}</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell onClick={() => this.handleSort('buy')}>Buy {this.renderArrow(sortConfig, 'buy')}</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell onClick={() => this.handleSort('sell')}>Sell {this.renderArrow(sortConfig, 'sell')}</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell onClick={() => this.handleSort('buyVolume')}>Buy Volume {this.renderArrow(sortConfig, 'buyVolume')}</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell onClick={() => this.handleSort('sellVolume')}>Sell Volume {this.renderArrow(sortConfig, 'sellVolume')}</Table.ColumnHeaderCell>
+                    <Table.ColumnHeaderCell onClick={() => this.handleSort('losses')}>Losses {this.renderArrow(sortConfig, 'losses')}</Table.ColumnHeaderCell>
+                </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                {rows.map((row) => (
+                    <Table.Row key={row.type_id}>
+                    <Table.Cell>
+                        <Flex height="100%" align="center">
+                        <img src={`https://images.evetech.net/types/${row.type_id}/icon`} alt="Item" style={{ width: "25px", height: "25px" }} />
+                        </Flex>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <Flex height="100%" align="center">
+                        <Link href={`/subsystem/${row.type_id}`} className="product_link">{row.name}</Link>
+                        </Flex>
+                    </Table.Cell>
+                    <Table.Cell >
+                        <Flex gap="2" align="center">
+                        <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.buyPercentageChange, colorBlindMode)}>
+                            {row.buyPercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
+                            <Text size="1">{row.buyPercentageChange}%</Text>
+                        </Flex>
+                        <Text>
+                            {Number(row.buy).toLocaleString()}
+                        </Text>
+                        </Flex>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <Flex gap="2" align="center">
+                        <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.sellPercentageChange, colorBlindMode)}>
+                            {row.sellPercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
+                            <Text size="1">{row.sellPercentageChange}%</Text>
+                        </Flex>
+                        <Text>
+                            {Number(row.sell).toLocaleString()}
+                        </Text>
+                        </Flex>
+                    </Table.Cell>
+                    <Table.Cell >
+                        <Flex gap="2" align="center">
+                        <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.buyVolumePercentageChange, colorBlindMode)}>
+                            {row.buyVolumePercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
+                            <Text size="1">{row.buyVolumePercentageChange}%</Text>
+                        </Flex>
+                        <Text>
+                            {Number(row.buyVolume).toLocaleString()}
+                        </Text>
+                        </Flex>
+                    </Table.Cell>
+                    <Table.Cell >
+                        <Flex gap="2" align="center">
+                        <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.sellVolumePercentageChange, colorBlindMode)}>
+                            {row.sellVolumePercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
+                            <Text size="1">{row.sellVolumePercentageChange}%</Text>
+                        </Flex>
+                        <Text>
+                            {Number(row.sellVolume).toLocaleString()}
+                        </Text>
+                        </Flex>
+                    </Table.Cell>
+                    <Table.Cell>
+                        <Flex height="100%" align="center">
+                        <Text>{Number(row.losses).toLocaleString()}</Text>
+                        </Flex>
+                    </Table.Cell>
+                    </Table.Row>
+                ))}
+                </Table.Body>
+            </Table.Root>
+            </Card>
         );
     }
 }
