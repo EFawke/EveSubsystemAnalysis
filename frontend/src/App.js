@@ -177,7 +177,7 @@ class App extends React.Component {
                         subsystemsLocation={subsystemsLocation}
                         subsystemsOrderType={subsystemsOrderType}
                     />
-                    <Container size="4" mb="9">
+                    <Container size="4" mb="9" className="mobile_padding">
                         <PageTitle pageTitle="Dashboard" />
                         <HomePage profit={profit} darkMode={darkMode} colorBlindMode={colorBlindMode} />
                     </Container>
@@ -201,7 +201,7 @@ class App extends React.Component {
                         subsystemsLocation={subsystemsLocation}
                         subsystemsOrderType={subsystemsOrderType}
                     />
-                    <Container size="4" mb="9">
+                    <Container size="4" mb="9" className="mobile_padding">
                         <PageTitle pageTitle="Build tool" />
                         <Build
                             colorBlindMode={colorBlindMode}
@@ -217,19 +217,7 @@ class App extends React.Component {
             )
         }
         if (isValidUrl(window.location.pathname, namesAndIds)) {
-            // const name = namesAndIds.find(x => x.id == window.location.pathname.split('/')[2]);
             const name = namesAndIds.find(x => x.id == this.state.id);
-
-            // const url = `https://esi.evetech.net/latest/universe/types/${this.state.id}`;
-
-            // axios.get(url)
-            //     .then(response => {
-            //         this.setState({ description: response.data.description });
-            //     })
-            //     .catch(err => {
-            //         console.log(err);
-            //     })
-
             return (
                 <Theme
                     style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }}
@@ -255,7 +243,7 @@ class App extends React.Component {
                         subsystemsLocation={subsystemsLocation}
                         subsystemsOrderType={subsystemsOrderType}
                     />
-                    <Container size="4" mb="9">
+                    <Container size="4" mb="9" className="mobile_padding">
                         {/* <PageTitle pageTitle={name.name} /> */}
                         <PageTitle pageTitle="Interactive Chart"></PageTitle>
                         <Heading weight="light" color="gray" mb="7" mt="-5" size="4">{name.name}</Heading>
@@ -290,7 +278,7 @@ class App extends React.Component {
                         subsystemsLocation={subsystemsLocation}
                         subsystemsOrderType={subsystemsOrderType}
                     />
-                    <Container size="4" mb="9">
+                    <Container size="4" mb="9" className="mobile_padding">
                         <PageTitle pageTitle="What's this?" />
                         <About
                             colorBlindMode={colorBlindMode}

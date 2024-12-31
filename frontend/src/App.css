@@ -73,4 +73,11 @@ html, body {
         padding: 0;
         margin-right: 0 !important;
     }
+    #searchbox {
+        display: none;
+    }
+
+    .mobile_padding {
+        padding: 0 10px;
+    }
 }

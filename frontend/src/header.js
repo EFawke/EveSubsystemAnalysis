@@ -72,7 +72,7 @@ class Header extends React.Component {
             iconTop = this.headerIconRef.current.offsetTop;
         }
 
-        const sidebarWidth = window.innerWidth - iconPosition.left;
+        const sidebarWidth = window.innerWidth < 1111 ? window.innerWidth : window.innerWidth - iconPosition.left;
 
         return (
             <>
@@ -84,7 +84,7 @@ class Header extends React.Component {
                     style={{
                         opacity: "95%",
                         zIndex: 10,
-                        width: `${sidebarWidth + 20}px`,
+                        width: `${sidebarWidth}px`,
                         height: "100%",
                         backgroundColor: "var(--mauve-2)",
                         paddingLeft: "25px",
@@ -201,7 +201,7 @@ class Header extends React.Component {
         return (
             <>
                 {this.renderSidebar()}
-                <Container size="4" style={{ background: "var(--gray-a2)", borderRadius: "var(--radius-3)", position: "relative", zIndex: 1 }}>
+                <Container className="mobile_padding" size="4" style={{ background: "var(--gray-a2)", borderRadius: "var(--radius-3)", position: "relative", zIndex: 1 }}>
                     <Flex mt="4" mb="4" width="100%" justify="between" align="center">
                         <Flex gap="1" align="start" direction="column">
                             <Link href="/" style={{ textDecoration: "none" }}>

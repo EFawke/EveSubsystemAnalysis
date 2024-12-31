@@ -111,25 +111,25 @@ class Build extends React.Component {
         return (
             <Flex style={{ width: "60%" }} justify="center" align="center" direction="column">
                 {
-                    loading ? <FontAwesomeIcon icon={faCircleNotch} spin size="xl" /> : <Flex direction="row" style={{ width: "70%" }} justify="between" gap="4" mt="4" mb="4">
-                    <Flex direction="column" gap="2" align="center">
-                        <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45589/icon?size=32`} alt="Defensive" />
-                        <Text size="2" color="gray">{numRuns * this.state.defensiveVolume}</Text>
+                    loading ? <FontAwesomeIcon icon={faCircleNotch} spin size="xl" /> : 
+                    <Flex direction="row" style={{ width: "70%" }} justify="between" gap="4" mt="4" mb="4">
+                        <Flex direction="column" gap="2" align="center">
+                            <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45589/icon?size=32`} alt="Defensive" />
+                            <Text size="2" color="gray">{numRuns * this.state.defensiveVolume}</Text>
+                        </Flex>
+                        <Flex direction="column" gap="2" align="center">
+                            <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45626/icon?size=32`} alt="Core" />
+                            <Text size="2" color="gray">{numRuns * this.state.coreVolume}</Text>
+                        </Flex>
+                        <Flex direction="column" gap="2" align="center">
+                            <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45621/icon?size=32`} alt="Propulsion" />
+                            <Text size="2" color="gray">{numRuns * this.state.propulsionVolume}</Text>
+                        </Flex>
+                        <Flex direction="column" gap="2" align="center">
+                            <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45601/icon?size=32`} alt="Offensive" />
+                            <Text size="2" color="gray">{numRuns * this.state.offensiveVolume}</Text>
+                        </Flex>
                     </Flex>
-                    <Flex direction="column" gap="2" align="center">
-                        <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45626/icon?size=32`} alt="Core" />
-                        <Text size="2" color="gray">{numRuns * this.state.coreVolume}</Text>
-                    </Flex>
-                    <Flex direction="column" gap="2" align="center">
-                        <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45621/icon?size=32`} alt="Propulsion" />
-                        <Text size="2" color="gray">{numRuns * this.state.propulsionVolume}</Text>
-                    </Flex>
-                    <Flex direction="column" gap="2" align="center">
-                        <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45601/icon?size=32`} alt="Offensive" />
-                        <Text size="2" color="gray">{numRuns * this.state.offensiveVolume}</Text>
-                    </Flex>
-                </Flex>
-
                 }
             </Flex>
         );
@@ -193,6 +193,8 @@ class Build extends React.Component {
     }
 
     renderRequiredMaterialsTable = () => {
+        const width = window.innerWidth;
+        const isNarrow = width < 1111;
         const { buildResponseData, darkMode, loading } = this.state;
         const filteredMaterials = buildResponseData?.requiredMaterialsForAll
             .filter(material => material.quantity !== 0 && material.name !== "None" && ![30002, 30476, 30464, 30474, 30470, 29992, 29994, 30478, 30008].includes(material.id));
@@ -203,12 +205,19 @@ class Build extends React.Component {
 
         return (
             <Flex direction="column" class="container" style={{ width: "100%", maxHeight:"70vh", overflow:"scroll" }}>
-                <Flex direction="row" justify={"between"} align={"center"} style={{ width: "100%", paddingRight: "20px", paddingTop: "5px", paddingBottom: "5px" }}>
+                <Flex direction={isNarrow ? "column" : "row"} justify={"between"} align={"center"} style={{ width: "100%", paddingRight: "20px", paddingTop: "5px", paddingBottom: "5px" }}>
                     {this.renderBuildQuantities()}
-                    <Flex direction="column" gap="2" pb="3" style={{ width: "40%", alignSelf: "end" }}>
+                    <Flex direction="column" gap="2" pb="3" 
+                        // style={{ width: "40%", alignSelf: "end" }}
+                        style={{
+                            width: isNarrow ? "100%" : "calc(100% / 3)",
+                            alignSelf: "end",
+                        }}
+                    >
                         <Flex direction="row" gap="4" justify="between" style={{ width: "100%" }}>
                             <Text size={size} weight="bold">Materials:</Text>
-                            <Text size={size}>{loading ? null : `${materialBuyCost.toLocaleString()} ISK`}</Text>                        </Flex>
+                            <Text size={size}>{loading ? null : `${materialBuyCost.toLocaleString()} ISK`}</Text>                        
+                        </Flex>
                         <Flex direction="row" gap="4" justify="between" style={{ width: "100%" }}>
                             <Text size={size} weight="bold">Industry taxes:</Text>
                             <Text size={size}>{loading ? null : `${industryTaxTotal.toLocaleString()} ISK`}</Text>
@@ -226,11 +235,36 @@ class Build extends React.Component {
     }
 
     render() {
-        const { darkMode, refinery, teRig, meRig, system, tataraRig, complex, complexTeRig, complexMeRig, complexSystem, complexLargeRig, componentMaterialEfficiency, componentTimeEfficiency, ancientRelic, decryptor, coreVolume, defensiveVolume, offensiveVolume, propulsionVolume, numSlots, skillLevel, implant, buildingComponents, runningReactions, reactionCostIndex, buildCostIndex, reactionFacilityTax, complexFacilityTax } = this.state;
+        const { darkMode, 
+            refinery, teRig, meRig, system, tataraRig, complex, 
+            complexTeRig, complexMeRig, complexSystem, complexLargeRig, 
+            componentMaterialEfficiency, componentTimeEfficiency, 
+            ancientRelic, decryptor, coreVolume, defensiveVolume, 
+            offensiveVolume, propulsionVolume, numSlots, skillLevel, 
+            implant, buildingComponents, runningReactions, 
+            reactionCostIndex, buildCostIndex, 
+            reactionFacilityTax, complexFacilityTax 
+        } = this.state;
+
+        // Check window width
+        const width = window.innerWidth;
+        const isNarrow = width < 1111;
 
         return (
-            <Flex width="100%" direction="row" gap="4">
-                <Flex style={{ width: "calc(100% / 3)", height: "fit-content" }}>
+            <Flex
+                width="100%"
+                // Choose column vs. row based on window width
+                direction={isNarrow ? "column" : "row"}
+                gap="4"
+            >
+                <Flex
+                    // If column layout, each child is 100%.
+                    // If row layout, keep original widths.
+                    style={{
+                        width: isNarrow ? "100%" : "calc(100% / 3)",
+                        height: "fit-content",
+                    }}
+                >
                     <AccordionDemo
                         refinery={refinery}
                         teRig={teRig}
@@ -264,7 +298,11 @@ class Build extends React.Component {
                         handleCheckboxChange={this.handleCheckboxChange}
                     />
                 </Flex>
-                <Flex style={{ width: "calc(100% - (100% / 3))" }}>
+                <Flex
+                    style={{
+                        width: isNarrow ? "100%" : "calc(100% - (100% / 3))"
+                    }}
+                >
                     <Card style={{ width: "100%" }}>
                         {this.renderRequiredMaterialsTable()}
                     </Card>

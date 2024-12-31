@@ -86,7 +86,7 @@ const SearchBox = () => {
     };
 
     return (
-        <Box maxWidth="300px" position="relative">
+        <Box maxWidth="300px" position="relative" id="searchbox">
             {/* Search Input */}
             <TextField.Root
                 ref={inputRef}

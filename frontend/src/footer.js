@@ -4,7 +4,7 @@ import { GearIcon } from "@radix-ui/react-icons"
 
 const Footer = () => {
     return (
-        <Container size="4" style={{ background: "var(--gray-a2)", alignSelf: "end" }} mt="5">
+        <Container className="mobile_padding" size="4" style={{ background: "var(--gray-a2)", alignSelf: "end" }} mt="5">
             <Flex mt="5" mb="5" width="100%" justify="between" align="center">
                 <Text>
                     All EVE related materials are property of <Link href="https://www.ccpgames.com/">CCP Games</Link>
