@@ -9,12 +9,14 @@ import Footer from './footer';
 import namesAndIds from './namesAndIds.js';
 import Build from './build.js';
 import Cookies from 'js-cookie';
-import { Theme, ThemePanel, Container, Heading, Button, Flex, Text, Box, HoverCard } from "@radix-ui/themes";
+import { Theme, AspectRatio, ThemePanel, Container, Heading, Button, Flex, Text, Box, HoverCard } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import PageTitle from './PageTitle';
 import { useMouseMove, useValue } from "react-ui-animate";
 import './App.css';
 import About from './about.js';
+//get the weeb image at weeb.jpeg
+import weeb from './weeb.jpeg';
 
 class App extends React.Component {
     constructor(props) {
@@ -44,7 +46,7 @@ class App extends React.Component {
         };
         this.source = axios.CancelToken.source();
         this.handleMouseMove = this.handleMouseMove.bind(this);
-        // this.shakeThingsUp = this.shakeThingsUp.bind(this);
+        // this.renderErrorPage = this.renderErrorPage.bind(this);
     }
 
     setMaterialsLocation = (location) => {
@@ -67,13 +69,6 @@ class App extends React.Component {
         Cookies.set('subsystemsOrderType', orderType);
     }
 
-    // shakeThingsUp = () => {
-    //     const randomColor = () => Math.floor(Math.random() * 256);
-    //     const randomRGB = rgb(${randomColor()}, ${randomColor()}, ${randomColor()});
-    //     const randomRGB2 = rgb(${randomColor()}, ${randomColor()}, ${randomColor()});
-    //     this.setState({ backgroundColors: { primary: randomRGB, secondary: randomRGB2 } });
-    // }
-
     toggleColorBlindMode = () => {
         this.setState({ colorBlindMode: !this.state.colorBlindMode });
         Cookies.set('colorBlind', !this.state.colorBlindMode);
@@ -83,6 +78,46 @@ class App extends React.Component {
         Cookies.set('backlight', !this.state.backlight);
         this.setState({ backlight: !this.state.backlight });
     }
+
+    // renderErrorPage = () => {
+    //     const { darkMode, profit, cursorState, backgroundColors, colorBlindMode, backlight, materialsLocation, materialsOrderType, subsystemsLocation, subsystemsOrderType } = this.state;
+
+    //     return (
+    //         <Theme
+    //             className="top_container"
+    //             style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }}
+    //             id="theme_element"
+    //             scaling="90%"
+    //             grayColor="mauve"
+    //             accentColor="teal"
+    //             panelBackground="translucent"
+    //             appearance="dark"
+    //         >
+    //             <Header toggleBackLight={this.toggleBackLight}
+    //                 toggleColorBlindMode={this.toggleColorBlindMode}
+    //                 colorBlindMode={colorBlindMode}
+    //                 backlight={backlight}
+    //                 setMaterialsLocation={this.setMaterialsLocation}
+    //                 setMaterialsOrderType={this.setMaterialsOrderType}
+    //                 setSubsystemsLocation={this.setSubsystemsLocation}
+    //                 setSubsystemsOrderType={this.setSubsystemsOrderType}
+    //                 materialsLocation={materialsLocation}
+    //                 materialsOrderType={materialsOrderType}
+    //                 subsystemsLocation={subsystemsLocation}
+    //                 subsystemsOrderType={subsystemsOrderType}
+    //             />
+    //             <Container size="4" mb="9" className="mobile_padding">
+    //                 <PageTitle pageTitle="Page not found" />
+    //                 <Flex direction="column" mt="5" mb="5" width="100%">
+    //                     <AspectRatio>
+    //                         {{ weeb } && <img src={weeb} alt="weeb" />}
+    //                     </AspectRatio>
+    //                 </Flex>
+    //             </Container>
+    //             <Footer />
+    //         </Theme>
+    //     )
+    // }
 
     componentDidMount() {
         window.addEventListener('mousemove', this.handleMouseMove);
@@ -129,27 +164,42 @@ class App extends React.Component {
             }
             return url.includes('/subsystem/') && array.some(item => item.id === id);
         };
+        const name = namesAndIds.find(x => x.id == this.state.id);
         if (this.state.error) {
             return (
-                <div className="wrapper">
-                    <Header />
-                    <div className="content-page">
-                        <div className="content">
-                            <div className="container">
-                                <div className='row subsystem_title'>
-                                    <div className="col-12">
-                                        <div className="page-title-box" style={{ height: "60vh", display: "flex", alignItems: "center", justifyContent: "center" }}>
-                                            <h4 className="page-title">
-                                                {this.state.error}
-                                            </h4>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                <Theme
+                    className="top_container"
+                    style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }}
+                    id="theme_element"
+                    scaling="90%"
+                    grayColor="mauve"
+                    accentColor="teal"
+                    panelBackground="translucent"
+                    appearance="dark"
+                >
+                    <Header toggleBackLight={this.toggleBackLight}
+                        toggleColorBlindMode={this.toggleColorBlindMode}
+                        colorBlindMode={colorBlindMode}
+                        backlight={backlight}
+                        setMaterialsLocation={this.setMaterialsLocation}
+                        setMaterialsOrderType={this.setMaterialsOrderType}
+                        setSubsystemsLocation={this.setSubsystemsLocation}
+                        setSubsystemsOrderType={this.setSubsystemsOrderType}
+                        materialsLocation={materialsLocation}
+                        materialsOrderType={materialsOrderType}
+                        subsystemsLocation={subsystemsLocation}
+                        subsystemsOrderType={subsystemsOrderType}
+                    />
+                    <Container size="4" mb="9" className="mobile_padding">
+                        <PageTitle pageTitle="Page not found" />
+                        <Flex direction="column" mt="5" mb="5" width="100%">
+                            <AspectRatio>
+                                {{ weeb } && <img src={weeb} alt="weeb" />}
+                            </AspectRatio>
+                        </Flex>
+                    </Container>
                     <Footer />
-                </div>
+                </Theme>
             )
         }
         if (window.location.pathname === "/") {
@@ -182,7 +232,6 @@ class App extends React.Component {
                         <HomePage profit={profit} darkMode={darkMode} colorBlindMode={colorBlindMode} />
                     </Container>
                     <Footer />
-                    {/* <ThemePanel /> */}
                 </Theme>
             )
         }
@@ -212,54 +261,6 @@ class App extends React.Component {
                         />
                     </Container>
                     <Footer />
-                    {/* <ThemePanel /> */}
-                </Theme>
-            )
-        }
-        if (isValidUrl(window.location.pathname, namesAndIds)) {
-            const name = namesAndIds.find(x => x.id == this.state.id);
-            return (
-                <Theme
-                    style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }}
-
-                    id="theme_element"
-                    className="top_container"
-                    scaling="90%"
-                    grayColor="mauve"
-                    accentColor="teal"
-                    panelBackground="translucent"
-                    appearance="dark">
-                    <Header
-                        toggleBackLight={this.toggleBackLight}
-                        toggleColorBlindMode={this.toggleColorBlindMode}
-                        colorBlindMode={colorBlindMode}
-                        backlight={backlight}
-                        setMaterialsLocation={this.setMaterialsLocation}
-                        setMaterialsOrderType={this.setMaterialsOrderType}
-                        setSubsystemsLocation={this.setSubsystemsLocation}
-                        setSubsystemsOrderType={this.setSubsystemsOrderType}
-                        materialsLocation={materialsLocation}
-                        materialsOrderType={materialsOrderType}
-                        subsystemsLocation={subsystemsLocation}
-                        subsystemsOrderType={subsystemsOrderType}
-                    />
-                    <Container size="4" mb="9" className="mobile_padding">
-                        {/* <PageTitle pageTitle={name.name} /> */}
-                        <PageTitle pageTitle="Interactive Chart"></PageTitle>
-                        <Heading weight="light" color="gray" mb="7" mt="-5" size="4">{name.name}</Heading>
-                        <MarketData
-                            name={name.name}
-                            id={this.state.id}
-                            darkMode={darkMode}
-                            materialsLocation={materialsLocation}
-                            materialsOrderType={materialsOrderType}
-                            subsystemsLocation={subsystemsLocation}
-                            subsystemsOrderType={subsystemsOrderType}
-                            colorBlindMode={colorBlindMode}
-                        />
-                    </Container>
-                    <Footer />
-                    {/* <ThemePanel /> */}
                 </Theme>
             )
         }
@@ -291,6 +292,88 @@ class App extends React.Component {
 
 
         }
+        if (isValidUrl(window.location.pathname, namesAndIds) && name) {
+            return (
+                <Theme
+                    style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }}
+                    id="theme_element"
+                    className="top_container"
+                    scaling="90%"
+                    grayColor="mauve"
+                    accentColor="teal"
+                    panelBackground="translucent"
+                    appearance="dark">
+                    <Header
+                        toggleBackLight={this.toggleBackLight}
+                        toggleColorBlindMode={this.toggleColorBlindMode}
+                        colorBlindMode={colorBlindMode}
+                        backlight={backlight}
+                        setMaterialsLocation={this.setMaterialsLocation}
+                        setMaterialsOrderType={this.setMaterialsOrderType}
+                        setSubsystemsLocation={this.setSubsystemsLocation}
+                        setSubsystemsOrderType={this.setSubsystemsOrderType}
+                        materialsLocation={materialsLocation}
+                        materialsOrderType={materialsOrderType}
+                        subsystemsLocation={subsystemsLocation}
+                        subsystemsOrderType={subsystemsOrderType}
+                    />
+                    <Container size="4" mb="9" className="mobile_padding">
+                        <PageTitle pageTitle="Interactive Chart"></PageTitle>
+                        <Heading weight="light" color="gray" mb="7" mt="-5" size="4">{name.name}</Heading>
+                        <MarketData
+                            name={name.name}
+                            id={this.state.id}
+                            darkMode={darkMode}
+                            setMaterialsLocation={this.setMaterialsLocation}
+                            setMaterialsOrderType={this.setMaterialsOrderType}
+                            setSubsystemsLocation={this.setSubsystemsLocation}
+                            setSubsystemsOrderType={this.setSubsystemsOrderType}
+                            materialsLocation={materialsLocation}
+                            materialsOrderType={materialsOrderType}
+                            subsystemsLocation={subsystemsLocation}
+                            subsystemsOrderType={subsystemsOrderType}
+                            colorBlindMode={colorBlindMode}
+                        />
+                    </Container>
+                    <Footer />
+                </Theme>
+            )
+        }
+        return (
+            <Theme
+                className="top_container"
+                style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }}
+                id="theme_element"
+                scaling="90%"
+                grayColor="mauve"
+                accentColor="teal"
+                panelBackground="translucent"
+                appearance="dark"
+            >
+                <Header toggleBackLight={this.toggleBackLight}
+                    toggleColorBlindMode={this.toggleColorBlindMode}
+                    colorBlindMode={colorBlindMode}
+                    backlight={backlight}
+                    setMaterialsLocation={this.setMaterialsLocation}
+                    setMaterialsOrderType={this.setMaterialsOrderType}
+                    setSubsystemsLocation={this.setSubsystemsLocation}
+                    setSubsystemsOrderType={this.setSubsystemsOrderType}
+                    materialsLocation={materialsLocation}
+                    materialsOrderType={materialsOrderType}
+                    subsystemsLocation={subsystemsLocation}
+                    subsystemsOrderType={subsystemsOrderType}
+                />
+                <Container size="4" mb="9" className="mobile_padding">
+                    <PageTitle pageTitle="Page not found" />
+                    <Flex direction="column" mt="5" mb="5" width="100%">
+                        <AspectRatio>
+                            {{ weeb } && <img src={weeb} alt="weeb" />}
+                        </AspectRatio>
+                    </Flex>
+                </Container>
+                <Footer />
+            </Theme>
+        )
     }
 }
 

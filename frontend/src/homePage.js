@@ -1,9 +1,7 @@
 import React from "react";
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
-import 'react-loading-skeleton/dist/skeleton.css';
 import axios from "axios";
 import HomePageTable from "./homePageTable.js";
-import { Table, Flex, Card, Section, Heading } from "@radix-ui/themes";
+import { Flex, Card } from "@radix-ui/themes";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 

@@ -11,17 +11,13 @@ import {
   CartesianGrid
 } from 'recharts';
 
-/**
- * Must match the logic in MarketData.jsx:
- * name includes "volume" or "loss" => bar data (small scale).
- */
 function isSmallScale(name = "") {
   const lower = name.toLowerCase();
   return lower.includes("volume") || lower.includes("loss");
 }
 
 function InteractiveChart(props) {
-  const { data, onBarClick } = props;
+  const { data } = props;
 
   if (!data || data.length === 0) {
     return <div>No chart data.</div>;
@@ -61,10 +57,12 @@ function InteractiveChart(props) {
     <ResponsiveContainer width="100%" height={400}>
       <ComposedChart
         data={chartData}
-        margin={{ top: 5, right: 30, left: 20, bottom: 5 }}
-        className="interactive_chart"
+        margin={{ 
+          top: 5,
+          left: 22,
+        }}
       >
-        {/* <CartesianGrid strokeDasharray="3 3" /> */}
+        <CartesianGrid strokeDasharray="3 3" />
         <XAxis
           dataKey="date"
           tick={{ fill: 'white', fontSize: 'calc(14px * 0.9)' }}
@@ -79,8 +77,17 @@ function InteractiveChart(props) {
           tick={{ fill: 'white', fontSize: 'calc(14px * 0.9)' }}
         />
         <Tooltip
-          wrapperStyle={{ pointerEvents: 'none' }}
-          cursor={{ stroke: 'none' }}
+          // wrapperStyle={{ pointerEvents: 'none' }}
+          // cursor={{ stroke: 'none' }}
+          contentStyle={{
+            backgroundColor: 'var(--mauve-2)',
+            borderRadius: 'var(--radius-4)',
+            color: 'white',
+            borderWidth: '1px',
+            padding: "var(--space-3)",
+            borderColor: 'color-mix(in oklab, var(--gray-a6), var(--gray-6) 25%)',
+            fontSize: 'calc(14px * 0.9)',
+          }}
         />
         <Legend
           wrapperStyle={{ color: 'white', fontSize: 'calc(14px * 0.9)' }}
@@ -89,7 +96,6 @@ function InteractiveChart(props) {
         {data.map((dataset, i) => {
           const color = colors[i % colors.length];
           if (isSmallScale(dataset.name)) {
-            // We attach onClick to bars
             return (
               <Bar
                 key={dataset.name}
@@ -98,17 +104,12 @@ function InteractiveChart(props) {
                 fill={color}
                 name={dataset.name}
                 cursor="pointer"
-                onClick={(barData, index, e) => {
-                  e.stopPropagation(); // optional
-                  if (onBarClick) {
-                    onBarClick(dataset.name);
-                  }
-                }}
               />
             );
           } else {
             return (
               <Line
+                strokeWidth={2}
                 key={dataset.name}
                 yAxisId="left"
                 type="monotone"

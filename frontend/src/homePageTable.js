@@ -1,15 +1,6 @@
 import React from "react";
-import namesAndIds from "./namesAndIds.js";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faChevronUp } from '@fortawesome/free-solid-svg-icons'
-import { faChevronDown } from '@fortawesome/free-solid-svg-icons'
-import { faEquals } from '@fortawesome/free-solid-svg-icons'
-import { faEllipsis } from '@fortawesome/free-solid-svg-icons'
-import { Table, Flex, Card, Section, Heading, AspectRatio, Link, Text, Button, Box, DropdownMenu } from "@radix-ui/themes";
+import { Table, Flex, Card, Heading, Link, Text, Button, DropdownMenu } from "@radix-ui/themes";
 import { DoubleArrowUpIcon, DoubleArrowDownIcon, DotsHorizontalIcon, ArrowUpIcon, ArrowDownIcon } from "@radix-ui/react-icons"
-
-// --- Added imports for DropdownMenu ---
-// import * as DropdownMenu from '@radix-ui/react-dropdown-menu';
 
 class HomePageTable extends React.Component {
     constructor(props) {
@@ -105,7 +96,7 @@ class HomePageTable extends React.Component {
     }
 
     render() {
-        const { isLoaded, table, darkMode, sortConfig, colorBlindMode } = this.state
+        const { sortConfig, colorBlindMode } = this.state
         const { data, hub } = this.props;
 
         let rows = [];

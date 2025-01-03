@@ -1,25 +1,16 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Text, Table, Flex, IconButton, Card, HoverCard, Box, Link, Heading } from "@radix-ui/themes";
+import { Text, Table, Flex, IconButton, Card, HoverCard, Box, Link, Heading, Select } from "@radix-ui/themes";
 import Cookies from 'js-cookie';
 import namesAndIds from './namesAndIds';
 import {
-  ArrowRightIcon,
-  ArrowLeftIcon,
   InfoCircledIcon,
   DoubleArrowDownIcon,
-  DoubleArrowUpIcon
+  DoubleArrowUpIcon,
+  CheckIcon,
+  Cross2Icon,
 } from "@radix-ui/react-icons";
 import InteractiveChart from './interactiveChart';
-
-/**
- * If the dataset name includes "volume" or "loss", treat it as bar data (small scale).
- * (Make sure this logic matches what you do in interactiveChart.jsx)
- */
-function isSmallScale(name = "") {
-  const lower = name.toLowerCase();
-  return lower.includes("volume") || lower.includes("loss");
-}
 
 class MarketData extends Component {
   constructor(props) {
@@ -44,8 +35,8 @@ class MarketData extends Component {
     this.renderIconButton = this.renderIconButton.bind(this);
     this.renderChart = this.renderChart.bind(this);
     this.handleIconClick = this.handleIconClick.bind(this);
-    this.handleBarClick = this.handleBarClick.bind(this);
     this.getClassName = this.getClassName.bind(this);
+    this.getLocationName = this.getLocationName.bind(this);
   }
 
   componentDidMount() {
@@ -169,7 +160,8 @@ class MarketData extends Component {
             dates: convertDates(data.profit.dates),
             dataValues: data.profit.dataValues,
             percentageChange: data.profit.thirtyDayMedianDelta,
-            addToGraph: true,
+            addToGraph: false,
+            info: `Buying materials from ${this.props.materialsOrderType} orders in ${this.getLocationName(this.props.materialsLocation)} and selling subsystems to ${this.props.subsystemsOrderType} orders in ${this.getLocationName(this.props.subsystemsLocation)}.`,
           },
           materialsCost: {
             name: data.matCosts.title,
@@ -178,6 +170,7 @@ class MarketData extends Component {
             dataValues: data.matCosts.dataValues,
             percentageChange: data.matCosts.thirtyDayMedianDelta,
             addToGraph: false,
+            info: `Buying materials from ${this.props.materialsOrderType} orders in ${this.getLocationName(this.props.materialsLocation)} and selling subsystems to ${this.props.subsystemsOrderType} orders in ${this.getLocationName(this.props.subsystemsLocation)}.`,
           },
           tradeVolume: {
             name: data.tradeVolume.title,
@@ -218,13 +211,58 @@ class MarketData extends Component {
       });
   }
 
+  getLocationName(location) {
+    // Jita, Amarr, Rens, Hek, Dodixie
+    //takes a region id and returns the name of the region
+    if (location === "10000002") {
+      return "Jita";
+    } else if (location === "10000043") {
+      return "Amarr";
+    } else if (location === "10000030") {
+      return "Rens";
+    } else if (location === "10000042") {
+      return "Hek";
+    } else if (location === "10000032") {
+      return "Dodixie";
+    }
+  }
+
   componentDidUpdate(prevProps) {
     if (this.props.name !== prevProps.name) {
       this.componentDidMount();
     }
+    if (this.props.colorBlindMode !== prevProps.colorBlindMode) {
+      this.setState({
+          colorBlindMode: this.props.colorBlindMode
+      });
+  }
+  if (this.props.backlight !== prevProps.backlight) {
+      this.setState({
+          backlight: this.props.backlight
+      });
+  }
+  if (this.props.materialsLocation !== prevProps.materialsLocation) {
+      this.setState({
+          materialsLocation: this.props.materialsLocation
+      });
+  }
+  if (this.props.materialsOrderType !== prevProps.materialsOrderType) {
+      this.setState({
+          materialsOrderType: this.props.materialsOrderType
+      });
+  }
+  if (this.props.subsystemsLocation !== prevProps.subsystemsLocation) {
+      this.setState({
+          subsystemsLocation: this.props.subsystemsLocation
+      });
+  }
+  if (this.props.subsystemsOrderType !== prevProps.subsystemsOrderType) {
+      this.setState({
+          subsystemsOrderType: this.props.subsystemsOrderType
+      });
+  }
   }
 
-  // Toggles a row's addToGraph from the "arrow button"
   handleIconClick(index) {
     this.setState((prevState) => {
       const updatedTableArr = prevState.tableArr.map((item, i) => {
@@ -241,33 +279,10 @@ class MarketData extends Component {
     });
   }
 
-  /**
-   * If a bar is clicked in the chart, we "just toggle the addToGraph
-   * of all OTHER bar data," leaving lines and the clicked bar alone.
-   */
-  handleBarClick(clickedName) {
-    console.log(`Bar clicked: ${clickedName}`);
-    this.setState((prevState) => {
-      const updatedTableArr = prevState.tableArr.map((item) => {
-        if (!item || !isSmallScale(item.name)) {
-          // If it's not bar data, do nothing
-          return item;
-        }
-        if (item.name === clickedName) {
-          // If it's the bar we actually clicked, do nothing
-          return item;
-        }
-        // For any other bar dataset, toggle its addToGraph
-        return { ...item, addToGraph: !item.addToGraph };
-      });
-      return { tableArr: updatedTableArr };
-    });
-  }
-
   renderIconButton(item, index) {
     const { addToGraph } = item;
     const variant = addToGraph ? "classic" : "outline";
-    const Icon = addToGraph ? ArrowLeftIcon : ArrowRightIcon;
+    const Icon = addToGraph ? Cross2Icon : CheckIcon;
 
     return (
       <IconButton
@@ -303,10 +318,80 @@ class MarketData extends Component {
 
     return (
       <Card height="100%" style={{ width: "100%", flex: "2" }}>
-        <Flex align="center" justify="center" style={{ height: "100%" }}>
+        <Flex justify="start" align="start" direction="column" style={{ height: "100%" }}>
+            {/* <Flex direction="column" align="start"> */}
+            <HoverCard.Root>
+              <HoverCard.Trigger>
+                <Table.Root>
+                <Table.ColumnHeaderCell>
+                  {/* {this.state.name} */}
+                <Text weight="bold" size="3">
+                  {this.state.name}
+                </Text>
+                </Table.ColumnHeaderCell>
+                </Table.Root>
+              </HoverCard.Trigger>
+              <HoverCard.Content maxWidth="300px">
+                <Flex gap="4" direction={"column"} justify={"start"}>
+                  <Heading size="3" weight="bold">Market Settings</Heading>
+                  <Flex gap="4" align="center" justify="start">
+                    <Text size="2" style={{ color: "var(--accent-a11)" }}>Materials</Text>
+                    <Select.Root defaultValue={this.props.materialsLocation} onValueChange={this.props.setMaterialsLocation}>
+                      <Select.Trigger />
+                      <Select.Content>
+                        <Select.Group>
+                          <Select.Label size="2">Trade hub</Select.Label>
+                          <Select.Item value="10000002">Jita</Select.Item>
+                          <Select.Item value="10000043">Amarr</Select.Item>
+                          <Select.Item value="10000030">Rens</Select.Item>
+                          <Select.Item value="10000042">Hek</Select.Item>
+                          <Select.Item value="10000032">Dodixie</Select.Item>
+                        </Select.Group>
+                      </Select.Content>
+                    </Select.Root>
+                    <Select.Root defaultValue={this.props.materialsOrderType} onValueChange={this.props.setMaterialsOrderType}>
+                      <Select.Trigger />
+                      <Select.Content>
+                        <Select.Group>
+                          <Select.Label size="2">Order Type</Select.Label>
+                          <Select.Item value="buy">Buy</Select.Item>
+                          <Select.Item value="sell">Sell</Select.Item>
+                        </Select.Group>
+                      </Select.Content>
+                    </Select.Root>
+                  </Flex>
+                  <Flex gap="4" align="center" justify="start">
+                    <Text size="2" style={{ color: "var(--accent-a11)" }}>Subsystems</Text>
+                    <Select.Root defaultValue={this.props.subsystemsLocation} onValueChange={this.props.setSubsystemsLocation}>
+                      <Select.Trigger />
+                      <Select.Content>
+                        <Select.Group>
+                          <Select.Label size="2">Trade hub</Select.Label>
+                          <Select.Item size="2" value="10000002">Jita</Select.Item>
+                          <Select.Item size="2" value="10000043">Amarr</Select.Item>
+                          <Select.Item size="2" value="10000030">Rens</Select.Item>
+                          <Select.Item size="2" value="10000042">Hek</Select.Item>
+                          <Select.Item size="2" value="10000032">Dodixie</Select.Item>
+                        </Select.Group>
+                      </Select.Content>
+                    </Select.Root>
+                    <Select.Root defaultValue={this.props.subsystemsOrderType} onValueChange={this.props.setSubsystemsOrderType}>
+                      <Select.Trigger />
+                      <Select.Content>
+                        <Select.Group>
+                          <Select.Label size="2">Order Type</Select.Label>
+                          <Select.Item size="2" value="buy">Buy</Select.Item>
+                          <Select.Item size="2" value="sell">Sell</Select.Item>
+                        </Select.Group>
+                      </Select.Content>
+                    </Select.Root>
+                  </Flex>
+                </Flex>
+              </HoverCard.Content>
+            </HoverCard.Root>
+            {/* </Flex> */}
           <InteractiveChart
             data={chartData}
-            onBarClick={this.handleBarClick}
           />
         </Flex>
       </Card>
@@ -315,6 +400,8 @@ class MarketData extends Component {
 
   render() {
     const { tableArr, isLoading, colorBlindMode } = this.state;
+
+    console.log(tableArr);
 
     if (isLoading) {
       return (
@@ -344,39 +431,35 @@ class MarketData extends Component {
               <Table.Body>
                 {tableArr.map((item, index) => {
                   if (!item) return null;
-
                   return (
                     <Table.Row key={index}>
                       <Table.Cell>
                         <Flex height="100%" align="center">
                           {item.info ? (
-                            <Text>
-                              {item.name}{" "}
-                              <HoverCard.Root>
-                                <HoverCard.Trigger>
-                                  <InfoCircledIcon height="13px" width="13px" />
-                                </HoverCard.Trigger>
-                                <HoverCard.Content maxWidth="300px">
-                                  <Flex gap="4">
-                                    <Box>
-                                      <Heading size="3" as="h3">
-                                        {item.name}
-                                      </Heading>
-                                      <Text as="div" size="2" color="gray" mb="2">
-                                        {item.info}
-                                      </Text>
-                                      <Text as="div" size="2">
-                                        Material costs based on your{" "}
-                                        <Link size="2" href="/build" target="_blank">
-                                          build
-                                        </Link>{" "}
-                                        settings.
-                                      </Text>
-                                    </Box>
-                                  </Flex>
-                                </HoverCard.Content>
-                              </HoverCard.Root>
-                            </Text>
+                            <HoverCard.Root>
+                              <HoverCard.Trigger>
+                                <Flex align="center" gap="1">
+                                  <Text>{item.name} </Text><InfoCircledIcon height="10px" width="10px" />
+                                </Flex>
+                              </HoverCard.Trigger>
+                              <HoverCard.Content maxWidth="300px">
+                                <Flex gap="1" direction={"column"} justify={"start"}>
+                                  <Heading size="3" mb="2">
+                                    {item.name}
+                                  </Heading>
+                                  <Text as="div" size="2" color="gray" mb="2">
+                                    {item.info}
+                                  </Text>
+                                  <Text size="2">
+                                    Material costs based on your{" "}
+                                    <Link size="2" href="/build" target="_blank">
+                                      build
+                                    </Link>{" "}
+                                    settings.
+                                  </Text>
+                                </Flex>
+                              </HoverCard.Content>
+                            </HoverCard.Root>
                           ) : (
                             <Text>{item.name}</Text>
                           )}
