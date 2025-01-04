@@ -11,6 +11,8 @@ import {
   Cross2Icon,
 } from "@radix-ui/react-icons";
 import InteractiveChart from './interactiveChart';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
 class MarketData extends Component {
   constructor(props) {
@@ -233,34 +235,34 @@ class MarketData extends Component {
     }
     if (this.props.colorBlindMode !== prevProps.colorBlindMode) {
       this.setState({
-          colorBlindMode: this.props.colorBlindMode
+        colorBlindMode: this.props.colorBlindMode
       });
-  }
-  if (this.props.backlight !== prevProps.backlight) {
+    }
+    if (this.props.backlight !== prevProps.backlight) {
       this.setState({
-          backlight: this.props.backlight
+        backlight: this.props.backlight
       });
-  }
-  if (this.props.materialsLocation !== prevProps.materialsLocation) {
+    }
+    if (this.props.materialsLocation !== prevProps.materialsLocation) {
       this.setState({
-          materialsLocation: this.props.materialsLocation
+        materialsLocation: this.props.materialsLocation
       });
-  }
-  if (this.props.materialsOrderType !== prevProps.materialsOrderType) {
+    }
+    if (this.props.materialsOrderType !== prevProps.materialsOrderType) {
       this.setState({
-          materialsOrderType: this.props.materialsOrderType
+        materialsOrderType: this.props.materialsOrderType
       });
-  }
-  if (this.props.subsystemsLocation !== prevProps.subsystemsLocation) {
+    }
+    if (this.props.subsystemsLocation !== prevProps.subsystemsLocation) {
       this.setState({
-          subsystemsLocation: this.props.subsystemsLocation
+        subsystemsLocation: this.props.subsystemsLocation
       });
-  }
-  if (this.props.subsystemsOrderType !== prevProps.subsystemsOrderType) {
+    }
+    if (this.props.subsystemsOrderType !== prevProps.subsystemsOrderType) {
       this.setState({
-          subsystemsOrderType: this.props.subsystemsOrderType
+        subsystemsOrderType: this.props.subsystemsOrderType
       });
-  }
+    }
   }
 
   handleIconClick(index) {
@@ -319,77 +321,77 @@ class MarketData extends Component {
     return (
       <Card height="100%" style={{ width: "100%", flex: "2" }}>
         <Flex justify="start" align="start" direction="column" style={{ height: "100%" }}>
-            {/* <Flex direction="column" align="start"> */}
-            <HoverCard.Root>
-              <HoverCard.Trigger>
-                <Table.Root>
+          {/* <Flex direction="column" align="start"> */}
+          <HoverCard.Root>
+            <HoverCard.Trigger>
+              <Table.Root>
                 <Table.ColumnHeaderCell>
                   {/* {this.state.name} */}
-                <Text weight="bold" size="3">
-                  {this.state.name}
-                </Text>
+                  <Text weight="bold" size="3">
+                    {this.state.name}
+                  </Text>
                 </Table.ColumnHeaderCell>
-                </Table.Root>
-              </HoverCard.Trigger>
-              <HoverCard.Content maxWidth="300px">
-                <Flex gap="4" direction={"column"} justify={"start"}>
-                  <Heading size="3" weight="bold">Market Settings</Heading>
-                  <Flex gap="4" align="center" justify="start">
-                    <Text size="2" style={{ color: "var(--accent-a11)" }}>Materials</Text>
-                    <Select.Root defaultValue={this.props.materialsLocation} onValueChange={this.props.setMaterialsLocation}>
-                      <Select.Trigger />
-                      <Select.Content>
-                        <Select.Group>
-                          <Select.Label size="2">Trade hub</Select.Label>
-                          <Select.Item value="10000002">Jita</Select.Item>
-                          <Select.Item value="10000043">Amarr</Select.Item>
-                          <Select.Item value="10000030">Rens</Select.Item>
-                          <Select.Item value="10000042">Hek</Select.Item>
-                          <Select.Item value="10000032">Dodixie</Select.Item>
-                        </Select.Group>
-                      </Select.Content>
-                    </Select.Root>
-                    <Select.Root defaultValue={this.props.materialsOrderType} onValueChange={this.props.setMaterialsOrderType}>
-                      <Select.Trigger />
-                      <Select.Content>
-                        <Select.Group>
-                          <Select.Label size="2">Order Type</Select.Label>
-                          <Select.Item value="buy">Buy</Select.Item>
-                          <Select.Item value="sell">Sell</Select.Item>
-                        </Select.Group>
-                      </Select.Content>
-                    </Select.Root>
-                  </Flex>
-                  <Flex gap="4" align="center" justify="start">
-                    <Text size="2" style={{ color: "var(--accent-a11)" }}>Subsystems</Text>
-                    <Select.Root defaultValue={this.props.subsystemsLocation} onValueChange={this.props.setSubsystemsLocation}>
-                      <Select.Trigger />
-                      <Select.Content>
-                        <Select.Group>
-                          <Select.Label size="2">Trade hub</Select.Label>
-                          <Select.Item size="2" value="10000002">Jita</Select.Item>
-                          <Select.Item size="2" value="10000043">Amarr</Select.Item>
-                          <Select.Item size="2" value="10000030">Rens</Select.Item>
-                          <Select.Item size="2" value="10000042">Hek</Select.Item>
-                          <Select.Item size="2" value="10000032">Dodixie</Select.Item>
-                        </Select.Group>
-                      </Select.Content>
-                    </Select.Root>
-                    <Select.Root defaultValue={this.props.subsystemsOrderType} onValueChange={this.props.setSubsystemsOrderType}>
-                      <Select.Trigger />
-                      <Select.Content>
-                        <Select.Group>
-                          <Select.Label size="2">Order Type</Select.Label>
-                          <Select.Item size="2" value="buy">Buy</Select.Item>
-                          <Select.Item size="2" value="sell">Sell</Select.Item>
-                        </Select.Group>
-                      </Select.Content>
-                    </Select.Root>
-                  </Flex>
+              </Table.Root>
+            </HoverCard.Trigger>
+            <HoverCard.Content maxWidth="300px">
+              <Flex gap="4" direction={"column"} justify={"start"}>
+                <Heading size="3" weight="bold">Market Settings</Heading>
+                <Flex gap="4" align="center" justify="start">
+                  <Text size="2" style={{ color: "var(--accent-a11)" }}>Materials</Text>
+                  <Select.Root defaultValue={this.props.materialsLocation} onValueChange={this.props.setMaterialsLocation}>
+                    <Select.Trigger />
+                    <Select.Content>
+                      <Select.Group>
+                        <Select.Label size="2">Trade hub</Select.Label>
+                        <Select.Item value="10000002">Jita</Select.Item>
+                        <Select.Item value="10000043">Amarr</Select.Item>
+                        <Select.Item value="10000030">Rens</Select.Item>
+                        <Select.Item value="10000042">Hek</Select.Item>
+                        <Select.Item value="10000032">Dodixie</Select.Item>
+                      </Select.Group>
+                    </Select.Content>
+                  </Select.Root>
+                  <Select.Root defaultValue={this.props.materialsOrderType} onValueChange={this.props.setMaterialsOrderType}>
+                    <Select.Trigger />
+                    <Select.Content>
+                      <Select.Group>
+                        <Select.Label size="2">Order Type</Select.Label>
+                        <Select.Item value="buy">Buy</Select.Item>
+                        <Select.Item value="sell">Sell</Select.Item>
+                      </Select.Group>
+                    </Select.Content>
+                  </Select.Root>
                 </Flex>
-              </HoverCard.Content>
-            </HoverCard.Root>
-            {/* </Flex> */}
+                <Flex gap="4" align="center" justify="start">
+                  <Text size="2" style={{ color: "var(--accent-a11)" }}>Subsystems</Text>
+                  <Select.Root defaultValue={this.props.subsystemsLocation} onValueChange={this.props.setSubsystemsLocation}>
+                    <Select.Trigger />
+                    <Select.Content>
+                      <Select.Group>
+                        <Select.Label size="2">Trade hub</Select.Label>
+                        <Select.Item size="2" value="10000002">Jita</Select.Item>
+                        <Select.Item size="2" value="10000043">Amarr</Select.Item>
+                        <Select.Item size="2" value="10000030">Rens</Select.Item>
+                        <Select.Item size="2" value="10000042">Hek</Select.Item>
+                        <Select.Item size="2" value="10000032">Dodixie</Select.Item>
+                      </Select.Group>
+                    </Select.Content>
+                  </Select.Root>
+                  <Select.Root defaultValue={this.props.subsystemsOrderType} onValueChange={this.props.setSubsystemsOrderType}>
+                    <Select.Trigger />
+                    <Select.Content>
+                      <Select.Group>
+                        <Select.Label size="2">Order Type</Select.Label>
+                        <Select.Item size="2" value="buy">Buy</Select.Item>
+                        <Select.Item size="2" value="sell">Sell</Select.Item>
+                      </Select.Group>
+                    </Select.Content>
+                  </Select.Root>
+                </Flex>
+              </Flex>
+            </HoverCard.Content>
+          </HoverCard.Root>
+          {/* </Flex> */}
           <InteractiveChart
             data={chartData}
           />
@@ -405,8 +407,22 @@ class MarketData extends Component {
 
     if (isLoading) {
       return (
-        <Flex>
-          <Text>Loading...</Text>
+        <Flex
+          id="detailed_analysis_page_main_container"
+          style={{ width: "100%" }}
+          direction="row"
+          gap="4"
+        >
+          <Card className="market_data_table" style={{ width: "100%", flex: "1" }}>
+            <Flex justify="center" align="center" style={{ height: "65vh" }}>
+              <FontAwesomeIcon icon={faCircleNotch} spin size="xl" />
+            </Flex>
+          </Card>
+          <Card height="100%" style={{ width: "100%", flex: "2" }}>
+            <Flex justify="center" align="center" style={{ height: "100%" }}>
+              <FontAwesomeIcon icon={faCircleNotch} spin size="xl" />
+            </Flex>
+          </Card>
         </Flex>
       );
     }
@@ -438,8 +454,8 @@ class MarketData extends Component {
                           {item.info ? (
                             <HoverCard.Root>
                               <HoverCard.Trigger>
-                                <Flex align="center" gap="1">
-                                  <Text>{item.name} </Text><InfoCircledIcon height="10px" width="10px" />
+                                <Flex justify="start" align="center" gap="1">
+                                  <Text>{item.name} </Text><InfoCircledIcon className="info_icon" height="10px" width="10px" />
                                 </Flex>
                               </HoverCard.Trigger>
                               <HoverCard.Content maxWidth="300px">

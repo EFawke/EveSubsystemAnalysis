@@ -349,12 +349,11 @@ function getLossesData(subsystems) {
 const getProfits = (matCosts, marketData) => {
     let returnObject = {};
     returnObject.title = "Profit";
-    returnObject.currentValue = marketData.currentValue - matCosts.currentValue;
+    returnObject.currentValue = Number(marketData.currentValue).toFixed(0) - Number(matCosts.currentValue).toFixed(2);
     returnObject.dates = marketData.dates;
     returnObject.dataValues = marketData.dataValues.map((value, index) => {
-        return value - matCosts.dataValues[index];
+        return Number(value).toFixed(0) - Number(matCosts.dataValues[index]).toFixed(2);
     });
-
     const lastThirtyDays = returnObject.dataValues.slice(-30);
     const sortedThirtyDays = [...lastThirtyDays].sort((a, b) => a - b);
     let median = 0;
@@ -362,11 +361,9 @@ const getProfits = (matCosts, marketData) => {
         const mid = Math.floor(sortedThirtyDays.length / 2);
         median = sortedThirtyDays.length % 2 !== 0 ? sortedThirtyDays[mid] : (sortedThirtyDays[mid - 1] + sortedThirtyDays[mid]) / 2;
     }
-
     if (median > 0) {
         returnObject.thirtyDayMedianDelta = (((returnObject.currentValue - median) / median) * 100).toFixed(1);
     }
-
     return returnObject;
 };
 

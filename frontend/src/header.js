@@ -72,7 +72,7 @@ class Header extends React.Component {
             iconTop = this.headerIconRef.current.offsetTop;
         }
 
-        const sidebarWidth = window.innerWidth < 1111 ? window.innerWidth : window.innerWidth - iconPosition.left;
+        const sidebarWidth = window.innerWidth < 1111 ? window.innerWidth : window.innerWidth - iconPosition.left + 20;
 
         return (
             <>

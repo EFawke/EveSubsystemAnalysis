@@ -77,6 +77,10 @@ html, body {
         display: none;
     }
 
+    .info_icon {
+        display: none;
+    }
+
     .mobile_padding {
         padding: 0 10px;
     }
