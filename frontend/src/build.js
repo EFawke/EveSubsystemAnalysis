@@ -1,12 +1,10 @@
 import React from "react";
 import axios from 'axios';
 import Divider from '@mui/material/Divider';
-import Cookies from 'js-cookie';
-import Skeleton, { SkeletonTheme } from 'react-loading-skeleton';
+import Cookies from 'js-cookie'
 import 'react-loading-skeleton/dist/skeleton.css';
 import { Section, Flex, Accordion, Link, Heading, Text, Table, IconButton, Container, Card, Box, Button, DropdownMenu } from "@radix-ui/themes";
-import { ChevronDownIcon } from "@radix-ui/react-icons";
-import AccordionDemo from "./settingsAccordion.js";
+import SettingsAccordion from "./settingsAccordion.js";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 
@@ -18,6 +16,8 @@ class Build extends React.Component {
             numSlots: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.numSlots : 1,
             darkMode: this.props.darkMode || false,
             refinery: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.refinery : 'Tatara',
+            materialsLocation: Cookies.get('materialsLocation') != null ? Cookies.get('materialsLocation') : "10000002",
+            materialsOrderType: Cookies.get('materialsOrderType') != null ? Cookies.get('materialsOrderType') : "buy",
             refineryTeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.refineryTeRig : 'None',
             refineryMeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.refineryMeRig : 'None',
             refinerySystem: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.refinerySystem : 'wormhole',
@@ -252,20 +252,22 @@ class Build extends React.Component {
 
         return (
             <Flex
+                className="build_container"
                 width="100%"
                 // Choose column vs. row based on window width
                 direction={isNarrow ? "column" : "row"}
                 gap="4"
             >
                 <Flex
+                    className="settings_accordion"
                     // If column layout, each child is 100%.
                     // If row layout, keep original widths.
                     style={{
-                        width: isNarrow ? "100%" : "calc(100% / 3)",
+                        // width: isNarrow ? "100%" : "calc(100% / 3)",
                         height: "fit-content",
                     }}
                 >
-                    <AccordionDemo
+                    <SettingsAccordion
                         refinery={refinery}
                         teRig={teRig}
                         meRig={meRig}
@@ -299,8 +301,9 @@ class Build extends React.Component {
                     />
                 </Flex>
                 <Flex
+                    className="required_materials"
                     style={{
-                        width: isNarrow ? "100%" : "calc(100% - (100% / 3))"
+                        // width: isNarrow ? "100%" : "calc(100% - (100% / 3))"
                     }}
                 >
                     <Card style={{ width: "100%" }}>

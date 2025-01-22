@@ -435,7 +435,7 @@ class MarketData extends Component {
         gap="4"
       >
         <Card className="market_data_table">
-          <Flex>
+          {/* <Flex> */}
             <Table.Root>
               <Table.Header>
                 <Table.Row>
@@ -513,7 +513,7 @@ class MarketData extends Component {
                 })}
               </Table.Body>
             </Table.Root>
-          </Flex>
+          {/* </Flex> */}
         </Card>
         {this.renderChart()}
       </Flex>

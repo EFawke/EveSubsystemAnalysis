@@ -389,6 +389,8 @@ const getMaterialRequirements = (settings) => {
 
     const specComponentQuantities = calculateSpecComponentQuantities(coreRuns, offRuns, propRuns, defRuns, blueprints, structure, rigOne, rigTwo, location);
 
+    // console.log(specComponentQuantities)
+
     for (let i = 0; i < mainComponents.length; i++) {
         const mainComponentId = mainComponents[i].type_id;
         const mainComponentName = mainComponents[i].name;
@@ -606,6 +608,10 @@ const getMaterialRequirements = (settings) => {
     // Aggregate unique salvage and reactions
     const uniqueSalvage = aggregateItems(totalSalvageRequired);
     const uniqueReactions = aggregateItems(reactionsQuantities);
+
+    // console.log(uniqueSalvage)
+    // console.log(uniqueReactions)
+
 
     const uniqueSalvageForCore = aggregateItems(totalSalvageRequiredForCore);
     const uniqueReactionsForCore = aggregateItems(reactionsQuantitiesForCore);
@@ -1050,21 +1056,32 @@ const getMaterialRequirements = (settings) => {
     //     return schedule;
     // }
 
-    // scheduleReactions(uniqueReactions, slots);
+    let schedule = scheduleReactions(uniqueReactions, slots);
+
+    // console.log("test")
+    // console.log(schedule);
     
     // const schedule = scheduleReactionsOld(uniqueReactions, slots);
 
     // console.log(schedule);
+
     //just make schedule an array with the reactions
-    const schedule = [];
-    for(let i = 0; i < uniqueReactions.length; i++) {
-        schedule.push({numRuns: uniqueReactions[i].runs, reactionName: uniqueReactions[i].name});
-    }
+    // if(!schedule) {
+    //     console.log("no schedule")
+    //     schedule = [];
+    //     for(let i = 0; i < uniqueReactions.length; i++) {
+    //         schedule.push({numRuns: uniqueReactions[i].runs, reactionName: uniqueReactions[i].name});
+    //     }
+    // }
+    // const schedule = [];
+    // for(let i = 0; i < uniqueReactions.length; i++) {
+    //     schedule.push({numRuns: uniqueReactions[i].runs, reactionName: uniqueReactions[i].name});
+    // }
 
     //add more data about the reactions to the schedule
     for (let i = 0; i < schedule.length; i++) {
-        if(schedule[i].numRuns > 0) {
-            const reactionId = uniqueReactions.find(item => item.name === schedule[i].reactionName).id;
+        if(schedule[i].runs > 0) {
+            const reactionId = uniqueReactions.find(item => item.name === schedule[i].name).id;
             const reactionRequirements = uniqueReactions.find(item => item.id === reactionId).requirements;
             const output = uniqueReactions.find(item => item.id === reactionId).output;
             schedule[i].id = reactionId;
@@ -1079,7 +1096,7 @@ const getMaterialRequirements = (settings) => {
     const gasRequirementsAfterScheduling = [];
 
     for (let i = 0; i < schedule.length; i++) {
-        const runs = schedule[i].numRuns;
+        const runs = schedule[i].runs;
         for (let j = 0; j < schedule[i].requirements?.length; j++) {
             const existingItem = gasRequirementsAfterScheduling.find(item => item.type_id === schedule[i].requirements[j].type_id);
             if (existingItem) {

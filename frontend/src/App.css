@@ -60,19 +60,38 @@ html, body {
     padding-left: 20px;
 }
 
+.settings_accordion {
+    width: calc(100% / 3);
+}
+
+.required_materials {
+    width: calc(100% - (100% / 3));
+}
+
 /* if screen is less than 1111px wide */
 @media (max-width: 1111px) {
+    .settings_accordion {
+        width: 100%;
+    }
+
+    .required_materials {
+        width: 100%;
+    }
+
     #detailed_analysis_page_main_container {
         flex-direction: column;
     }
+
     .market_data_table {
         width: 100%;
         flex: '2';
     }
+
     .interactive_chart {
         padding: 0;
         margin-right: 0 !important;
     }
+
     #searchbox {
         display: none;
     }
@@ -83,5 +102,9 @@ html, body {
 
     .mobile_padding {
         padding: 0 10px;
+    }
+    
+    .build_container {
+        flex-direction: column;
     }
 }

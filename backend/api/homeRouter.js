@@ -32,6 +32,36 @@ const calculateMedian = (arr) => {
         : (sorted[mid - 1] + sorted[mid]) / 2;
 };
 
+// Function to get the lowest sell order price
+function getLowestSellOrderPrice(orders) {
+    const sellOrders = orders.filter(order => !order.is_buy_order);
+    return sellOrders.reduce((lowest, order) => {
+        return order.price < lowest ? order.price : lowest;
+    }, Infinity);
+}
+
+// Function to get the highest buy order price
+function getHighestBuyOrderPrice(orders) {
+    const buyOrders = orders.filter(order => order.is_buy_order);
+    return buyOrders.reduce((highest, order) => {
+        return order.price > highest ? order.price : highest;
+    }, -Infinity);
+}
+
+// Function to get the total sell volume
+function getSellVolume(orders) {
+    return orders
+        .filter(order => !order.is_buy_order)
+        .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
+}
+
+// Function to get the total buy volume
+function getBuyVolume(orders) {
+    return orders
+        .filter(order => order.is_buy_order)
+        .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
+}
+
 homeRouter.post('/', async (req, res) => {
     const tradeHub = req.body.tradeHub;
     try {
@@ -72,8 +102,14 @@ homeRouter.post('/', async (req, res) => {
             const medianSellVolume = calculateMedian(histData.map(row => Number(row.sellvolume)));
             const medianBuyVolume = calculateMedian(histData.map(row => Number(row.buyvolume)));
 
-            const response = await axios.get(`https://evetycoon.com/api/v1/market/stats/${tradeHub}/${type_id}`);
-            const priceData = response.data;
+            const response = await axios.get(`https://esi.evetech.net/latest/markets/${tradeHub}/orders/?type_id=${type_id}`)
+            const priceData = {};
+
+            priceData.minSell = getLowestSellOrderPrice(response.data);
+            priceData.maxBuy = getHighestBuyOrderPrice(response.data);
+            priceData.sellVolume = getSellVolume(response.data);
+            priceData.buyVolume = getBuyVolume(response.data);
+            
 
             const minSellPercentageChange = medianSell
                 ? ((Number(priceData.minSell) - medianSell) / medianSell) * 100
@@ -113,6 +149,8 @@ homeRouter.post('/', async (req, res) => {
 
         // Send the combined result as JSON
         res.json(priceDataResults);
+
+        console.log(priceDataResults)
     } catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).json({ error: "Internal Server Error" });

@@ -4,6 +4,41 @@ const rensRegion = '10000030';
 const hekRegion = '10000042';
 const dodixieRegion = '10000032';
 
+function getLowestSellOrderPrice(orders) {
+    const sellOrders = orders.filter(order => !order.is_buy_order);
+    if (sellOrders.length === 0) return null; // No sell orders
+    return sellOrders.reduce((lowest, order) => Math.min(lowest, order.price), Infinity);
+}
+
+// Function to get the highest buy order price
+function getHighestBuyOrderPrice(orders) {
+    const buyOrders = orders.filter(order => order.is_buy_order);
+    if (buyOrders.length === 0) return null; // No buy orders
+    return buyOrders.reduce((highest, order) => Math.max(highest, order.price), -Infinity);
+}
+
+// Function to get the total sell volume
+function getSellVolume(orders) {
+    return orders
+        .filter(order => !order.is_buy_order)
+        .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
+}
+
+// Function to get the total buy volume
+function getBuyVolume(orders) {
+    return orders
+        .filter(order => order.is_buy_order)
+        .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
+}
+
+function getBuyOrderCount(orders) {
+    return orders.filter(order => order.is_buy_order).length;
+}
+
+function getSellOrderCount(orders) {
+    return orders.filter(order => !order.is_buy_order).length;
+}
+
 const getPrevData = async (client, locationId, subsystemType, column) => {
     const query = `SELECT ${column} FROM price_data WHERE region = '${locationId}' AND type_id = '${subsystemType}' ORDER BY date DESC LIMIT 1`;
     const res = await client.query(query);
@@ -14,7 +49,7 @@ const getPrevData = async (client, locationId, subsystemType, column) => {
 }
 
 const makeUrl = (subId, locationId) => {
-    return `https://evetycoon.com/api/v1/market/stats/${locationId}/${subId}`;
+    return `https://esi.evetech.net/latest/markets/${locationId}/orders/?type_id=${subId}`
 }
 
 const chill = (ms) => {
@@ -24,9 +59,17 @@ const chill = (ms) => {
 const getMarketData = async (subsystemType, locationId, client, axios, name, locationName, epoch, type) => {
     const endpoint = makeUrl(subsystemType, locationId);
     const responses = await axios.get(endpoint)
-    console.log(responses.data);
     let query = 'INSERT INTO price_data (date, region, type_id, average_price, highest_price, lowest_price, order_count, volume, buyVolume, sellVolume, buyOrders, sellOrders, maxBuy, minSell) VALUES ';
-    const data = responses.data;
+    // const data = responses.data;
+    const data = {};
+
+    data.minSell = getLowestSellOrderPrice(responses.data);
+    data.maxBuy = getHighestBuyOrderPrice(responses.data);
+    data.sellVolume = getSellVolume(responses.data);
+    data.buyVolume = getBuyVolume(responses.data);
+    data.sellOrders = getSellOrderCount(responses.data)
+    data.buyOrders = getBuyOrderCount(responses.data)
+
 
     if (isNaN(data.minSell) || isNaN(data.maxBuy) || isNaN(data.buyVolume) || isNaN(data.sellVolume) || isNaN(data.buyOrders) || isNaN(data.sellOrders) || !isFinite(data.minSell) || !isFinite(data.maxBuy) || !isFinite(data.buyVolume) || !isFinite(data.sellVolume) || !isFinite(data.buyOrders) || !isFinite(data.sellOrders)) {
         console.error("Invalid price data detected: ", data);

@@ -9,10 +9,9 @@ import Footer from './footer';
 import namesAndIds from './namesAndIds.js';
 import Build from './build.js';
 import Cookies from 'js-cookie';
-import { Theme, AspectRatio, ThemePanel, Container, Heading, Button, Flex, Text, Box, HoverCard } from "@radix-ui/themes";
+import { Theme, AspectRatio, ThemePanel, Container, Heading, Flex } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import PageTitle from './PageTitle';
-import { useMouseMove, useValue } from "react-ui-animate";
 import './App.css';
 import About from './about.js';
 //get the weeb image at weeb.jpeg

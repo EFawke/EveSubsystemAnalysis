@@ -5,7 +5,7 @@ import { ChevronDownIcon } from "@radix-ui/react-icons";
 import "./accordion-styles.css";
 import { Slider, TextField, Flex, Select, Text } from "@radix-ui/themes";
 
-const AccordionDemo = (props) => (
+const SettingsAccordion = (props) => (
 	// console.log(props),
 	<Accordion.Root className="AccordionRoot" type="single" collapsible width="100%">
 		<Accordion.Item className="AccordionItem" value="item-1">
@@ -287,7 +287,7 @@ const AccordionDemo = (props) => (
 						</Flex>
 						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>Skill Level</Text>
-							<Slider name="skillLevel" min={0} step={1} max={5} defaultValue={[Number(props.skillLevel)]} onValueCommit={(e) => props.handleSliderChange(e, "skillLevel")}/>
+							<Slider name="skillLevel" min={0} step={1} max={5} defaultValue={[Number(props.skillLevel)]} onValueCommit={(e) => props.handleSliderChange(e, "skillLevel")}/>	
 						</Flex>
 					</Flex>
 					<Flex direction="column" gap="2" align="start" style={{ width: "50%" }}>
@@ -332,4 +332,4 @@ const AccordionContent = React.forwardRef(
 	),
 );
 
-export default AccordionDemo;
+export default SettingsAccordion;

@@ -75,6 +75,7 @@ function InteractiveChart(props) {
           yAxisId="right"
           orientation="right"
           tick={{ fill: 'white', fontSize: 'calc(14px * 0.9)' }}
+          domain={[0, dataMax => (dataMax * 2)]}
         />
         <Tooltip
           // wrapperStyle={{ pointerEvents: 'none' }}

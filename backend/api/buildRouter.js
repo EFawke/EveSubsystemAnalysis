@@ -82,19 +82,43 @@ const calculateEIV = (requirements, numRuns, marketData) => {
     return totalCost * numRuns;
 }
 
+const getValueFromData = (orderType, array, quantity) => {
+    if(orderType == "buy"){
+        const sortedArray = array.sort((a, b) => b.price - a.price);
+        return sortedArray[0].price * quantity
+    }
+    if(orderType == "sell"){
+        const sortedArray = array.sort((a, b) => a.price - b.price);
+        return sortedArray[0].price * quantity
+    }
+}
+
+const getUnitPriceFromData = (orderType, array) => {
+    if(orderType == "buy"){
+        const sortedArray = array.sort((a, b) => b.price - a.price);
+        return sortedArray[0].price;
+    }
+    if(orderType == "sell"){
+        const sortedArray = array.sort((a, b) => a.price - b.price);
+        return sortedArray[0].price;
+    }
+}
+
 buildRouter.post('/', async (req, res) => {
     const settings = req.body;
     const materialRequirements = getMaterialRequirements(settings);
+    // console.log(materialRequirements);
 
     axios.get(`https://esi.evetech.net/latest/markets/prices/?datasource=tranquility`).then(async (response) => {
         // get the building costs from schedule
+        // console.log(response)
         let totalTax = 0;
         for (let i = 0; i < materialRequirements.schedule.length; i++) {
             const slot = materialRequirements.schedule[i];
             const reaction = reactionRequirements.find(reaction => reaction.type_id === slot.id);
 
             if (reaction) {
-                const calculatedEIV = calculateEIV(reaction.requirements, slot.numRuns, response.data);
+                const calculatedEIV = calculateEIV(reaction.requirements, slot.runs, response.data);
                 const formulaReactionCostIndex = settings.reactionCostIndex / 100;
                 const systemCostIndex = Math.floor(calculatedEIV * formulaReactionCostIndex);
                 const facilityTax = Math.floor(calculatedEIV * settings.reactionFacilityTax / 100);
@@ -387,14 +411,16 @@ buildRouter.post('/', async (req, res) => {
             totalTax += BPOTaxTotal;
         }
 
+        console.log(settings)
+
         const maxBuyPromises = materialRequirements.requiredMaterialsForAll
             .filter(item => item.id !== null)
             .map(item =>
-            axios.get(`https://evetycoon.com/api/v1/market/stats/10000002/${item.id}`)
+                axios.get(`https://esi.evetech.net/latest/markets/${settings.materialsLocation}/orders/?type_id=${item.id}&order_type=${settings.materialsOrderType}`)
                 .then((response) => {
                 if (!componentIds.includes(item.id)) {
-                    const lineTotal = response.data.maxBuy * item.quantity;
-                    const unitPrice = response.data.maxBuy;
+                    let lineTotal = getValueFromData(settings.materialsOrderType, response.data, item.quantity)
+                    let unitPrice = getUnitPriceFromData(settings.materialsOrderType, response.data)
                     item.lineTotal = lineTotal;
                     item.unitPrice = unitPrice;
                     return lineTotal;
@@ -403,12 +429,13 @@ buildRouter.post('/', async (req, res) => {
                 }
                 })
                 .catch(error => {
-                console.error(`Error fetching max buy price for item ${item.id}:`, error);
-                return 0;
+                    console.log(`Error fetching max buy price for item ${item.id}:`, error);
+                    // client.query() //fetch from database as a backup
+                    return 0;
                 })
             );
 
-        // console.log("Total tax:", totalTax);
+        console.log("Total tax:", totalTax);
 
         const maxBuys = await axios.all(maxBuyPromises)
             .then(results => results.reduce((acc, price) => acc + price, 0))
