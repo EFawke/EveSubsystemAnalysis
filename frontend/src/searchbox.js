@@ -1,28 +1,81 @@
-import React from 'react';
-import { Box, Select } from '@radix-ui/themes';
-import namesAndIds from './namesAndIds';
+import { useState, useRef, useEffect } from "react";
+import namesAndIds from "./namesAndIds";
+import * as Ariakit from "@ariakit/react";
+import "./searchbox.css";
 
-const SearchBox = () => {
-    const handleSelect = (value) => {
-        window.location.href = `/subsystem/${value}`;
+export default function SearchBox() {
+  const comboboxStore = Ariakit.useComboboxStore();
+  const [selectedValue, setSelectedValue] = useState(null);
+
+  // We can observe the store's "value" state directly. This returns what the user typed.
+  const searchValue = comboboxStore.useState("value");
+
+  // Filter your array based on the searchValue
+  const filteredNames = namesAndIds.filter((item) =>
+    item.name.toLowerCase().includes(searchValue.toLowerCase())
+  );
+
+  // Create a ref for focusing on hotkey press
+  const comboboxRef = useRef(null);
+
+  // Hotkey for "/"
+  useEffect(() => {
+    const handleKeyDown = (event) => {
+      const isTypingElsewhere =
+        event.target instanceof HTMLInputElement ||
+        event.target instanceof HTMLTextAreaElement ||
+        event.target.isContentEditable;
+
+      if (!isTypingElsewhere && event.key === "/") {
+        event.preventDefault();
+        comboboxRef.current?.focus();
+        comboboxStore.setOpen(true);
+      }
     };
 
-    return (
-        <Box id="searchbox">
-        <Select.Root onValueChange={handleSelect}>
-            <Select.Trigger placeholder="Find Subsystems..." />
-            <Select.Content position="popper">
-                <Select.Group>
-                    {namesAndIds.map((item) => (
-                        <Select.Item key={item.id} value={item.id}>
-                            {item.name}
-                        </Select.Item>
-                    ))}
-                </Select.Group>
-            </Select.Content>
-        </Select.Root>
-        </Box>
-    )
-};
+    document.addEventListener("keydown", handleKeyDown);
+    return () => {
+      document.removeEventListener("keydown", handleKeyDown);
+    };
+  }, [comboboxStore]);
 
-export default SearchBox;
+  const handleSelect = (value) => {
+    setSelectedValue(value);
+    const selectedItem = namesAndIds.find((item) => item.name === value);
+    if (selectedItem) {
+      window.location.href = `/subsystem/${selectedItem.id}`;
+    }
+  };
+
+  return (
+    <Ariakit.ComboboxProvider store={comboboxStore}>
+      {/* Attach ref for focusing */}
+      <Ariakit.Combobox
+        ref={comboboxRef}
+        store={comboboxStore}
+        placeholder='Use "/" to search'
+        className="combobox"
+      />
+      <Ariakit.ComboboxPopover
+        store={comboboxStore}
+        gutter={4}
+        sameWidth
+        className="popover"
+      >
+        {/* Map over the filtered array instead of the original */}
+        {filteredNames.map((item) => (
+          <Ariakit.ComboboxItem
+            key={item.id}
+            value={item.name}
+            onClick={() => handleSelect(item.name)}
+            className={
+              "combobox-item" + (selectedValue === item.name ? " selected" : "")
+            }
+          >
+            {item.name}
+          </Ariakit.ComboboxItem>
+        ))}
+      </Ariakit.ComboboxPopover>
+    </Ariakit.ComboboxProvider>
+  );
+}

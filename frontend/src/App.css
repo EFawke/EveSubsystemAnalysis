@@ -108,3 +108,7 @@ html, body {
         flex-direction: column;
     }
 }
+
+.dashboard-loading {
+    height: calc((26px * 0.9) + (16px * 0.9) + (16px * 0.9) + (20px * 0.9) + (12px * 0.9) + (12px * 0.9) + ((44px + 12px * 0.9) * 10))
+}

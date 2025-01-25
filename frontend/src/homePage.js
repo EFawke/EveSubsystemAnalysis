@@ -75,7 +75,7 @@ export default class HomePage extends React.Component {
         return (
             <Flex>
                 {loading ? (
-                    <Card style={{ width: "100%", height: "90vh" }}>
+                    <Card className="dashboard-loading" style={{ width: "100%" }}>
                         <Flex justify="center" align="center" height="100%">
                             <FontAwesomeIcon icon={faCircleNotch} spin size="xl" />
                         </Flex>

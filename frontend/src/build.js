@@ -204,13 +204,13 @@ class Build extends React.Component {
         const size = "3";
 
         return (
-            <Flex direction="column" class="container" style={{ width: "100%", maxHeight:"70vh", overflow:"scroll" }}>
+            <Flex direction="column" class="container" style={{ width: "100%", maxHeight:"70vh", overflowY:"scroll" }}>
                 <Flex direction={isNarrow ? "column" : "row"} justify={"between"} align={"center"} style={{ width: "100%", paddingRight: "20px", paddingTop: "5px", paddingBottom: "5px" }}>
                     {this.renderBuildQuantities()}
                     <Flex direction="column" gap="2" pb="3" 
                         // style={{ width: "40%", alignSelf: "end" }}
                         style={{
-                            width: isNarrow ? "100%" : "calc(100% / 3)",
+                            width: isNarrow ? "100%" : "",
                             alignSelf: "end",
                         }}
                     >
@@ -260,10 +260,7 @@ class Build extends React.Component {
             >
                 <Flex
                     className="settings_accordion"
-                    // If column layout, each child is 100%.
-                    // If row layout, keep original widths.
                     style={{
-                        // width: isNarrow ? "100%" : "calc(100% / 3)",
                         height: "fit-content",
                     }}
                 >
@@ -302,9 +299,6 @@ class Build extends React.Component {
                 </Flex>
                 <Flex
                     className="required_materials"
-                    style={{
-                        // width: isNarrow ? "100%" : "calc(100% - (100% / 3))"
-                    }}
                 >
                     <Card style={{ width: "100%" }}>
                         {this.renderRequiredMaterialsTable()}

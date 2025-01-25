@@ -32,7 +32,7 @@ const calculateMedian = (arr) => {
 
 marketRouter.use(express.json());
 
-const getSubsystemCosts = async (type, settings) => {
+const getSubsystemCosts = async (type, settings, oneYearAgo) => {
     let allMatsAndQuantities = getMaterialRequirements(settings);
     let matRequirements;
     if (type.name.toLowerCase().includes('core')) {
@@ -52,7 +52,7 @@ const getSubsystemCosts = async (type, settings) => {
         }
     }
 
-    const oneYearAgo = Math.floor(new Date().setFullYear(new Date().getFullYear() - 1) / 1000);
+    // const oneYearAgo = Math.floor(new Date().setFullYear(new Date().getFullYear() - 1) / 1000);
 
     const dailyCosts = [];
 
@@ -61,9 +61,8 @@ const getSubsystemCosts = async (type, settings) => {
             const priceDataResponse = await client.query(`
                 SELECT DISTINCT ON (date) date, average_price
                 FROM price_data
-                WHERE type_id = $1 AND date >= $2 AND region = '${settings.materialsLocation}'
-                ORDER BY date DESC LIMIT 365;
-                `, [id, oneYearAgo]);
+                WHERE type_id = ${id} AND date > ${oneYearAgo} AND region = '${settings.materialsLocation}'
+                ORDER BY date DESC;`);
 
             priceDataResponse.rows.forEach(row => {
                 const date = row.date;
@@ -76,7 +75,7 @@ const getSubsystemCosts = async (type, settings) => {
                 }
 
                 dayEntry.totalCost += itemCost;
-            });
+            })
         }
 
         dailyCosts.forEach(entry => {
@@ -347,11 +346,17 @@ function getLossesData(subsystems) {
 };
 
 const getProfits = (matCosts, marketData) => {
+    // console.log(marketData)
+    console.log(matCosts.dates.length)
+    console.log(marketData.dates.length)
     let returnObject = {};
     returnObject.title = "Profit";
     returnObject.currentValue = Number(marketData.currentValue).toFixed(0) - Number(matCosts.currentValue).toFixed(2);
     returnObject.dates = marketData.dates;
     returnObject.dataValues = marketData.dataValues.map((value, index) => {
+        // console.log(Number(value))
+        // console.log(matCosts.dataValues[index])
+        // console.log(Number(matCosts.dataValues[index]))
         return Number(value).toFixed(0) - Number(matCosts.dataValues[index]).toFixed(2);
     });
     const lastThirtyDays = returnObject.dataValues.slice(-30);
@@ -376,8 +381,8 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
     const oneYearAgo = Math.floor(new Date().setFullYear(new Date().getFullYear() - 1));
     Promise.all([
         client.query(`SELECT * FROM subsystems WHERE type_id = ${id} AND killtime > ${oneYearAgo} ORDER BY killtime DESC;`),
-        client.query(`SELECT * FROM price_data WHERE type_id = ${id} AND region = ${settings.subsystemsLocation} ORDER BY date DESC LIMIT 365;`),
-        getSubsystemCosts(settings, settings),
+        client.query(`SELECT * FROM price_data WHERE type_id = ${id} AND region = ${settings.subsystemsLocation} AND date > ${oneYearAgo} ORDER BY date DESC;`),
+        getSubsystemCosts(settings, settings, oneYearAgo),
         axios.get(`https://esi.evetech.net/latest/markets/${settings.subsystemsLocation}/history/?datasource=tranquility&type_id=${id}`),// for the trade volume!!! (defaults to date ASC and about 2 years of data!!)
         client.query(`SELECT * FROM subsystems WHERE type_id = ${id} AND killtime > ${yesterday};`),
         axios.get(`https://esi.evetech.net/latest/markets/${settings.subsystemsLocation}/orders/?type_id=${id}`),
@@ -392,7 +397,9 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
 
             const minSell = getMinSell(data[5].data, data[1].rows);
             const maxBuy = getMaxBuy(data[5].data, data[1].rows);
+            console.log(costsData)
             const matCosts = getMatCosts(costsData);
+
             let profit = null;
             // console.log()
             if(settings.subsystemsOrderType == 'buy'){
@@ -404,7 +411,7 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             const buyVolume = getBuyVolume(data[5].data, data[1].rows);
             const sellVolume = getSellVolume(data[5].data, data[1].rows);
             const tradeVolume = getTradeVolume(data[3].data.reverse().splice(0, 365));
-            console.log(profit);
+            // console.log(profit);
             const lossesData = getLossesData(subsystems);
             res.status(200).json({ minSell, maxBuy, matCosts, profit, buyVolume, sellVolume, tradeVolume, lossesData });
         })

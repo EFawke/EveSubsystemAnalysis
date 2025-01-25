@@ -15,30 +15,27 @@ class About extends React.Component {
         return (
             <Flex width="100%" maxWidth="700px" direction="column" gap="2">
                 <Text size="4" color="gray">
-                    Eve Subsystem Analysis started out with a moment of frustration. I had built some subsystems for the market and they just weren't selling. So I decided to look a bit into the market and see which subsystems were getting destroyed in the game the most.
+                    Eve Subsystem Analysis is a tool built for the purpose of maximising profits in Tech 3 subsystem production in Eve Online. The website contians three pages which each work together in order to further this aim.
                     </Text>
                     <Text size="4" color="gray">
-                    Clearly getting this data by perusing zkillboard and tallying them all up wasn't something I could do by hand. The task needed automating so I wrote a simple script. It got all of the subsystems lost in the available data on zkill's api and tallied the names and totals in an array.
+                    The dashboard/home page contains a table of suggested subsystems. These are the 10 most destroyed subsystems in the past week, ordered by the current sell price. Percentage changes, in that table or throughout the site indicate the 30 day median delta for that value.
                 </Text>
                 <Text size="4" color="gray">
-                    It turned out that this was a useful predictor of player demand for specific subsystems. It was in some sense, revealing the current T3 meta, and brought new meaning to the often ushered words amongst Eve's players, "Already replaced". Intreagued by this insight I decided to make a kind of Bloomberg Terminal for the way that I earn my isk in the game. 
+                    To delve further into a particular subsystem, you can click on its name, and you will be taken to the interactive chart page. This page allows you to compare even more stats regarding the current market conditions of a given subsystem and visualise this data in a biaxial chart. Finally, the build page lets you simulate the production of subsystems, and analyse the material prices, and industry taxes that you'll have to factor in.
                 </Text>
-                <PageTitle pageTitle="Why subsystems?" />
+                <PageTitle pageTitle="Build page" />
                 <Text size="4" color="gray">
-                    The reason I like the subsystem market in particular has been summarized by another player better than I could:
-                </Text>
-                <Blockquote size="4" color="gray">
-                "...this is a volume business. You can get a lot of turnover very quickly and you can serve a wide diversity of end products with a pretty standard production chain..." - Pietro Da Napoli
-                </Blockquote>
-                <Text size="4" color="gray">
-                    The market is also pretty niche, and you can decide first that you're going to build, say, 220 defensive subsystems, and later decide which specific ones you'll produce. This rewards the ability to adapt to current demand excessively.
-                </Text>
-                <PageTitle pageTitle="How does it work?" />
-                <Text size="4" color="gray">
-                    The code for this has been through many iterations and two full versions. With several changes to the fundamental way it gathers data, and ui tweaks in how the information is presented to the user (I would like to especially thank Monoli, who's help was instrumental to the improvement of the design in several ways). New to version two is the build calculator, which takes the user's settings and spits out the base material requirements (which was a nightmare to code).
+                    Building subsystems is usually a 4 step process: reactions, components, blueprints, final product. Currently, the build page for this tool provides the base materials required for all of these steps given your skills, desired production scale, stations, etc. This makes it easy to know what your manufacturing costs are going to be. These settings are stored as cookies, so they'll be the same the next time you use the website also.
                 </Text>
                 <Text size="4" color="gray">
-                    If you found this website useful, please send some isk to Tradesy.
+                    Tech 3 subsystems are made from components, and there are a couple of interesting consequences of this that you can take advantage of when planning your production. The first key insight is that all subsystems of the same type, regardless of the faction, or what type of subsystem it is, have the exact same input requirements - excluding the blueprint copy, which can be produced very late in production. So, this means that a Tengu Defensive - Covert Reconfiguration subsystem will be made from the exact same base materials as a Legion Defensive - Augmented Durability subsystem.
+                </Text>
+                <Text size="4" color="gray">
+                    This factor has been taken into account when designing the build page, as due to the volatility of the subsystem market, it can make sense to produce a large number of each kind of subsystem (Defensive, Core, Propulsion and Offensive) and then run invention jobs at the end, once it's clear which ones are currently selling well.
+                </Text>
+                <PageTitle pageTitle="Thanks" />
+                <Text size="4" color="gray">
+                    If you'd like to send me some ISK in game, you can send it to Tradesy, who will use it to buy a lot of Neurovisual Input Matrices. Also thanks to Monoli Rotineque, Khaza Elliott, Wyran, Ionis en Gravonere, Daenmdir, and many other people for their feedback and support throughout the development of this project!
                 </Text>
             </Flex>
         );

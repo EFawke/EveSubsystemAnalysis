@@ -284,7 +284,6 @@ class App extends React.Component {
                             colorBlindMode={colorBlindMode}
                         />
                     </Container>
-                    {/* <ThemePanel /> */}
                     <Footer />
                 </Theme>
             )
@@ -316,7 +315,7 @@ class App extends React.Component {
                         subsystemsLocation={subsystemsLocation}
                         subsystemsOrderType={subsystemsOrderType}
                     />
-                    <Container size="4" mb="9" className="mobile_padding">
+                    <Container size="4" mb="9" className="mobile_padding" style={{minHeight: "100vh"}}>
                         <PageTitle pageTitle="Interactive Chart"></PageTitle>
                         <Heading weight="light" color="gray" mb="7" mt="-5" size="4">{name.name}</Heading>
                         <MarketData

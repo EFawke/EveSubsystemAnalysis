@@ -10,6 +10,8 @@ const Footer = () => {
                 </Text>
             </Flex>
             <Flex direction="column" gap="2" mt="5" mb="5" width="100%" justify="between" align="start">
+                <Link href="/">Home</Link>
+                <Link href="/build">Build</Link>
                 <Link href="/about">About</Link>
                 <Link href="/github">GitHub</Link>
             </Flex>
