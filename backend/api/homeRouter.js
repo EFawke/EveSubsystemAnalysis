@@ -150,7 +150,7 @@ homeRouter.post('/', async (req, res) => {
         // Send the combined result as JSON
         res.json(priceDataResults);
 
-        console.log(priceDataResults)
+        // console.log(priceDataResults)
     } catch (error) {
         console.error("Error fetching data:", error);
         res.status(500).json({ error: "Internal Server Error" });

@@ -2,6 +2,7 @@ const express = require('express');
 const apiRouter = express.Router();
 
 require('./updater.js');
+// require('./updater_test.js');
 require('./zkillUpdater.js');
 
 const homeRouter = require('./homeRouter.js');

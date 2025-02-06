@@ -108,7 +108,7 @@ const apiCall = async (url, axios, name, locationName, subsystemType, locationId
 const getMarketData = async (subsystemType, locationId, client, axios, name, locationName, epoch, type) => {
     const endpoint = makeUrl(subsystemType, locationId);
     const responses = await apiCall(endpoint, axios, name, locationName, subsystemType, locationId);
-    // console.log(responses);
+    console.log(responses);
     let query = 'INSERT INTO price_data (date, region, type_id, average_price, highest_price, lowest_price, order_count, volume, buyVolume, sellVolume, buyOrders, sellOrders, maxBuy, minSell) VALUES ';
     const data = {};
 
@@ -161,8 +161,8 @@ const getMarketData = async (subsystemType, locationId, client, axios, name, loc
     }
 
     console.log(`Inserting ${name} in ${locationName} at ${epoch} minSell: ${data.minSell}`);
-    // console.log(query);
-    client.query(query)
+    console.log(query);
+    // client.query(query)
 }
 
 const fetchData = async (subsystemIDArr, client, axios, epoch, type) => {
