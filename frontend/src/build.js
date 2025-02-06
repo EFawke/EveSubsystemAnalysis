@@ -3,10 +3,23 @@ import axios from 'axios';
 import Divider from '@mui/material/Divider';
 import Cookies from 'js-cookie'
 import 'react-loading-skeleton/dist/skeleton.css';
-import { Section, Flex, Accordion, Link, Heading, Text, Table, IconButton, Container, Card, Box, Button, DropdownMenu } from "@radix-ui/themes";
+import { Section, Flex, Accordion, Link, Heading, Text, Table, IconButton, Container, Card, Box, Button, DropdownMenu, Checkbox } from "@radix-ui/themes";
 import SettingsAccordion from "./settingsAccordion.js";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import {
+    ComposedChart,
+    XAxis,
+    YAxis,
+    Tooltip,
+    ResponsiveContainer,
+    Legend,
+    Line,
+    Bar,
+    CartesianGrid,
+    BarChart,
+    Cell,
+} from 'recharts';
 
 
 class Build extends React.Component {
@@ -47,6 +60,7 @@ class Build extends React.Component {
             loading: true,
         }
         this.renderMatsTable = this.renderMatsTable.bind(this);
+        this.renderScheduleChart = this.renderScheduleChart.bind(this);
     }
 
     componentDidMount() {
@@ -74,10 +88,10 @@ class Build extends React.Component {
 
     handleInputChange = (value, name) => {
         this.setState({ [name]: value }, this.submitBuildData);
-    }    
+    }
 
     handleSliderChange = (val, state) => {
-        this.setState({[state]: val[0]}, this.submitBuildData);
+        this.setState({ [state]: val[0] }, this.submitBuildData);
     }
 
     handleCheckboxChange = (e) => {
@@ -88,7 +102,6 @@ class Build extends React.Component {
         this.setState({ loading: true });
         axios.post('/api/build', this.state)
             .then(response => {
-                console.log(response.data);
                 this.setState({ buildResponseData: response.data }, () => {
                     const buildSettings = Object.keys(this.state).reduce((acc, key) => {
                         if (typeof this.state[key] !== 'object') {
@@ -111,25 +124,25 @@ class Build extends React.Component {
         return (
             <Flex style={{ width: "60%" }} justify="center" align="center" direction="column">
                 {
-                    loading ? <FontAwesomeIcon icon={faCircleNotch} spin size="xl" /> : 
-                    <Flex direction="row" style={{ width: "70%" }} justify="between" gap="4" mt="4" mb="4">
-                        <Flex direction="column" gap="2" align="center">
-                            <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45589/icon?size=32`} alt="Defensive" />
-                            <Text size="2" color="gray">{numRuns * this.state.defensiveVolume}</Text>
+                    loading ? <FontAwesomeIcon icon={faCircleNotch} spin size="xl" /> :
+                        <Flex direction="row" style={{ width: "70%" }} justify="between" gap="4" mt="4" mb="4">
+                            <Flex direction="column" gap="2" align="center">
+                                <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45589/icon?size=32`} alt="Defensive" />
+                                <Text size="2" color="gray">{numRuns * this.state.defensiveVolume}</Text>
+                            </Flex>
+                            <Flex direction="column" gap="2" align="center">
+                                <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45626/icon?size=32`} alt="Core" />
+                                <Text size="2" color="gray">{numRuns * this.state.coreVolume}</Text>
+                            </Flex>
+                            <Flex direction="column" gap="2" align="center">
+                                <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45621/icon?size=32`} alt="Propulsion" />
+                                <Text size="2" color="gray">{numRuns * this.state.propulsionVolume}</Text>
+                            </Flex>
+                            <Flex direction="column" gap="2" align="center">
+                                <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45601/icon?size=32`} alt="Offensive" />
+                                <Text size="2" color="gray">{numRuns * this.state.offensiveVolume}</Text>
+                            </Flex>
                         </Flex>
-                        <Flex direction="column" gap="2" align="center">
-                            <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45626/icon?size=32`} alt="Core" />
-                            <Text size="2" color="gray">{numRuns * this.state.coreVolume}</Text>
-                        </Flex>
-                        <Flex direction="column" gap="2" align="center">
-                            <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45621/icon?size=32`} alt="Propulsion" />
-                            <Text size="2" color="gray">{numRuns * this.state.propulsionVolume}</Text>
-                        </Flex>
-                        <Flex direction="column" gap="2" align="center">
-                            <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45601/icon?size=32`} alt="Offensive" />
-                            <Text size="2" color="gray">{numRuns * this.state.offensiveVolume}</Text>
-                        </Flex>
-                    </Flex>
                 }
             </Flex>
         );
@@ -192,6 +205,50 @@ class Build extends React.Component {
         )
     }
 
+    renderScheduleChart = (schedule) => {
+        console.log(schedule);
+        // Color scale configuration    
+        return (
+            <>
+                <Heading mt="4" mb="4" size="3">Reaction schedule</Heading>
+                <Table.Root>
+                <Table.Header>
+                    <Table.Row>
+                        <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>Runs</Table.ColumnHeaderCell>
+                        <Table.ColumnHeaderCell>Completed</Table.ColumnHeaderCell>
+                    </Table.Row>
+                </Table.Header>
+                <Table.Body>
+                    {schedule?.map((material, index) => (
+                        <Table.Row key={index}>
+                            <Table.Cell>
+                                <img style={{ width: "25px", height: "25px" }} src={`https://image.eveonline.com/Type/${material.id}_32.png`} alt="Item" className="img-fluid" />
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Flex height="100%" align="center">
+                                    <Text>{material.name}</Text>
+                                </Flex>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Flex height="100%" align="center">
+                                    <Text>{Number(material.runs).toLocaleString()}</Text>
+                                </Flex>
+                            </Table.Cell>
+                            <Table.Cell>
+                                <Flex height="100%" align="center">
+                                    <Checkbox/>
+                                </Flex>
+                            </Table.Cell>
+                        </Table.Row>
+                    ))}
+                </Table.Body>
+            </Table.Root>
+            </>
+        )
+    }
+
     renderRequiredMaterialsTable = () => {
         const width = window.innerWidth;
         const isNarrow = width < 1111;
@@ -203,11 +260,13 @@ class Build extends React.Component {
         const totalBuildCost = materialBuyCost + industryTaxTotal;
         const size = "3";
 
+        const schedule = buildResponseData?.schedule != null ? buildResponseData.schedule : null;
+
         return (
-            <Flex direction="column" class="container" style={{ width: "100%", maxHeight:"70vh", overflowY:"scroll" }}>
+            <Flex direction="column" class="container" style={{ width: "100%", maxHeight: "70vh", overflowY: "scroll" }}>
                 <Flex direction={isNarrow ? "column" : "row"} justify={"between"} align={"center"} style={{ width: "100%", paddingRight: "20px", paddingTop: "5px", paddingBottom: "5px" }}>
                     {this.renderBuildQuantities()}
-                    <Flex direction="column" gap="2" pb="3" 
+                    <Flex direction="column" gap="2" pb="3"
                         // style={{ width: "40%", alignSelf: "end" }}
                         style={{
                             width: isNarrow ? "100%" : "",
@@ -216,7 +275,7 @@ class Build extends React.Component {
                     >
                         <Flex direction="row" gap="4" justify="between" style={{ width: "100%" }}>
                             <Text size={size} weight="bold">Materials:</Text>
-                            <Text size={size}>{loading ? null : `${materialBuyCost.toLocaleString()} ISK`}</Text>                        
+                            <Text size={size}>{loading ? null : `${materialBuyCost.toLocaleString()} ISK`}</Text>
                         </Flex>
                         <Flex direction="row" gap="4" justify="between" style={{ width: "100%" }}>
                             <Text size={size} weight="bold">Industry taxes:</Text>
@@ -230,20 +289,21 @@ class Build extends React.Component {
                 </Flex>
                 <Divider />
                 {loading ? <table>{this.renderTableLoading()}</table> : this.renderMatsTable(filteredMaterials)}
+                {loading ? null : this.renderScheduleChart(schedule)}
             </Flex>
         );
     }
 
     render() {
-        const { darkMode, 
-            refinery, teRig, meRig, system, tataraRig, complex, 
-            complexTeRig, complexMeRig, complexSystem, complexLargeRig, 
-            componentMaterialEfficiency, componentTimeEfficiency, 
-            ancientRelic, decryptor, coreVolume, defensiveVolume, 
-            offensiveVolume, propulsionVolume, numSlots, skillLevel, 
-            implant, buildingComponents, runningReactions, 
-            reactionCostIndex, buildCostIndex, 
-            reactionFacilityTax, complexFacilityTax 
+        const { darkMode,
+            refinery, teRig, meRig, system, tataraRig, complex,
+            complexTeRig, complexMeRig, complexSystem, complexLargeRig,
+            componentMaterialEfficiency, componentTimeEfficiency,
+            ancientRelic, decryptor, coreVolume, defensiveVolume,
+            offensiveVolume, propulsionVolume, numSlots, skillLevel,
+            implant, buildingComponents, runningReactions,
+            reactionCostIndex, buildCostIndex,
+            reactionFacilityTax, complexFacilityTax
         } = this.state;
 
         // Check window width

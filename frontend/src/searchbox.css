@@ -146,3 +146,10 @@
   /* If you need different text color on selected items: */
   /* color: black; */
 }
+
+/* if screen is less than 1111px wide */
+@media (max-width: 1111px) {
+  .searchbox {
+      display: none;
+  }
+}

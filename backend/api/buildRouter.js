@@ -7,7 +7,6 @@ const { getMaterialRequirements } = require('./MaterialCalculator/getMaterialReq
 const { reactionRequirements, mainComponents, defensive, offensive, propulsion, core, azbel, raitaru, athanor, tatara, getPricePerUnit } = require('./MaterialCalculator/staticVars.js');
 const { get } = require('jquery');
 
-// PostgreSQL Client Setup
 let client;
 if (!process.env.DATABASE_URL) {
     client = new Client({
@@ -107,11 +106,9 @@ const getUnitPriceFromData = (orderType, array) => {
 buildRouter.post('/', async (req, res) => {
     const settings = req.body;
     const materialRequirements = getMaterialRequirements(settings);
-    // console.log(materialRequirements);
 
     axios.get(`https://esi.evetech.net/latest/markets/prices/?datasource=tranquility`).then(async (response) => {
         // get the building costs from schedule
-        // console.log(response)
         let totalTax = 0;
         for (let i = 0; i < materialRequirements.schedule.length; i++) {
             const slot = materialRequirements.schedule[i];
@@ -411,8 +408,6 @@ buildRouter.post('/', async (req, res) => {
             totalTax += BPOTaxTotal;
         }
 
-        console.log(settings)
-
         const maxBuyPromises = materialRequirements.requiredMaterialsForAll
             .filter(item => item.id !== null)
             .map(item =>
@@ -435,8 +430,6 @@ buildRouter.post('/', async (req, res) => {
                 })
             );
 
-        console.log("Total tax:", totalTax);
-
         const maxBuys = await axios.all(maxBuyPromises)
             .then(results => results.reduce((acc, price) => acc + price, 0))
             .catch(error => {
@@ -444,13 +437,9 @@ buildRouter.post('/', async (req, res) => {
                 return 0;
             });
 
-        // console.log("Max buys:", maxBuys);
-
-        // console.log("Total Job Cost:" , maxBuys + totalTax);
         materialRequirements.totalTax = totalTax;
         materialRequirements.maxBuys = maxBuys;
         materialRequirements.totalJobCost = maxBuys + totalTax;
-        // console.log(materialRequirements);
 
         const gasIds = [30375, 30376, 30377, 30370, 30378, 30371, 30372, 30373, 30374];
         const reactionIds = [30311, 30310, 30305, 30303, 30309, 30307, 30306, 30304, 30308]
@@ -477,8 +466,6 @@ buildRouter.post('/', async (req, res) => {
             }
             return a.id - b.id; // Within the same category, sort by ID
         });
-
-        // console.log(settings);
 
         res.send(materialRequirements);
     });

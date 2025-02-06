@@ -48,19 +48,19 @@ export default function SearchBox() {
   };
 
   return (
-    <Ariakit.ComboboxProvider store={comboboxStore}>
+    <Ariakit.ComboboxProvider store={comboboxStore} id ="searchbox">
       {/* Attach ref for focusing */}
       <Ariakit.Combobox
         ref={comboboxRef}
         store={comboboxStore}
         placeholder='Use "/" to search'
-        className="combobox"
+        className="combobox searchbox"
       />
       <Ariakit.ComboboxPopover
         store={comboboxStore}
         gutter={4}
         sameWidth
-        className="popover"
+        className="popover searchbox"
       >
         {/* Map over the filtered array instead of the original */}
         {filteredNames.map((item) => (

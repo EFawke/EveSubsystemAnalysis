@@ -51,7 +51,6 @@ const { scheduleReactions } = require('./scheduleReactions.js');
 const { materialsNamesAndIds } = require('../namesAndIds.js');
 
 const getMaterialRequirements = (settings) => {
-    // console.log(settings)
     let structure = settings.complex;
     let rigOne = settings.complexMeRig || "None";
     let rigTwo = settings.complexTeRig || "None";
@@ -389,8 +388,6 @@ const getMaterialRequirements = (settings) => {
 
     const specComponentQuantities = calculateSpecComponentQuantities(coreRuns, offRuns, propRuns, defRuns, blueprints, structure, rigOne, rigTwo, location);
 
-    // console.log(specComponentQuantities)
-
     for (let i = 0; i < mainComponents.length; i++) {
         const mainComponentId = mainComponents[i].type_id;
         const mainComponentName = mainComponents[i].name;
@@ -479,13 +476,6 @@ const getMaterialRequirements = (settings) => {
         }
 
         const materialEfficiencyBonus = ((1 - (BPOME / 100)) * (1 - structME) * (1 - (rigMaterialReduction * locationBonus)))
-
-        // console.log(settings.complexLargeRig)
-        // console.log(rigME)
-        // console.log(rigMaterialReduction)
-        // console.log(locationBonus)
-        // console.log(structure)
-        // console.log(materialEfficiencyBonus)
 
         return materialEfficiencyBonus;
     }
@@ -608,10 +598,6 @@ const getMaterialRequirements = (settings) => {
     // Aggregate unique salvage and reactions
     const uniqueSalvage = aggregateItems(totalSalvageRequired);
     const uniqueReactions = aggregateItems(reactionsQuantities);
-
-    // console.log(uniqueSalvage)
-    // console.log(uniqueReactions)
-
 
     const uniqueSalvageForCore = aggregateItems(totalSalvageRequiredForCore);
     const uniqueReactionsForCore = aggregateItems(reactionsQuantitiesForCore);
@@ -881,6 +867,7 @@ const getMaterialRequirements = (settings) => {
         }
 
         const reactorEfficiency = 1 - (rigMaterialReduction * locationBonus);
+
         return reactorEfficiency;
     }
 
@@ -914,7 +901,7 @@ const getMaterialRequirements = (settings) => {
 
     // get reaction requirements for each type of subsystem
     // and add them to the type requirements array
-    if(coreRuns > 0) {
+    if (coreRuns > 0) {
         for (let i = 0; i < uniqueReactionsForCore.length; i++) {
             const runs = Math.ceil(uniqueReactionsForCore[i].quantity / uniqueReactionsForCore[i].output);
             uniqueReactionsForCore[i].runs = runs;
@@ -935,13 +922,13 @@ const getMaterialRequirements = (settings) => {
         }
     }
 
-    if(coreRuns > 0) {
+    if (coreRuns > 0) {
         for (let i = 0; i < coreGasRequirements.length; i++) {
             coreRequiredMaterials.push({ id: coreGasRequirements[i].type_id, name: coreGasRequirements[i].name, quantity: coreGasRequirements[i].quantity });
         }
     }
 
-    if(offRuns > 0) {
+    if (offRuns > 0) {
         for (let i = 0; i < uniqueReactionsForOffensive.length; i++) {
             const runs = Math.ceil(uniqueReactionsForOffensive[i].quantity / uniqueReactionsForOffensive[i].output);
             uniqueReactionsForOffensive[i].runs = runs;
@@ -962,13 +949,13 @@ const getMaterialRequirements = (settings) => {
         }
     }
 
-    if(offRuns > 0) {
+    if (offRuns > 0) {
         for (let i = 0; i < offensiveGasRequirements.length; i++) {
             offensiveRequiredMaterials.push({ id: offensiveGasRequirements[i].type_id, name: offensiveGasRequirements[i].name, quantity: offensiveGasRequirements[i].quantity });
         }
     }
 
-    if(propRuns > 0) {
+    if (propRuns > 0) {
         for (let i = 0; i < uniqueReactionsForPropulsion.length; i++) {
             const runs = Math.ceil(uniqueReactionsForPropulsion[i].quantity / uniqueReactionsForPropulsion[i].output);
             uniqueReactionsForPropulsion[i].runs = runs;
@@ -989,13 +976,13 @@ const getMaterialRequirements = (settings) => {
         }
     }
 
-    if(propRuns > 0) {
+    if (propRuns > 0) {
         for (let i = 0; i < propulsionGasRequirements.length; i++) {
             propulsionRequiredMaterials.push({ id: propulsionGasRequirements[i].type_id, name: propulsionGasRequirements[i].name, quantity: propulsionGasRequirements[i].quantity });
         }
     }
 
-    if(defRuns > 0) {
+    if (defRuns > 0) {
         for (let i = 0; i < uniqueReactionsForDefensive.length; i++) {
             const runs = Math.ceil(uniqueReactionsForDefensive[i].quantity / uniqueReactionsForDefensive[i].output);
             uniqueReactionsForDefensive[i].runs = runs;
@@ -1016,7 +1003,7 @@ const getMaterialRequirements = (settings) => {
         }
     }
 
-    if(defRuns > 0) {
+    if (defRuns > 0) {
         for (let i = 0; i < defensiveGasRequirements.length; i++) {
             defensiveRequiredMaterials.push({ id: defensiveGasRequirements[i].type_id, name: defensiveGasRequirements[i].name, quantity: defensiveGasRequirements[i].quantity });
         }
@@ -1024,63 +1011,11 @@ const getMaterialRequirements = (settings) => {
 
     const slots = reactionSlots;
 
-    // console.log(uniqueReactions)
-
-    // function scheduleReactionsOld(reactions, slots) {
-
-    //     slots = reactions.length;
-
-    //     const schedule = Array.from({ length: slots }, (_, i) => ({
-    //         slot: i,
-    //         numRuns: 0,
-    //         reactionName: "",
-    //     }));
-
-    //     const totalRuns = reactions.reduce((acc, cur) => acc + cur.runs, 0);
-    
-    //     reactions.sort((a, b) => b.runs - a.runs);
-    
-    //     reactions.forEach((reaction) => {
-    //         while (reaction.runs > 0) {
-    //             const targetSlot = schedule.reduce((minSlot, slot) =>
-    //                 slot.numRuns < minSlot.numRuns ? slot : minSlot, schedule[0]);
-    
-    //             const runsToAssign = Math.min(reaction.runs, Math.ceil(totalRuns / slots));
-    
-    //             targetSlot.numRuns += runsToAssign;
-    //             targetSlot.reactionName = reaction.name;
-    //             reaction.runs -= runsToAssign;
-    //         }
-    //     });
-    
-    //     return schedule;
-    // }
-
     let schedule = scheduleReactions(uniqueReactions, slots);
-
-    // console.log("test")
-    // console.log(schedule);
-    
-    // const schedule = scheduleReactionsOld(uniqueReactions, slots);
-
-    // console.log(schedule);
-
-    //just make schedule an array with the reactions
-    // if(!schedule) {
-    //     console.log("no schedule")
-    //     schedule = [];
-    //     for(let i = 0; i < uniqueReactions.length; i++) {
-    //         schedule.push({numRuns: uniqueReactions[i].runs, reactionName: uniqueReactions[i].name});
-    //     }
-    // }
-    // const schedule = [];
-    // for(let i = 0; i < uniqueReactions.length; i++) {
-    //     schedule.push({numRuns: uniqueReactions[i].runs, reactionName: uniqueReactions[i].name});
-    // }
 
     //add more data about the reactions to the schedule
     for (let i = 0; i < schedule.length; i++) {
-        if(schedule[i].runs > 0) {
+        if (schedule[i].runs > 0) {
             const reactionId = uniqueReactions.find(item => item.name === schedule[i].name).id;
             const reactionRequirements = uniqueReactions.find(item => item.id === reactionId).requirements;
             const output = uniqueReactions.find(item => item.id === reactionId).output;
@@ -1117,12 +1052,6 @@ const getMaterialRequirements = (settings) => {
     for (let i = 0; i < gasRequirementsAfterScheduling.length; i++) {
         requiredMaterials.push({ id: gasRequirementsAfterScheduling[i].type_id, name: gasRequirementsAfterScheduling[i].name, quantity: gasRequirementsAfterScheduling[i].quantity });
     }
-
-    // console.log(coreGasRequirements);
-    // console.log(offensiveGasRequirements);
-    // console.log(propulsionGasRequirements);
-    // console.log(defensiveGasRequirements);
-
 
     const output = {
         requiredMaterialsForAll: requiredMaterials,

@@ -67,6 +67,11 @@ const getSubsystemCosts = async (type, settings, oneYearAgo) => {
             priceDataResponse.rows.forEach(row => {
                 const date = row.date;
                 const itemCost = row.average_price * quantity;
+                
+                console.log(id);
+                console.log(date);
+                console.log(itemCost);
+
 
                 let dayEntry = dailyCosts.find(entry => entry.date === date);
                 if (!dayEntry) {
@@ -354,9 +359,9 @@ const getProfits = (matCosts, marketData) => {
     returnObject.currentValue = Number(marketData.currentValue).toFixed(0) - Number(matCosts.currentValue).toFixed(2);
     returnObject.dates = marketData.dates;
     returnObject.dataValues = marketData.dataValues.map((value, index) => {
-        // console.log(Number(value))
-        // console.log(matCosts.dataValues[index])
-        // console.log(Number(matCosts.dataValues[index]))
+        console.log(Number(value))
+        console.log(matCosts.dataValues[index])
+        console.log(Number(matCosts.dataValues[index]))
         return Number(value).toFixed(0) - Number(matCosts.dataValues[index]).toFixed(2);
     });
     const lastThirtyDays = returnObject.dataValues.slice(-30);
@@ -397,7 +402,7 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
 
             const minSell = getMinSell(data[5].data, data[1].rows);
             const maxBuy = getMaxBuy(data[5].data, data[1].rows);
-            console.log(costsData)
+            // console.log(costsData)
             const matCosts = getMatCosts(costsData);
 
             let profit = null;
