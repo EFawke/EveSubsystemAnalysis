@@ -373,7 +373,8 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
     const time = new Date().getTime();
     const twentyfourhours = 24 * 60 * 60 * 1000
     const yesterday = time - twentyfourhours;
-    const oneYearAgo = Math.floor(new Date().setFullYear(new Date().getFullYear() - 1));
+    const oneYearAgo = time - (twentyfourhours * 364);
+    // const oneYearAgo = Math.floor(new Date().setFullYear(new Date().getFullYear() - 1));
     Promise.all([
         client.query(`SELECT * FROM subsystems WHERE type_id = ${id} AND killtime > ${oneYearAgo} ORDER BY killtime DESC;`),
         client.query(`SELECT * FROM price_data WHERE type_id = ${id} AND region = ${settings.subsystemsLocation} AND date > ${oneYearAgo} ORDER BY date DESC;`),

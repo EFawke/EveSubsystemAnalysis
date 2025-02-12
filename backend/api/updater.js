@@ -5,7 +5,7 @@ const { updatePriceTable } = require('./DailyDataUpdaters/dailyDatabaseUpload.js
 const { backDate } = require('./DataBackdater-REMOVE_LATER/dataBackdater.js');
 
 //remove later
-const { updatePriceData } = require('./databaseUpdaterOneTime.js');
+// const { updatePriceData } = require('./databaseUpdaterOneTime.js');
 
 let client;
 if (!process.env.DATABASE_URL) {
@@ -40,7 +40,7 @@ const dropTable = () => {
 
 // dropTable();
 
-updatePriceData();
+// updatePriceData();
 
 //this has to store price data
 //for every item (subsystem and materials)
