@@ -4,6 +4,9 @@ const { initialDatabaseUpdate } = require('./HistoricalDataUpdaters/initialDatab
 const { updatePriceTable } = require('./DailyDataUpdaters/dailyDatabaseUpload.js');
 const { backDate } = require('./DataBackdater-REMOVE_LATER/dataBackdater.js');
 
+//remove later
+const { updatePriceData } = require('./databaseUpdaterOneTime.js');
+
 let client;
 if (!process.env.DATABASE_URL) {
     client = new Client({
@@ -34,6 +37,10 @@ const dropTable = () => {
             console.log(err);
         })
 }
+
+// dropTable();
+
+updatePriceData();
 
 //this has to store price data
 //for every item (subsystem and materials)
@@ -74,6 +81,7 @@ createPriceDataTable();
 client.query(`SELECT * FROM price_data LIMIT 1;`)
     .then((res) => {
         if (res.rows.length === 0) {
+            console.log("initializing price data");
             initialDatabaseUpdate(client);
         } else {
             console.log("price data has already been initialized");
@@ -83,9 +91,10 @@ client.query(`SELECT * FROM price_data LIMIT 1;`)
         console.log(err);
     })
 
-setInterval(() => {
-    backDate(client);
-}, 1000 * 60 * 60 * 24);
+// i think this can be commented out now
+// setInterval(() => {
+//     backDate(client);
+// }, 1000 * 60 * 60 * 24);
 
 setInterval(() => {
     updatePriceTable(Date.now(), client);

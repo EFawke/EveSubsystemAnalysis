@@ -9,16 +9,17 @@ const updatePriceTable = async (epoch, client) => {
 
     let date = new Date(epoch);
 
-    // console.log(date.getUTCHours(), date.getMinutes(), date.getSeconds());
+    // client.query("DELETE FROM price_data WHERE date = 1739145600000;")
+    //     .catch((err) => console.log(err))
+    //     .then(() => console.log("Deleted"))
 
-    if (date.getUTCHours() !== 19 || date.getMinutes() !== 41 || date.getSeconds() >= 2) {
+    if (date.getUTCHours() !== 3 || date.getMinutes() !== 0 || date.getSeconds() >= 2) {
         return;
     }
 
     date.setUTCHours(0, 0, 0, 0);
     let dateEpoch = date.getTime();
     let query = `SELECT * FROM price_data WHERE date = ${dateEpoch};`;
-
 
     try {
         const res = await client.query(query);

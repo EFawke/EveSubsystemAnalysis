@@ -34,6 +34,7 @@ class App extends React.Component {
             backlight: Cookies.get('backlight') === 'true' ? true : false,
             backgroundColors: {
                 primary: "rgb(18 39 69)",
+                // primary: "teal",
                 // primary: "blue",
                 secondary: "black"
             },

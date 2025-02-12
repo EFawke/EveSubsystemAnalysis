@@ -57,21 +57,20 @@ const getSubsystemCosts = async (type, settings, oneYearAgo) => {
     const dailyCosts = [];
 
     try {
-        for (const { id, quantity } of matRequirements) {
+        for (const { id, quantity } of matRequirements) { // use settings.materialsOrderType instead here. fuck.
+            let column = "maxbuy";
+            if(settings.materialsOrderType == "sell"){
+                column = "minsell";
+            }
             const priceDataResponse = await client.query(`
-                SELECT DISTINCT ON (date) date, average_price
+                SELECT DISTINCT ON (date) date, ${column}
                 FROM price_data
                 WHERE type_id = ${id} AND date > ${oneYearAgo} AND region = '${settings.materialsLocation}'
                 ORDER BY date DESC;`);
 
             priceDataResponse.rows.forEach(row => {
                 const date = row.date;
-                const itemCost = row.average_price * quantity;
-                
-                console.log(id);
-                console.log(date);
-                console.log(itemCost);
-
+                const itemCost = row[column] * quantity;
 
                 let dayEntry = dailyCosts.find(entry => entry.date === date);
                 if (!dayEntry) {
@@ -159,9 +158,6 @@ const getMaxBuy = (latestData, historicalData) => {
     }
     maxBuy.dates = dates;
     maxBuy.dataValues = dataValues;
-
-    //console.log(maxBuy);
-
     return maxBuy;
 };
 
@@ -351,17 +347,11 @@ function getLossesData(subsystems) {
 };
 
 const getProfits = (matCosts, marketData) => {
-    // console.log(marketData)
-    console.log(matCosts.dates.length)
-    console.log(marketData.dates.length)
     let returnObject = {};
     returnObject.title = "Profit";
     returnObject.currentValue = Number(marketData.currentValue).toFixed(0) - Number(matCosts.currentValue).toFixed(2);
     returnObject.dates = marketData.dates;
     returnObject.dataValues = marketData.dataValues.map((value, index) => {
-        console.log(Number(value))
-        console.log(matCosts.dataValues[index])
-        console.log(Number(matCosts.dataValues[index]))
         return Number(value).toFixed(0) - Number(matCosts.dataValues[index]).toFixed(2);
     });
     const lastThirtyDays = returnObject.dataValues.slice(-30);
@@ -402,11 +392,9 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
 
             const minSell = getMinSell(data[5].data, data[1].rows);
             const maxBuy = getMaxBuy(data[5].data, data[1].rows);
-            // console.log(costsData)
             const matCosts = getMatCosts(costsData);
 
             let profit = null;
-            // console.log()
             if(settings.subsystemsOrderType == 'buy'){
                 profit = getProfits(matCosts, maxBuy);
             }
@@ -416,7 +404,6 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             const buyVolume = getBuyVolume(data[5].data, data[1].rows);
             const sellVolume = getSellVolume(data[5].data, data[1].rows);
             const tradeVolume = getTradeVolume(data[3].data.reverse().splice(0, 365));
-            // console.log(profit);
             const lossesData = getLossesData(subsystems);
             res.status(200).json({ minSell, maxBuy, matCosts, profit, buyVolume, sellVolume, tradeVolume, lossesData });
         })

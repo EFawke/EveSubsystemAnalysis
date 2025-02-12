@@ -6,27 +6,32 @@ const rensRegion = '10000030';
 const hekRegion = '10000042';
 const dodixieRegion = '10000032';
 
-function getLowestSellOrderPrice(orders) {
+const getLowestSellOrderPrice = async (orders, client, locationId, subsystemType) => {
     const sellOrders = orders.filter(order => !order.is_buy_order);
-    if (sellOrders.length === 0) return null; // No sell orders
-    return sellOrders.reduce((lowest, order) => Math.min(lowest, order.price), Infinity);
+    if (sellOrders.length !== 0) {
+        return sellOrders.reduce((lowest, order) => Math.min(lowest, order.price), Infinity);
+    } else {
+        const minSell = await getPrevData(client, locationId, subsystemType, "minSell");
+        return minSell;
+    }
 }
 
-// Function to get the highest buy order price
-function getHighestBuyOrderPrice(orders) {
+const getHighestBuyOrderPrice = async (orders, client, locationId, subsystemType) => {
     const buyOrders = orders.filter(order => order.is_buy_order);
-    if (buyOrders.length === 0) return null; // No buy orders
-    return buyOrders.reduce((highest, order) => Math.max(highest, order.price), -Infinity);
+    if (buyOrders.length !== 0) {
+        return buyOrders.reduce((highest, order) => Math.max(highest, order.price), -Infinity);
+    } else {
+        const maxBuy = await getPrevData(client, locationId, subsystemType, "maxBuy");
+        return maxBuy;
+    }
 }
 
-// Function to get the total sell volume
 function getSellVolume(orders) {
     return orders
         .filter(order => !order.is_buy_order)
         .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
 }
 
-// Function to get the total buy volume
 function getBuyVolume(orders) {
     return orders
         .filter(order => order.is_buy_order)
@@ -42,11 +47,14 @@ function getSellOrderCount(orders) {
 }
 
 const getPrevData = async (client, locationId, subsystemType, column) => {
-    const query = `SELECT ${column} FROM price_data WHERE region = '${locationId}' AND type_id = '${subsystemType}' ORDER BY date DESC LIMIT 1`;
+    const query = `SELECT ${column} FROM price_data WHERE region = '${locationId}' AND type_id = '${subsystemType}' AND ${column} > 0 ORDER BY date DESC LIMIT 1`;
+    console.log(query);
     const res = await client.query(query);
     if (!res.rows[0]) {
+        console.log(`No previous data found for ${subsystemType} in ${locationId}`);
         return 0;
     }
+    console.log(res.rows[0][column]);
     return res.rows[0][column] || 0;
 }
 
@@ -108,11 +116,11 @@ const apiCall = async (url, axios, name, locationName, subsystemType, locationId
 const getMarketData = async (subsystemType, locationId, client, axios, name, locationName, epoch, type) => {
     const endpoint = makeUrl(subsystemType, locationId);
     const responses = await apiCall(endpoint, axios, name, locationName, subsystemType, locationId);
-    console.log(responses);
     let query = 'INSERT INTO price_data (date, region, type_id, average_price, highest_price, lowest_price, order_count, volume, buyVolume, sellVolume, buyOrders, sellOrders, maxBuy, minSell) VALUES ';
     const data = {};
 
     if (responses.isPrevData) {
+        console.log("is prev data?")
         data.minSell = responses.minSell;
         data.maxBuy = responses.maxBuy;
         data.buyVolume = responses.buyVolume;
@@ -120,8 +128,9 @@ const getMarketData = async (subsystemType, locationId, client, axios, name, loc
         data.buyOrders = responses.buyOrders;
         data.sellOrders = responses.sellOrders;
     } else {
-        data.minSell = getLowestSellOrderPrice(responses.data);
-        data.maxBuy = getHighestBuyOrderPrice(responses.data);
+        console.log("is not prev data?")
+        data.minSell = await getLowestSellOrderPrice(responses.data, client, locationId, subsystemType);
+        data.maxBuy = await getHighestBuyOrderPrice(responses.data, client, locationId, subsystemType);
         data.sellVolume = getSellVolume(responses.data);
         data.buyVolume = getBuyVolume(responses.data);
         data.sellOrders = getSellOrderCount(responses.data)
@@ -132,13 +141,13 @@ const getMarketData = async (subsystemType, locationId, client, axios, name, loc
     if (isNaN(data.minSell) || isNaN(data.maxBuy) || isNaN(data.buyVolume) || isNaN(data.sellVolume) || isNaN(data.buyOrders) || isNaN(data.sellOrders) || !isFinite(data.minSell) || !isFinite(data.maxBuy) || !isFinite(data.buyVolume) || !isFinite(data.sellVolume) || !isFinite(data.buyOrders) || !isFinite(data.sellOrders)) {
         console.error("Invalid price data detected: ", data);
         if (!isFinite(data.minSell) || isNaN(data.minSell) && type === "sub") {
-            data.minSell = await getPrevData(client, locationId, subsystemType, "average_price");
+            data.minSell = await getPrevData(client, locationId, subsystemType, "minSell");
         }
         if (!isFinite(data.minSell) || isNaN(data.minSell) && type === "mat") {
-            data.minSell = await getPrevData(client, locationId, subsystemType, "average_price");
+            data.minSell = await getPrevData(client, locationId, subsystemType, "minSell");
         }
         if (!isFinite(data.maxBuy) || isNaN(data.maxBuy) && type === "mat") {
-            data.maxBuy = await getPrevData(client, locationId, subsystemType, "average_price");
+            data.maxBuy = await getPrevData(client, locationId, subsystemType, "maxBuy");
         }
         if (!isFinite(data.buyVolume) || isNaN(data.buyVolume)) {
             data.buyVolume = await getPrevData(client, locationId, subsystemType, "buyVolume");
@@ -160,9 +169,8 @@ const getMarketData = async (subsystemType, locationId, client, axios, name, loc
         query += `(${epoch}, '${locationId}', '${subsystemType}', ${Number(data.maxBuy)}, ${0}, ${0}, ${0}, ${0}, ${Number(data.buyVolume)}, ${Number(data.sellVolume)}, ${Number(data.buyOrders)}, ${Number(data.sellOrders)}, ${Number(data.maxBuy)}, ${Number(data.minSell)})`;
     }
 
-    console.log(`Inserting ${name} in ${locationName} at ${epoch} minSell: ${data.minSell}`);
-    console.log(query);
-    // client.query(query)
+    console.log(`Inserting ${name} in ${locationName} at ${epoch} minSell: ${data.minSell}, maxBuy: ${data.maxBuy}`);
+    client.query(query);
 }
 
 const fetchData = async (subsystemIDArr, client, axios, epoch, type) => {
