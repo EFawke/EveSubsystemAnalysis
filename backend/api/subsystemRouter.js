@@ -1,7 +1,6 @@
 const express = require('express');
 const marketRouter = express.Router();
 const { Client } = require('pg');
-// const { getMaterialRequirements } = require('./MaterialCalculator/getMaterialRequirements.js');
 const { getSubsystemCosts, getProfits, getPriceData, calculateMedian } = require('./getProfitsGraph.js');
 const axios = require('axios');
 

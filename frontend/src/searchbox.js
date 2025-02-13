@@ -63,7 +63,8 @@ export default function SearchBox() {
         className="popover searchbox"
       >
         {/* Map over the filtered array instead of the original */}
-        {filteredNames.map((item) => (
+        {filteredNames.length === 0 ? <Ariakit.ComboboxItem>No results</Ariakit.ComboboxItem> :
+          filteredNames.map((item) => (
           <Ariakit.ComboboxItem
             key={item.id}
             value={item.name}
