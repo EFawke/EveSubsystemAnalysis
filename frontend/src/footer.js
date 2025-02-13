@@ -13,7 +13,7 @@ const Footer = () => {
                 <Link href="/">Home</Link>
                 <Link href="/build">Build</Link>
                 <Link href="/about">About</Link>
-                <Link href="/github">GitHub</Link>
+                {/* <Link href="/github">GitHub</Link> */}
             </Flex>
         </Container>
     );

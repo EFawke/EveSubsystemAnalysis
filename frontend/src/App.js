@@ -14,7 +14,6 @@ import "@radix-ui/themes/styles.css";
 import PageTitle from './PageTitle';
 import './App.css';
 import About from './about.js';
-//get the weeb image at weeb.jpeg
 import weeb from './weeb.jpeg';
 
 class App extends React.Component {
