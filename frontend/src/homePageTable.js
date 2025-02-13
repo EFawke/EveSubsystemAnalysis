@@ -172,8 +172,8 @@ class HomePageTable extends React.Component {
                         <Table.Row>
                             <Table.ColumnHeaderCell>Item</Table.ColumnHeaderCell>
                             <Table.ColumnHeaderCell onClick={() => this.handleSort('name')}>Name {this.renderArrow(sortConfig, 'name')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('buy')}>Buy {this.renderArrow(sortConfig, 'buy')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('sell')}>Sell {this.renderArrow(sortConfig, 'sell')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('buy')}>Buy Price{this.renderArrow(sortConfig, 'buy')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('sell')}>Sell Price{this.renderArrow(sortConfig, 'sell')}</Table.ColumnHeaderCell>
                             <Table.ColumnHeaderCell onClick={() => this.handleSort('buyVolume')}>Buy Volume {this.renderArrow(sortConfig, 'buyVolume')}</Table.ColumnHeaderCell>
                             <Table.ColumnHeaderCell onClick={() => this.handleSort('sellVolume')}>Sell Volume {this.renderArrow(sortConfig, 'sellVolume')}</Table.ColumnHeaderCell>
                             <Table.ColumnHeaderCell onClick={() => this.handleSort('losses')}>Losses {this.renderArrow(sortConfig, 'losses')}</Table.ColumnHeaderCell>
