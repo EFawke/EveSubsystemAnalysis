@@ -79,46 +79,6 @@ class App extends React.Component {
         this.setState({ backlight: !this.state.backlight });
     }
 
-    // renderErrorPage = () => {
-    //     const { darkMode, profit, cursorState, backgroundColors, colorBlindMode, backlight, materialsLocation, materialsOrderType, subsystemsLocation, subsystemsOrderType } = this.state;
-
-    //     return (
-    //         <Theme
-    //             className="top_container"
-    //             style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }}
-    //             id="theme_element"
-    //             scaling="90%"
-    //             grayColor="mauve"
-    //             accentColor="teal"
-    //             panelBackground="translucent"
-    //             appearance="dark"
-    //         >
-    //             <Header toggleBackLight={this.toggleBackLight}
-    //                 toggleColorBlindMode={this.toggleColorBlindMode}
-    //                 colorBlindMode={colorBlindMode}
-    //                 backlight={backlight}
-    //                 setMaterialsLocation={this.setMaterialsLocation}
-    //                 setMaterialsOrderType={this.setMaterialsOrderType}
-    //                 setSubsystemsLocation={this.setSubsystemsLocation}
-    //                 setSubsystemsOrderType={this.setSubsystemsOrderType}
-    //                 materialsLocation={materialsLocation}
-    //                 materialsOrderType={materialsOrderType}
-    //                 subsystemsLocation={subsystemsLocation}
-    //                 subsystemsOrderType={subsystemsOrderType}
-    //             />
-    //             <Container size="4" mb="9" className="mobile_padding">
-    //                 <PageTitle pageTitle="Page not found" />
-    //                 <Flex direction="column" mt="5" mb="5" width="100%">
-    //                     <AspectRatio>
-    //                         {{ weeb } && <img src={weeb} alt="weeb" />}
-    //                     </AspectRatio>
-    //                 </Flex>
-    //             </Container>
-    //             <Footer />
-    //         </Theme>
-    //     )
-    // }
-
     componentDidMount() {
         window.addEventListener('mousemove', this.handleMouseMove);
 
@@ -193,9 +153,7 @@ class App extends React.Component {
                     <Container size="4" mb="9" className="mobile_padding">
                         <PageTitle pageTitle="Page not found" />
                         <Flex direction="column" mt="5" mb="5" width="100%">
-                            <AspectRatio>
-                                {{ weeb } && <img src={weeb} alt="weeb" />}
-                            </AspectRatio>
+                            <img src={weeb} alt="weeb" />
                         </Flex>
                     </Container>
                     <Footer />
@@ -365,9 +323,7 @@ class App extends React.Component {
                 <Container size="4" mb="9" className="mobile_padding">
                     <PageTitle pageTitle="Page not found" />
                     <Flex direction="column" mt="5" mb="5" width="100%">
-                        <AspectRatio>
-                            {{ weeb } && <img src={weeb} alt="weeb" />}
-                        </AspectRatio>
+                        <img src={weeb} alt="weeb" />
                     </Flex>
                 </Container>
                 <Footer />
