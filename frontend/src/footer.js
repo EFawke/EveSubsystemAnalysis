@@ -3,7 +3,7 @@ import { Flex, Link, Text, Container } from "@radix-ui/themes";
 
 const Footer = () => {
     return (
-        <Container className="mobile_padding" size="4" style={{ background: "var(--gray-a2)", alignSelf: "end" }} mt="5">
+        <Container className="mobile_padding" size="4" style={{ background: "var(--gray-a2)", alignSelf: "end", width: "100%" }} mt="5">
             <Flex mt="5" mb="5" width="100%" justify="between" align="center">
                 <Text>
                     All EVE related materials are property of <Link href="https://www.ccpgames.com/">CCP Games</Link>

@@ -6,7 +6,6 @@ import "./accordion-styles.css";
 import { Slider, TextField, Flex, Select, Text } from "@radix-ui/themes";
 
 const SettingsAccordion = (props) => (
-	// console.log(props),
 	<Accordion.Root className="AccordionRoot" type="single" collapsible width="100%">
 		<Accordion.Item className="AccordionItem" value="item-1">
 			<AccordionTrigger>Refinery</AccordionTrigger>

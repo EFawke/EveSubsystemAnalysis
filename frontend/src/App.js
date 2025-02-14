@@ -251,9 +251,14 @@ class App extends React.Component {
         if (isValidUrl(window.location.pathname, namesAndIds) && name) {
             return (
                 <Theme
-                    style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }}
+                    style={
+                    backlight ? { 
+                        backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` 
+                    } : { 
+                        backgroundColor: `${backgroundColors.secondary} 90%` 
+                    }}
                     id="theme_element"
-                    className="top_container"
+                    className="top_container top_container_interactive_chart"
                     scaling="90%"
                     grayColor="mauve"
                     accentColor="teal"
@@ -273,7 +278,7 @@ class App extends React.Component {
                         subsystemsLocation={subsystemsLocation}
                         subsystemsOrderType={subsystemsOrderType}
                     />
-                    <Container size="4" mb="9" className="mobile_padding" style={{minHeight: "100vh"}}>
+                    <Container size="4" mb="9" className="mobile_padding interactive_chart_container">
                         <PageTitle pageTitle="Interactive Chart"></PageTitle>
                         <Heading weight="light" color="gray" mb="7" mt="-5" size="4">{name.name}</Heading>
                         <MarketData

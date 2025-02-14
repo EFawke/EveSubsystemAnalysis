@@ -401,9 +401,7 @@ class MarketData extends Component {
   }
 
   render() {
-    const { tableArr, isLoading, colorBlindMode } = this.state;
-
-    console.log(tableArr);
+    let { tableArr, isLoading, colorBlindMode } = this.state;
 
     if (isLoading) {
       return (
@@ -414,7 +412,7 @@ class MarketData extends Component {
           gap="4"
         >
           <Card className="market_data_table" style={{ width: "100%", flex: "1" }}>
-            <Flex justify="center" align="center" style={{ height: "65vh" }}>
+            <Flex justify="center" align="center" style={{ height: "calc((44px*0.9)*11)" }}>
               <FontAwesomeIcon icon={faCircleNotch} spin size="xl" />
             </Flex>
           </Card>

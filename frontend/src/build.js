@@ -206,8 +206,6 @@ class Build extends React.Component {
     }
 
     renderScheduleChart = (schedule) => {
-        console.log(schedule);
-        // Color scale configuration    
         return (
             <>
                 <Heading mt="4" mb="4" size="3">Reaction schedule</Heading>
