@@ -34,10 +34,10 @@ const getMatCosts = (costsData) => {
     const thirtyDaysCosts = [];
     matCosts.currentValue = Number(costsData[0].totalCost).toFixed(2);
 
-    for(let i = 0; i < costsData.length; i++) {
+    for (let i = 0; i < costsData.length; i++) {
         dates.push(costsData[i].date);
         dataValues.push(Number(costsData[i].totalCost).toFixed(2));
-        if(costsData[i].date > thirtyDaysAgo){
+        if (costsData[i].date > thirtyDaysAgo) {
             thirtyDaysCosts.push(costsData[i].totalCost);
         }
     }
@@ -56,12 +56,18 @@ const getMatCosts = (costsData) => {
 const getBuyVolume = (latestData, historicalData) => {
     const buyVolume = {};
     buyVolume.title = "Buy volume";
-    const buyOrders = latestData.filter(order => order.is_buy_order);
-    let currentVolume = 0;
-    for(let i = 0; i < buyOrders.length; i++){
-        currentVolume += buyOrders[i].volume_remain;
+    let currentVolume;
+    if (!latestData || latestData.length === 0) {
+        currentVolume = historicalData[0].buyvolume;
+    } else {
+        const buyOrders = latestData.filter(order => order.is_buy_order);
+        currentVolume = 0;
+        for (let i = 0; i < buyOrders.length; i++) {
+            currentVolume += buyOrders[i].volume_remain;
+        }
+        buyVolume.currentValue = currentVolume;
     }
-    buyVolume.currentValue = currentVolume;
+
     const thirtyDaysAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
     const volumes = [];
     for (let i = 0; i < historicalData.length; i++) {
@@ -78,7 +84,7 @@ const getBuyVolume = (latestData, historicalData) => {
     buyVolume.thirtyDayMedianDelta = Number(buyVolumePercentageChange).toFixed(1);
     const dates = [];
     const dataValues = [];
-    for(let i = 0; i < historicalData.length; i++) {
+    for (let i = 0; i < historicalData.length; i++) {
         dates.push(historicalData[i].date);
         dataValues.push(historicalData[i].buyvolume);
     }
@@ -90,10 +96,15 @@ const getBuyVolume = (latestData, historicalData) => {
 const getSellVolume = (latestData, historicalData) => {
     const sellVolume = {};
     sellVolume.title = "Sell volume";
-    const sellOrders = latestData.filter(order => !order.is_buy_order);
-    let currentVolume = 0;
-    for(let i = 0; i < sellOrders.length; i++){
-        currentVolume += sellOrders[i].volume_remain;
+    let currentVolume;
+    if (!latestData || latestData.length === 0) {
+        currentVolume = historicalData[0].sellvolume;
+    } else {
+        const sellOrders = latestData.filter(order => !order.is_buy_order);
+        currentVolume = 0;
+        for (let i = 0; i < sellOrders.length; i++) {
+            currentVolume += sellOrders[i].volume_remain;
+        }
     }
     sellVolume.currentValue = currentVolume;
     const thirtyDaysAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
@@ -112,7 +123,7 @@ const getSellVolume = (latestData, historicalData) => {
     sellVolume.thirtyDayMedianDelta = Number(sellVolumePercentageChange).toFixed(1);
     const dates = [];
     const dataValues = [];
-    for(let i = 0; i < historicalData.length; i++) {
+    for (let i = 0; i < historicalData.length; i++) {
         dates.push(historicalData[i].date);
         dataValues.push(historicalData[i].sellvolume);
     }
@@ -129,15 +140,15 @@ const getTradeVolume = (historicalData) => {
     const thirtyDaysAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
     const thirtyDaysTradeVolume = [];
     let currentVolume = 0;
-    for(let i = 0; i < historicalData.length; i++){
+    for (let i = 0; i < historicalData.length; i++) {
         const date = new Date(historicalData[i].date);
         date.setUTCHours(0, 0, 0, 0);
         dates.push(date.getTime());
         dataValues.push(historicalData[i].volume);
-        if(date > thirtyDaysAgo){
+        if (date > thirtyDaysAgo) {
             thirtyDaysTradeVolume.push(historicalData[i].volume);
         }
-        if(i == 0){
+        if (i == 0) {
             currentVolume = historicalData[i].volume;
         }
     }
@@ -188,7 +199,7 @@ function getLossesData(subsystems) {
         losses.dates.push(day);
         const dayStart = day;
         const dayEnd = day + oneDayMs;
-        
+
         const dailyCount = sortedSubsystems.filter(s => s.killtime >= dayStart && s.killtime < dayEnd).length;
         losses.dataValues.push(dailyCount);
     }
@@ -225,7 +236,7 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             WHERE type_id = ${id} 
               AND region = '${settings.subsystemsLocation}' 
               AND date > '${oneYearAgo}' 
-            ORDER BY date DESC;`),                 
+            ORDER BY date DESC;`),
         getSubsystemCosts(settings, oneYearAgo),
         axios.get(`https://esi.evetech.net/latest/markets/${settings.subsystemsLocation}/history/?datasource=tranquility&type_id=${id}`),// for the trade volume!!! (defaults to date ASC and about 2 years of data!!)
         client.query(`SELECT * FROM subsystems WHERE type_id = ${id} AND killtime > ${yesterday};`),
@@ -238,18 +249,15 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             const historicalMarketData = data[3].data;
             const dailyLosses = data[4].rows.length;
             const marketDataCurrent = data[5].data;
-
-            // const minSell = getMinSell(data[5].data, data[1].rows);
             const minSell = getPriceData(priceData, "minsell");
-            // const maxBuy = getMaxBuy(priceData);
             const maxBuy = getPriceData(priceData, "maxbuy");
             const matCosts = getMatCosts(costsData);
 
             let profit = null;
-            if(settings.subsystemsOrderType == 'buy'){
+            if (settings.subsystemsOrderType == 'buy') {
                 profit = getProfits(matCosts, maxBuy);
             }
-            if(settings.subsystemsOrderType == 'sell'){
+            if (settings.subsystemsOrderType == 'sell') {
                 profit = getProfits(matCosts, minSell);
             }
             const buyVolume = getBuyVolume(data[5].data, data[1].rows);

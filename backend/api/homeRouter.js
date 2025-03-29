@@ -105,10 +105,10 @@ homeRouter.post('/', async (req, res) => {
             const response = await axios.get(`https://esi.evetech.net/latest/markets/${tradeHub}/orders/?type_id=${type_id}`)
             const priceData = {};
 
-            priceData.minSell = getLowestSellOrderPrice(response.data);
-            priceData.maxBuy = getHighestBuyOrderPrice(response.data);
-            priceData.sellVolume = getSellVolume(response.data);
-            priceData.buyVolume = getBuyVolume(response.data);
+            priceData.minSell = getLowestSellOrderPrice(response.data) || histData[0].minsell;
+            priceData.maxBuy = getHighestBuyOrderPrice(response.data) || histData[0].maxbuy;
+            priceData.sellVolume = getSellVolume(response.data) || histData[0].sellvolume;
+            priceData.buyVolume = getBuyVolume(response.data) || histData[0].buyvolume;
             
 
             const minSellPercentageChange = medianSell
