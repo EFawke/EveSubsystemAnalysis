@@ -6,6 +6,17 @@ const errorHandler = require('errorhandler');
 const path = require('path');
 const apiRouter = require('./api/apiRouter')
 
+if (process.env.NODE_ENV === 'production') {
+  app.set('trust proxy', true);
+
+  app.use((req, res, next) => {
+    if (req.headers['x-forwarded-proto'] !== 'https') {
+      return res.redirect(301, 'https://' + req.headers.host + req.url);
+    }
+    next();
+  });
+}
+
 app.use('/api', apiRouter);
 app.use(morgan('dev'));
 app.use(cors());
