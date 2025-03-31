@@ -99,6 +99,7 @@ class Build extends React.Component {
     }
 
     submitBuildData = () => {
+        console.log("Submitting build data:", this.state);
         this.setState({ loading: true });
         axios.post('/api/build', this.state)
             .then(response => {

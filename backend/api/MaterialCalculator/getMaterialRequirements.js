@@ -67,10 +67,10 @@ const getMaterialRequirements = (settings) => {
     let relicType = settings.ancientRelic;
     let decryptor = settings.decryptor;
 
-    let coreRuns = settings.coreVolume;
-    let offRuns = settings.offensiveVolume;
-    let propRuns = settings.propulsionVolume;
-    let defRuns = settings.defensiveVolume;
+    let coreRuns = settings.coreVolume == "" ? 0 : settings.coreVolume;
+    let offRuns = settings.offensiveVolume == "" ? 0 : settings.offensiveVolume;
+    let propRuns = settings.propulsionVolume == "" ? 0 : settings.propulsionVolume;
+    let defRuns = settings.defensiveVolume == "" ? 0 : settings.defensiveVolume;
 
     let reactionSlots = settings.numSlots || 1;
     let skillLevel = settings.skillLevel || 1;
