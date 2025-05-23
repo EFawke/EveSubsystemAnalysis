@@ -38,7 +38,8 @@ a:hover {
     transform: translateX(100%);
 }
 
-html, body {
+html,
+body {
     height: 100%;
     margin: 0;
     overflow: visible;
@@ -58,10 +59,6 @@ html, body {
     padding-right: 30px;
     padding-bottom: 5px;
     padding-left: 20px;
-}
-
-.settings_accordion {
-    width: calc(100% / 3);
 }
 
 .required_materials {
@@ -114,7 +111,7 @@ html, body {
     .mobile_padding {
         padding: 0 10px;
     }
-    
+
     .build_container {
         flex-direction: column;
     }
@@ -122,4 +119,15 @@ html, body {
 
 .dashboard-loading {
     height: calc((26px * 0.9) + (16px * 0.9) + (16px * 0.9) + (20px * 0.9) + (12px * 0.9) + (12px * 0.9) + ((44px + 12px * 0.9) * 10))
+}
+
+p {
+    margin-bottom: 0;
+}
+
+.settings_accordion {
+    width: calc(100% / 3);
+    height: 100vh;
+    position: sticky;
+    top: var(--space-9);
 }

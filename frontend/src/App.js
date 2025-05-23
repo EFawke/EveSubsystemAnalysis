@@ -9,7 +9,7 @@ import Footer from './footer';
 import namesAndIds from './namesAndIds.js';
 import Build from './build.js';
 import Cookies from 'js-cookie';
-import { Theme, AspectRatio, ThemePanel, Container, Heading, Flex } from "@radix-ui/themes";
+import { Theme, Container, Heading, Flex } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
 import PageTitle from './PageTitle';
 import './App.css';
@@ -185,7 +185,8 @@ class App extends React.Component {
                         subsystemsOrderType={subsystemsOrderType}
                     />
                     <Container size="4" mb="9" className="mobile_padding">
-                        <PageTitle pageTitle="Dashboard" />
+                        <PageTitle pageTitle="Suggested subsystems" />
+                        <Heading weight="light" color="gray" mb="8" mt="-7" size="4">The most used subsystems ordered by price</Heading>
                         <HomePage profit={profit} darkMode={darkMode} colorBlindMode={colorBlindMode} />
                     </Container>
                     <Footer />
@@ -208,7 +209,8 @@ class App extends React.Component {
                         subsystemsOrderType={subsystemsOrderType}
                     />
                     <Container size="4" mb="9" className="mobile_padding">
-                        <PageTitle pageTitle="Build tool" />
+                        <PageTitle pageTitle="Manufacturing tool"/>
+                        <Heading weight="light" color="gray" mb="8" mt="-7" size="4">Build settings and material calculator</Heading>
                         <Build
                             colorBlindMode={colorBlindMode}
                             materialsLocation={materialsLocation}
@@ -279,8 +281,8 @@ class App extends React.Component {
                         subsystemsOrderType={subsystemsOrderType}
                     />
                     <Container size="4" mb="9" className="mobile_padding interactive_chart_container">
-                        <PageTitle pageTitle="Interactive Chart"></PageTitle>
-                        <Heading weight="light" color="gray" mb="7" mt="-5" size="4">{name.name}</Heading>
+                        <PageTitle pageTitle="Interactive chart"></PageTitle>
+                        <Heading weight="light" color="gray" mb="8" mt="-7" size="4">{name.name}</Heading>
                         <MarketData
                             name={name.name}
                             id={this.state.id}

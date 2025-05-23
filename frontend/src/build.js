@@ -3,24 +3,14 @@ import axios from 'axios';
 import Divider from '@mui/material/Divider';
 import Cookies from 'js-cookie'
 import 'react-loading-skeleton/dist/skeleton.css';
-import { Section, Flex, Accordion, Link, Heading, Text, Table, IconButton, Container, Card, Box, Button, DropdownMenu, Checkbox } from "@radix-ui/themes";
+import { Flex, Heading, Text, Table, Card, Checkbox } from "@radix-ui/themes";
 import SettingsAccordion from "./settingsAccordion.js";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
-import {
-    ComposedChart,
-    XAxis,
-    YAxis,
-    Tooltip,
-    ResponsiveContainer,
-    Legend,
-    Line,
-    Bar,
-    CartesianGrid,
-    BarChart,
-    Cell,
-} from 'recharts';
-
+import BuildHeader from "./buildHeader.js"
+import MatsTable from "./matsTable.js";
+import ScheduleTable from "./scheduleTable.js";
+import PageTitle from "./PageTitle.js"
 
 class Build extends React.Component {
     constructor(props) {
@@ -60,7 +50,7 @@ class Build extends React.Component {
             loading: true,
         }
         this.renderMatsTable = this.renderMatsTable.bind(this);
-        this.renderScheduleChart = this.renderScheduleChart.bind(this);
+        // this.renderScheduleChart = this.renderScheduleChart.bind(this);
     }
 
     componentDidMount() {
@@ -117,36 +107,6 @@ class Build extends React.Component {
             .catch(error => {
                 console.error('Error sending data:', error);
             });
-    }
-
-    renderBuildQuantities = () => {
-        const { buildResponseData, darkMode, loading } = this.state;
-        const numRuns = buildResponseData?.blueprints.numRuns;
-        return (
-            <Flex style={{ width: "60%" }} justify="center" align="center" direction="column">
-                {
-                    loading ? <FontAwesomeIcon icon={faCircleNotch} spin size="xl" /> :
-                        <Flex direction="row" style={{ width: "70%" }} justify="between" gap="4" mt="4" mb="4">
-                            <Flex direction="column" gap="2" align="center">
-                                <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45589/icon?size=32`} alt="Defensive" />
-                                <Text size="2" color="gray">{numRuns * this.state.defensiveVolume}</Text>
-                            </Flex>
-                            <Flex direction="column" gap="2" align="center">
-                                <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45626/icon?size=32`} alt="Core" />
-                                <Text size="2" color="gray">{numRuns * this.state.coreVolume}</Text>
-                            </Flex>
-                            <Flex direction="column" gap="2" align="center">
-                                <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45621/icon?size=32`} alt="Propulsion" />
-                                <Text size="2" color="gray">{numRuns * this.state.propulsionVolume}</Text>
-                            </Flex>
-                            <Flex direction="column" gap="2" align="center">
-                                <img style={{ height: "25px", width: "25px" }} className="counter_icon" src={`https://images.evetech.net/types/45601/icon?size=32`} alt="Offensive" />
-                                <Text size="2" color="gray">{numRuns * this.state.offensiveVolume}</Text>
-                            </Flex>
-                        </Flex>
-                }
-            </Flex>
-        );
     }
 
     renderTableLoading = () => {
@@ -206,89 +166,78 @@ class Build extends React.Component {
         )
     }
 
-    renderScheduleChart = (schedule) => {
-        return (
-            <>
-                <Heading mt="4" mb="4" size="3">Reaction schedule</Heading>
-                <Table.Root>
-                <Table.Header>
-                    <Table.Row>
-                        <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>Name</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>Runs</Table.ColumnHeaderCell>
-                        <Table.ColumnHeaderCell>Completed</Table.ColumnHeaderCell>
-                    </Table.Row>
-                </Table.Header>
-                <Table.Body>
-                    {schedule?.map((material, index) => (
-                        <Table.Row key={index}>
-                            <Table.Cell>
-                                <img style={{ width: "25px", height: "25px" }} src={`https://image.eveonline.com/Type/${material.id}_32.png`} alt="Item" className="img-fluid" />
-                            </Table.Cell>
-                            <Table.Cell>
-                                <Flex height="100%" align="center">
-                                    <Text>{material.name}</Text>
-                                </Flex>
-                            </Table.Cell>
-                            <Table.Cell>
-                                <Flex height="100%" align="center">
-                                    <Text>{Number(material.runs).toLocaleString()}</Text>
-                                </Flex>
-                            </Table.Cell>
-                            <Table.Cell>
-                                <Flex height="100%" align="center">
-                                    <Checkbox/>
-                                </Flex>
-                            </Table.Cell>
-                        </Table.Row>
-                    ))}
-                </Table.Body>
-            </Table.Root>
-            </>
-        )
-    }
+    // renderScheduleChart = (schedule) => {
+    //     return (
+    //         <>
+    //             <Heading mt="4" mb="4" size="3">Reaction schedule</Heading>
+    //             <Table.Root>
+    //                 <Table.Header>
+    //                     <Table.Row>
+    //                         <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
+    //                         <Table.ColumnHeaderCell><Text size="3">Name</Text></Table.ColumnHeaderCell>
+    //                         <Table.ColumnHeaderCell><Text size="3">Runs</Text></Table.ColumnHeaderCell>
+    //                         <Table.ColumnHeaderCell><Text size="3">Completed</Text></Table.ColumnHeaderCell>
+    //                     </Table.Row>
+    //                 </Table.Header>
+    //                 <Table.Body>
+    //                     {schedule?.map((material, index) => (
+    //                         <Table.Row key={index}>
+    //                             <Table.Cell>
+    //                                 <img style={{ width: "25px", height: "25px" }} src={`https://image.eveonline.com/Type/${material.id}_64.png`} alt="Item" className="img-fluid" />
+    //                             </Table.Cell>
+    //                             <Table.Cell>
+    //                                 <Flex height="100%" align="center">
+    //                                     <Text size="3">{material.name}</Text>
+    //                                 </Flex>
+    //                             </Table.Cell>
+    //                             <Table.Cell>
+    //                                 <Flex height="100%" align="center">
+    //                                     <Text size="3">{Number(material.runs).toLocaleString()}</Text>
+    //                                 </Flex>
+    //                             </Table.Cell>
+    //                             <Table.Cell>
+    //                                 <Flex height="100%" align="center">
+    //                                     <Checkbox />
+    //                                 </Flex>
+    //                             </Table.Cell>
+    //                         </Table.Row>
+    //                     ))}
+    //                 </Table.Body>
+    //             </Table.Root>
+    //         </>
+    //     )
+    // }
 
     renderRequiredMaterialsTable = () => {
         const width = window.innerWidth;
         const isNarrow = width < 1111;
-        const { buildResponseData, darkMode, loading } = this.state;
+        const { buildResponseData, darkMode, loading, coreVolume, defensiveVolume, offensiveVolume, propulsionVolume } = this.state;
         const filteredMaterials = buildResponseData?.requiredMaterialsForAll
             .filter(material => material.quantity !== 0 && material.name !== "None" && ![30002, 30476, 30464, 30474, 30470, 29992, 29994, 30478, 30008].includes(material.id));
         const materialBuyCost = buildResponseData?.maxBuys != null ? buildResponseData?.maxBuys : 0;
         const industryTaxTotal = buildResponseData?.totalTax != null ? buildResponseData?.totalTax : 0;
         const totalBuildCost = materialBuyCost + industryTaxTotal;
         const size = "3";
+        const numRuns = buildResponseData?.blueprints.numRuns;
 
         const schedule = buildResponseData?.schedule != null ? buildResponseData.schedule : null;
 
         return (
-            <Flex direction="column" class="container" style={{ width: "100%", maxHeight: "70vh", overflowY: "scroll" }}>
-                <Flex direction={isNarrow ? "column" : "row"} justify={"between"} align={"center"} style={{ width: "100%", paddingRight: "20px", paddingTop: "5px", paddingBottom: "5px" }}>
-                    {this.renderBuildQuantities()}
-                    <Flex direction="column" gap="2" pb="3"
-                        // style={{ width: "40%", alignSelf: "end" }}
-                        style={{
-                            width: isNarrow ? "100%" : "",
-                            alignSelf: "end",
-                        }}
-                    >
-                        <Flex direction="row" gap="4" justify="between" style={{ width: "100%" }}>
-                            <Text size={size} weight="bold">Materials:</Text>
-                            <Text size={size}>{loading ? null : `${materialBuyCost.toLocaleString()} ISK`}</Text>
-                        </Flex>
-                        <Flex direction="row" gap="4" justify="between" style={{ width: "100%" }}>
-                            <Text size={size} weight="bold">Industry taxes:</Text>
-                            <Text size={size}>{loading ? null : `${industryTaxTotal.toLocaleString()} ISK`}</Text>
-                        </Flex>
-                        <Flex direction="row" gap="4" justify="between" style={{ width: "100%" }}>
-                            <Text size={size} weight="bold">Total:</Text>
-                            <Text size={size}>{loading ? null : `${totalBuildCost.toLocaleString()} ISK`}</Text>
-                        </Flex>
-                    </Flex>
-                </Flex>
-                <Divider />
-                {loading ? <table>{this.renderTableLoading()}</table> : this.renderMatsTable(filteredMaterials)}
-                {loading ? null : this.renderScheduleChart(schedule)}
+            <Flex direction="column" gap="4" class="container" style={{ width: "100%", overflowY: "scroll" }}>
+                <BuildHeader
+                    numRuns={numRuns}
+                    coreVolume={coreVolume}
+                    defensiveVolume={defensiveVolume}
+                    offensiveVolume={offensiveVolume}
+                    propulsionVolume={propulsionVolume}
+                    materialBuyCost={materialBuyCost}
+                    industryTaxTotal={industryTaxTotal}
+                    totalBuildCost={totalBuildCost}
+                />
+                {/* <Divider /> */}
+
+                {loading ? <table>{this.renderTableLoading()}</table> : <MatsTable filteredMaterials={filteredMaterials} />}
+                {loading ? null : <ScheduleTable schedule={schedule} />}
             </Flex>
         );
     }
@@ -310,19 +259,10 @@ class Build extends React.Component {
         const isNarrow = width < 1111;
 
         return (
-            <Flex
-                className="build_container"
-                width="100%"
-                // Choose column vs. row based on window width
-                direction={isNarrow ? "column" : "row"}
-                gap="4"
-            >
-                <Flex
-                    className="settings_accordion"
-                    style={{
-                        height: "fit-content",
-                    }}
-                >
+            <Flex className="build_container" width="100%" direction={isNarrow ? "column" : "row"} gap="4">
+                <Flex direction="column" className="settings_accordion" style={{ height: "fit-content" }}>
+                    {/* <PageTitle pageTitle="Manufacturing tool" /> */}
+                    {/* <Heading weight="light" color="gray" mb="7" mt="-6" size="4">Build settings and material calculator</Heading> */}
                     <SettingsAccordion
                         refinery={refinery}
                         teRig={teRig}
@@ -356,12 +296,11 @@ class Build extends React.Component {
                         handleCheckboxChange={this.handleCheckboxChange}
                     />
                 </Flex>
-                <Flex
-                    className="required_materials"
+                <Flex className="required_materials" 
+                    // mt="9" 
+                    // pt="9"
                 >
-                    <Card style={{ width: "100%" }}>
-                        {this.renderRequiredMaterialsTable()}
-                    </Card>
+                    {this.renderRequiredMaterialsTable()}
                 </Flex>
             </Flex>
         );

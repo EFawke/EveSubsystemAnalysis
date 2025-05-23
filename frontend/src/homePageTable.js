@@ -1,5 +1,5 @@
 import React from "react";
-import { Table, Flex, Card, Heading, Link, Text, Button, DropdownMenu } from "@radix-ui/themes";
+import { Table, Flex, Card, Heading, Link, Text, Button, DropdownMenu, Tooltip } from "@radix-ui/themes";
 import { DoubleArrowUpIcon, DoubleArrowDownIcon, DotsHorizontalIcon, ArrowUpIcon, ArrowDownIcon } from "@radix-ui/react-icons"
 
 class HomePageTable extends React.Component {
@@ -103,19 +103,20 @@ class HomePageTable extends React.Component {
 
         if (data) {
             rows = data.map((item) => {
+                console.log(item);
                 return {
                     type_id: item.type_id,
-                    name: item.type_name,
-                    buy: Number(item.buy),
-                    sell: Number(item.sell),
-                    volRatio: Number(item.volRatio),
-                    sellVolume: Number(item.sellVolume),
-                    buyVolume: Number(item.buyVolume),
+                    name: item.item_name,
+                    buy: Number(item.max_buy),
+                    sell: Number(item.min_sell),
+                    sellVolume: Number(item.sell_volume),
+                    buyVolume: Number(item.buy_volume),
                     losses: Number(item.losses),
-                    sellPercentageChange: Number(item.sellPercentageChange).toFixed(1),
-                    buyPercentageChange: Number(item.buyPercentageChange).toFixed(1),
-                    sellVolumePercentageChange: Number(item.sellVolumePercentageChange).toFixed(1),
-                    buyVolumePercentageChange: Number(item.buyVolumePercentageChange).toFixed(1),
+                    lossesPercent: Number(item.losses_percent),
+                    sellPercentageChange: Number(item.min_sell_percent),
+                    buyPercentageChange: Number(item.max_buy_percent),
+                    sellVolumePercentageChange: Number(item.sell_volume_percent),
+                    buyVolumePercentageChange: Number(item.buy_volume_percent),
                 }
             })
         }
@@ -127,7 +128,7 @@ class HomePageTable extends React.Component {
         return (
             <Card style={{ width: "100%" }}>
                 <Flex justify="between" align="center">
-                    <Heading mb="4" mt="4" size="5" style={{ color: "#ffffffc4" }}>Suggested Subsystems</Heading>
+                    <Heading mb="4" mt="4" size="5" weight="medium">{" "}</Heading>
                     {
                         width < 740
                             ? (
@@ -139,30 +140,30 @@ class HomePageTable extends React.Component {
                                     </DropdownMenu.Trigger>
                                     <DropdownMenu.Content sideOffset={5} align="end">
                                         <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000002 })}>
-                                            Jita
+                                            <Text size="3">Jita</Text>
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000043 })}>
-                                            Amarr
+                                            <Text size="3">Amarr</Text>
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000032 })}>
-                                            Dodixie
+                                            <Text size="3">Dodixie</Text>
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000042 })}>
-                                            Hek
+                                            <Text size="3">Hek</Text>
                                         </DropdownMenu.Item>
                                         <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000030 })}>
-                                            Rens
+                                            <Text size="3">Rens</Text>
                                         </DropdownMenu.Item>
                                     </DropdownMenu.Content>
                                 </DropdownMenu.Root>
                             )
                             : (
-                                <Flex justify="between" gap="2" height="100%" align="center">
-                                    <Button variant={hub.tradeHub == "10000002" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000002 })}>Jita</Button>
-                                    <Button variant={hub.tradeHub == "10000043" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000043 })}>Amarr</Button>
-                                    <Button variant={hub.tradeHub == "10000032" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000032 })}>Dodixie</Button>
-                                    <Button variant={hub.tradeHub == "10000042" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000042 })}>Hek</Button>
-                                    <Button variant={hub.tradeHub == "10000030" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000030 })}>Rens</Button>
+                                <Flex justify="between" gap="2" mb="4" mt="4" mr="4" height="100%" align="center">
+                                    <Button variant={hub.tradeHub == "10000002" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000002 })}><Text size="3">Jita</Text></Button>
+                                    <Button variant={hub.tradeHub == "10000043" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000043 })}><Text size="3">Amarr</Text></Button>
+                                    <Button variant={hub.tradeHub == "10000032" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000032 })}><Text size="3">Dodixie</Text></Button>
+                                    <Button variant={hub.tradeHub == "10000042" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000042 })}><Text size="3">Hek</Text></Button>
+                                    <Button variant={hub.tradeHub == "10000030" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000030 })}><Text size="3">Rens</Text></Button>
                                 </Flex>
                             )
                     }
@@ -170,13 +171,13 @@ class HomePageTable extends React.Component {
                 <Table.Root>
                     <Table.Header>
                         <Table.Row>
-                            <Table.ColumnHeaderCell>Item</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('name')}>Name {this.renderArrow(sortConfig, 'name')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('buy')}>Buy Price{this.renderArrow(sortConfig, 'buy')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('sell')}>Sell Price{this.renderArrow(sortConfig, 'sell')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('buyVolume')}>Buy Volume {this.renderArrow(sortConfig, 'buyVolume')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('sellVolume')}>Sell Volume {this.renderArrow(sortConfig, 'sellVolume')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('losses')}>Losses {this.renderArrow(sortConfig, 'losses')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell><Text size="3">Item</Text></Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('name')}><Text size="3">Name</Text>{this.renderArrow(sortConfig, 'name')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('buy')}><Text size="3">Buy Price</Text>{this.renderArrow(sortConfig, 'buy')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('sell')}><Text size="3">Sell Price</Text>{this.renderArrow(sortConfig, 'sell')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('buyVolume')}><Text size="3">Buy Volume</Text>{this.renderArrow(sortConfig, 'buyVolume')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('sellVolume')}><Text size="3">Sell Volume</Text>{this.renderArrow(sortConfig, 'sellVolume')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('losses')}><Tooltip content="Number of subsystems destroyed this week"><Text size="3">Recent Losses</Text></Tooltip>{this.renderArrow(sortConfig, 'losses')}</Table.ColumnHeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>
@@ -184,61 +185,78 @@ class HomePageTable extends React.Component {
                             <Table.Row key={row.type_id}>
                                 <Table.Cell>
                                     <Flex height="100%" align="center" >
-                                        <img src={`https://images.evetech.net/types/${row.type_id}/icon`} alt="Item" style={{ width: "25px", height: "25px" }} />
+                                        <img src={`https://images.evetech.net/types/${row.type_id}/icon`} alt="Item" style={{ width: "28px", height: "28px" }} />
                                     </Flex>
                                 </Table.Cell>
                                 <Table.Cell>
                                     <Flex height="100%" align="center" >
-                                        <Link href={`/subsystem/${row.type_id}`} className="product_link">{row.name}</Link>
+                                        <Link size="3" href={`/subsystem/${row.type_id}`} className="product_link">{row.name}</Link>
                                     </Flex>
                                 </Table.Cell>
                                 <Table.Cell >
                                     <Flex height="100%" gap="2" align="center" >
-                                        <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.buyPercentageChange, colorBlindMode)}>
-                                            {row.buyPercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
-                                            <Text size="1">{row.buyPercentageChange}%</Text>
-                                        </Flex>
-                                        <Text>
+                                        <Tooltip content="30 day median delta">
+                                            <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.buyPercentageChange, colorBlindMode)}>
+                                                {row.buyPercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
+                                                <Text size="1">{row.buyPercentageChange}%</Text>
+                                            </Flex>
+                                        </Tooltip>
+                                        <Text size="3">
                                             {Number(row.buy).toLocaleString()}
                                         </Text>
                                     </Flex>
                                 </Table.Cell>
                                 <Table.Cell>
                                     <Flex height="100%" gap="2" align="center" >
-                                        <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.sellPercentageChange, colorBlindMode)}>
-                                            {row.sellPercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
-                                            <Text size="1">{row.sellPercentageChange}%</Text>
-                                        </Flex>
-                                        <Text>
+                                        <Tooltip content="30 day median delta">
+                                            <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.sellPercentageChange, colorBlindMode)}>
+                                                {row.sellPercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
+                                                <Text size="1">{row.sellPercentageChange}%</Text>
+                                            </Flex>
+                                        </Tooltip>
+                                        <Text size="3">
                                             {Number(row.sell).toLocaleString()}
                                         </Text>
                                     </Flex>
                                 </Table.Cell>
                                 <Table.Cell>
                                     <Flex height="100%" gap="2" align="center" >
-                                        <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.buyVolumePercentageChange, colorBlindMode)}>
-                                            {row.buyVolumePercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
-                                            <Text size="1">{row.buyVolumePercentageChange}%</Text>
-                                        </Flex>
-                                        <Text>
+                                        <Tooltip content="30 day median delta">
+                                            <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.buyVolumePercentageChange, colorBlindMode)}>
+                                                {row.buyVolumePercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
+                                                <Text size="1">{row.buyVolumePercentageChange}%</Text>
+                                            </Flex>
+                                        </Tooltip>
+                                        <Text size="3">
                                             {Number(row.buyVolume).toLocaleString()}
                                         </Text>
                                     </Flex>
                                 </Table.Cell>
                                 <Table.Cell >
                                     <Flex height="100%" gap="2" align="center" >
-                                        <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.sellVolumePercentageChange, colorBlindMode)}>
-                                            {row.sellVolumePercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
-                                            <Text size="1">{row.sellVolumePercentageChange}%</Text>
-                                        </Flex>
-                                        <Text>
+                                        <Tooltip content="30 day median delta">
+                                            <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.sellVolumePercentageChange, colorBlindMode)}>
+                                                {row.sellVolumePercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
+                                                <Text size="1">{row.sellVolumePercentageChange}%</Text>
+                                            </Flex>
+                                        </Tooltip>
+                                        <Text size="3">
                                             {Number(row.sellVolume).toLocaleString()}
                                         </Text>
                                     </Flex>
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <Flex height="100%" align="center" >
-                                        <Text>{Number(row.losses).toLocaleString()}</Text>
+                                    <Flex height="100%" gap="2" align="center" >
+                                        {/* <Text size="3">{Number(row.losses).toLocaleString()}</Text> */}
+                                        <Tooltip content="Percentage change from last week">
+                                            <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.lossesPercent, colorBlindMode)}>
+                                                {row.lossesPercent >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
+                                                <Text size="1">{row.lossesPercent}%</Text>
+                                            </Flex>
+                                        </Tooltip>
+                                        <Text size="3">
+                                            {Number(row.losses).toLocaleString()}
+                                        </Text>
                                     </Flex>
                                 </Table.Cell>
                             </Table.Row>

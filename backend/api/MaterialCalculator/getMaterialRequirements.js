@@ -1,28 +1,12 @@
+//ok this code is pretty fucked honestly
+//but I wrote it like this because it would've been impossible to keep it all in my head
+
 const {
-    reactionRequirements,
     mainComponents,
     defensive,
     offensive,
     propulsion,
     core,
-    itemIds,
-    BPOMaterialEfficiency,
-    azbel,
-    raitaru,
-    tatara,
-    athanor,
-    mediumReactionTimeRigI,
-    mediumReactionTimeRigII,
-    mediumReactionMaterialRigI,
-    mediumReactionMaterialRigII,
-    largeReactionRigI,
-    largeReactionRigII,
-    mediumManufacturingMaterialRigI,
-    mediumManufacturingMaterialRigII,
-    mediumManufacturingTimeRigI,
-    mediumManufacturingTimeRigII,
-    largeManufacturingRigI,
-    largeManufacturingRigII,
     intactArmorNanobots,
     intactPowerCores,
     intactWeaponSubroutines,
@@ -34,20 +18,14 @@ const {
     wreckedArmorNanobots,
     wreckedPowerCores,
     wreckedWeaponSubroutines,
-    wreckedThrusterSections,
-    accelerantDecryptor,
-    attaintmentDecryptor,
-    augmentationDecryptor,
-    parityDecryptor,
-    processDecryptor,
-    symmetryDecryptor,
-    optimizedAttainmentDecryptor,
-    optimizedAugmentationDecryptor,
-    getRequirements,
-    getPricePerUnit,
-    calculateSpecComponentRequirements,
-    calculateMainComponentRequirements } = require('./staticVars.js');
+    wreckedThrusterSections
+} = require('./staticVars.js');
 const { scheduleReactions } = require('./scheduleReactions.js');
+const { invent } = require('./invent.js');
+const { calculateSpecComponentQuantities } = require('./calculateSpecComponentQuantities.js');
+const { getMaterialEfficiencyBonus } = require('./getMaterialEfficiencyBonus.js');
+const { calculateReactorMEEfficiency } = require('./calculateReactorMEEfficiency.js');
+const { aggregateItems } = require('./aggregateItems.js');
 const { materialsNamesAndIds } = require('../namesAndIds.js');
 
 const getMaterialRequirements = (settings) => {
@@ -83,91 +61,7 @@ const getMaterialRequirements = (settings) => {
     let offensiveRequiredMaterials = [];
     let propulsionRequiredMaterials = [];
 
-    const invent = (relicType, decryptor, skillLevel, coreRuns, offRuns, propRuns, defRuns) => {
-        let output = {};
-
-        let baseProbability;
-        if (relicType === "Intact") {
-            baseProbability = .26;
-        }
-        else if (relicType === "Malfunctioning") {
-            baseProbability = .21;
-        }
-        else if (relicType === "Wrecked") {
-            baseProbability = .14;
-        }
-
-        let baseRuns;
-        if (relicType === "Intact") {
-            baseRuns = 20;
-        }
-        if (relicType === "Malfunctioning") {
-            baseRuns = 10;
-        }
-        if (relicType === "Wrecked") {
-            baseRuns = 3;
-        }
-
-        let optionalDecryptor;
-        if (decryptor === "Accelerant Decryptor") {
-            optionalDecryptor = accelerantDecryptor;
-        }
-        else if (decryptor === "Attainment Decryptor") {
-            optionalDecryptor = attaintmentDecryptor;
-        }
-        else if (decryptor === "Augmentation Decryptor") {
-            optionalDecryptor = augmentationDecryptor;
-        }
-        else if (decryptor === "Parity Decryptor") {
-            optionalDecryptor = parityDecryptor;
-        }
-        else if (decryptor === "Process Decryptor") {
-            optionalDecryptor = processDecryptor;
-        }
-        else if (decryptor === "Symmetry Decryptor") {
-            optionalDecryptor = symmetryDecryptor;
-        }
-        else if (decryptor === "Optimized Attainment Decryptor") {
-            optionalDecryptor = optimizedAttainmentDecryptor;
-        }
-        else if (decryptor === "Optimized Augmentation Decryptor") {
-            optionalDecryptor = optimizedAugmentationDecryptor;
-        }
-        else if (decryptor === "None") {
-            optionalDecryptor = {
-                typeName: "None",
-                typeId: null,
-                probabilityModifier: 1,
-                inventionMEModifier: 0,
-                inventionTEModifier: 0,
-                inventionMaxRunModifier: 0,
-            };
-        }
-
-        output.decryptor = optionalDecryptor;
-
-        const skillMultiplier = (skillLevel + skillLevel) / 30;
-        const encryptionMultiplier = skillLevel / 40;
-
-        let successChance = baseProbability * (1 + skillMultiplier + encryptionMultiplier) * (optionalDecryptor.probabilityModifier);
-
-        successChance = (successChance * 100).toFixed(1);
-
-        output.successChance = successChance / 100;
-
-        output.numRuns = optionalDecryptor.inventionMaxRunModifier + baseRuns;
-
-        output.materialEfficiency = 2 + optionalDecryptor.inventionMEModifier;
-
-        output.timeEfficiency = 4 + optionalDecryptor.inventionTEModifier;
-
-        output.coreRuns = Math.ceil(coreRuns / output.successChance);
-        output.offRuns = Math.ceil(offRuns / output.successChance);
-        output.propRuns = Math.ceil(propRuns / output.successChance);
-        output.defRuns = Math.ceil(defRuns / output.successChance);
-
-        return output;
-    }
+    console.log(settings);
 
     const blueprints = invent(relicType, decryptor, skillLevel, coreRuns, offRuns, propRuns, defRuns)
 
@@ -322,71 +216,7 @@ const getMaterialRequirements = (settings) => {
 
     const mainComponentsQuantities = blueprints.numRuns * coreRuns + blueprints.numRuns * offRuns + blueprints.numRuns * propRuns + blueprints.numRuns * defRuns;
 
-    const calculateSpecComponentQuantities = (coreRuns, offRuns, propRuns, defRuns, blueprints, structure, rigOne, rigTwo) => {
-        let structureMaterialEfficiencyModifier = 0;
-
-        // Set structure material efficiency modifier
-        if (structure == "Azbel" || structure == "Raitaru") {
-            structureMaterialEfficiencyModifier = 1 / 100;
-        }
-
-        let blueprintCopyMaterialEfficiencyModifier = blueprints.materialEfficiency / 100;
-        const totalMEBonus = structureMaterialEfficiencyModifier + blueprintCopyMaterialEfficiencyModifier;
-        const efficiencyModifier = 1 - totalMEBonus;
-
-        let coreSpecComponentName = core.specComponents[0].name;
-        let coreSpecComponentId = core.specComponents[0].type_id;
-        let coreBaseQty = coreRuns * Math.round(core.specComponents[0].quantity * blueprints.numRuns * efficiencyModifier);
-        if (coreRuns > 0) {
-            coreRequiredMaterials.push({ name: coreSpecComponentName, id: coreSpecComponentId, quantity: coreBaseQty });
-        }
-
-        let offSpecComponentName = offensive.specComponents[0].name;
-        let offSpecComponentId = offensive.specComponents[0].type_id;
-        let offBaseQty = offRuns * Math.round(offensive.specComponents[0].quantity * blueprints.numRuns * efficiencyModifier);
-        if (offRuns > 0) {
-            offensiveRequiredMaterials.push({ name: offSpecComponentName, id: offSpecComponentId, quantity: offBaseQty });
-        }
-
-        let propSpecComponentName = propulsion.specComponents[0].name;
-        let propSpecComponentId = propulsion.specComponents[0].type_id;
-        let propBaseQty = propRuns * Math.round(propulsion.specComponents[0].quantity * blueprints.numRuns * efficiencyModifier);
-        if (propRuns > 0) {
-            propulsionRequiredMaterials.push({ name: propSpecComponentName, id: propSpecComponentId, quantity: propBaseQty });
-        }
-
-        let defSpecComponentName = defensive.specComponents[0].name;
-        let defSpecComponentId = defensive.specComponents[0].type_id;
-        let defBaseQty = defRuns * Math.round(defensive.specComponents[0].quantity * blueprints.numRuns * efficiencyModifier);
-        if (defRuns > 0) {
-            defensiveRequiredMaterials.push({ name: defSpecComponentName, id: defSpecComponentId, quantity: defBaseQty });
-        }
-
-        return [
-            {
-                name: coreSpecComponentName,
-                id: coreSpecComponentId,
-                quantity: coreBaseQty
-            },
-            {
-                name: offSpecComponentName,
-                id: offSpecComponentId,
-                quantity: offBaseQty
-            },
-            {
-                name: propSpecComponentName,
-                id: propSpecComponentId,
-                quantity: propBaseQty
-            },
-            {
-                name: defSpecComponentName,
-                id: defSpecComponentId,
-                quantity: defBaseQty
-            }
-        ];
-    }
-
-    const specComponentQuantities = calculateSpecComponentQuantities(coreRuns, offRuns, propRuns, defRuns, blueprints, structure, rigOne, rigTwo, location);
+    const specComponentQuantities = calculateSpecComponentQuantities(coreRuns, offRuns, propRuns, defRuns, blueprints, structure, rigOne, rigTwo, location, coreRequiredMaterials, defensiveRequiredMaterials, offensiveRequiredMaterials, propulsionRequiredMaterials);
 
     for (let i = 0; i < mainComponents.length; i++) {
         const mainComponentId = mainComponents[i].type_id;
@@ -411,76 +241,7 @@ const getMaterialRequirements = (settings) => {
         requiredMaterials.push(specComponentQuantities[i]);
     }
 
-    const getMaterialEfficiencyBonus = (BPOME, BPOTE, structure, rigOne, rigTwo, location) => {
-        let struct;
-        if (structure == "Azbel") {
-            struct = azbel;
-        }
-        if (structure == "Raitaru") {
-            struct = raitaru;
-        }
-
-        const structME = struct.materialReduction;
-
-        let rigME;
-        if (structure == "Azbel") {
-            if (settings.complexLargeRig == "T1") {
-                rigME = largeManufacturingRigI;
-            }
-            if (settings.complexLargeRig == "T2") {
-                rigME = largeManufacturingRigII;
-            }
-            if (settings.complexLargeRig == "None") {
-                rigME = {
-                    materialReduction: 0,
-                    timeReduction: 0,
-                    highsecBonus: 0,
-                    lowsecBonus: 0,
-                    nullsecBonus: 0,
-                    wormholeBonus: 0
-                }
-            }
-        }
-        if (structure == "Raitaru") {
-            if (settings.complexMeRig == "T1") {
-                rigME = mediumManufacturingMaterialRigI;
-            }
-            if (settings.complexMeRig == "T2") {
-                rigME = mediumManufacturingMaterialRigII;
-            }
-            if (settings.complexMeRig == "None") {
-                rigME = {
-                    materialReduction: 0,
-                    timeReduction: 0,
-                    highsecBonus: 0,
-                    lowsecBonus: 0,
-                    nullsecBonus: 0,
-                    wormholeBonus: 0
-                }
-            }
-        }
-
-        const rigMaterialReduction = rigME.materialReduction;
-        let locationBonus;
-        if (location == "wormhole") {
-            locationBonus = rigME.wormholeBonus;
-        }
-        if (location == "highsec") {
-            locationBonus = rigME.highsecBonus;
-        }
-        if (location == "lowsec") {
-            locationBonus = rigME.lowsecBonus;
-        }
-        if (location == "nullsec") {
-            locationBonus = rigME.nullsecBonus;
-        }
-
-        const materialEfficiencyBonus = ((1 - (BPOME / 100)) * (1 - structME) * (1 - (rigMaterialReduction * locationBonus)))
-
-        return materialEfficiencyBonus;
-    }
-
-    const materialEfficiencyBonus = getMaterialEfficiencyBonus(BPOME, BPOTE, settings.complex, rigOne, rigTwo, location);
+    const materialEfficiencyBonus = getMaterialEfficiencyBonus(BPOME, BPOTE, settings.complex, rigOne, rigTwo, location, settings);
 
     // create an array for all of the material requirements
     const totalSalvageRequired = [];
@@ -583,18 +344,6 @@ const getMaterialRequirements = (settings) => {
     }
 
     //remove duplicates
-    const aggregateItems = (itemsArray) => {
-        const itemMap = {};
-        itemsArray.forEach(item => {
-            if (!itemMap[item.name]) {
-                itemMap[item.name] = { ...item };
-            } else {
-                itemMap[item.name].quantity += item.quantity;
-            }
-        });
-        return Object.values(itemMap);
-    };
-
     // Aggregate unique salvage and reactions
     const uniqueSalvage = aggregateItems(totalSalvageRequired);
     const uniqueReactions = aggregateItems(reactionsQuantities);
@@ -813,65 +562,7 @@ const getMaterialRequirements = (settings) => {
         }
     }
 
-    const calculateReactorMEEfficiency = (reactionStructure, reactionRigOne, reactionRigTwo, reactionLocation) => {
-        let rigME;
-        if (reactionStructure == "Athanor") {
-            if (reactionRigOne == "T1") {
-                rigME = mediumReactionMaterialRigI;
-            }
-            if (reactionRigOne == "T2") {
-                rigME = mediumReactionMaterialRigII;
-            }
-            if (reactionRigOne == "None") {
-                rigME = {
-                    materialReduction: 0,
-                    timeReduction: 0,
-                    highsecBonus: 0,
-                    lowsecBonus: 0,
-                    nullsecBonus: 0,
-                    wormholeBonus: 0
-                }
-            }
-        }
-        if (reactionStructure == "Tatara") {
-            if (settings.tataraRig == "T1") {
-                rigME = largeReactionRigI;
-            }
-            if (settings.tataraRig == "T2") {
-                rigME = largeReactionRigII;
-            }
-            if (settings.tataraRig == "None") {
-                rigME = {
-                    materialReduction: 0,
-                    timeReduction: 0,
-                    highsecBonus: 0,
-                    lowsecBonus: 0,
-                    nullsecBonus: 0,
-                    wormholeBonus: 0
-                }
-            }
-        }
-        const rigMaterialReduction = rigME.materialReduction;
-        let locationBonus;
-        if (reactionLocation == "wormhole") {
-            locationBonus = rigME.wormholeBonus;
-        }
-        if (reactionLocation == "highsec") {
-            locationBonus = rigME.highsecBonus;
-        }
-        if (reactionLocation == "lowsec") {
-            locationBonus = rigME.lowsecBonus;
-        }
-        if (reactionLocation == "nullsec") {
-            locationBonus = rigME.nullsecBonus;
-        }
-
-        const reactorEfficiency = 1 - (rigMaterialReduction * locationBonus);
-
-        return reactorEfficiency;
-    }
-
-    const reactorEfficiency = calculateReactorMEEfficiency(reactionStructure, reactionRigOne, reactionRigTwo, reactionLocation);
+    const reactorEfficiency = calculateReactorMEEfficiency(reactionStructure, reactionRigOne, reactionRigTwo, reactionLocation, settings);
 
     const gasRequirements = [];
 

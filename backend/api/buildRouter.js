@@ -2,10 +2,8 @@ const express = require('express');
 const axios = require('axios');
 const buildRouter = express.Router();
 const { Client } = require('pg');
-const { namesAndIds, subsystemIDArr } = require('./namesAndIds.js');
 const { getMaterialRequirements } = require('./MaterialCalculator/getMaterialRequirements.js');
 const { reactionRequirements, mainComponents, defensive, offensive, propulsion, core, azbel, raitaru, athanor, tatara, getPricePerUnit } = require('./MaterialCalculator/staticVars.js');
-const { get } = require('jquery');
 
 let client;
 if (!process.env.DATABASE_URL) {
@@ -32,7 +30,7 @@ client.connect();
 
 buildRouter.use(express.json());
 
-getBaseQuantity = (blueprints, itemId, totalRuns, coreRuns, defRuns, offRuns, propRuns) => {
+const getBaseQuantity = (blueprints, itemId, totalRuns, coreRuns, defRuns, offRuns, propRuns) => {
     for (let i = 0; i < mainComponents.length; i++) {
         const component = mainComponents[i];
         if (component.type_id == itemId) {

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import { Text, Table, Flex, IconButton, Card, HoverCard, Box, Link, Heading, Select } from "@radix-ui/themes";
+import { Text, Table, Flex, IconButton, Card, HoverCard, Link, Heading, Select } from "@radix-ui/themes";
 import Cookies from 'js-cookie';
 import namesAndIds from './namesAndIds';
 import {
@@ -10,9 +10,10 @@ import {
   CheckIcon,
   Cross2Icon,
 } from "@radix-ui/react-icons";
-import InteractiveChart from './interactiveChart';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
+import MarketDataTable from './marketDataTable';
+import GraphCard from './graphCard';
 
 class MarketData extends Component {
   constructor(props) {
@@ -33,9 +34,8 @@ class MarketData extends Component {
       colorBlindMode: this.props.colorBlindMode,
     };
 
-    // Bind methods
     this.renderIconButton = this.renderIconButton.bind(this);
-    this.renderChart = this.renderChart.bind(this);
+    // this.renderChart = this.renderChart.bind(this);
     this.handleIconClick = this.handleIconClick.bind(this);
     this.getClassName = this.getClassName.bind(this);
     this.getLocationName = this.getLocationName.bind(this);
@@ -304,216 +304,45 @@ class MarketData extends Component {
     if (value < 0 && colorBlindMode) return "danger colorBlind";
   }
 
-  renderChart() {
-    const { tableArr } = this.state;
-    const chartData = tableArr.filter((row) => row && row.addToGraph);
-
-    if (chartData.length === 0) {
-      return (
-        <Card height="100%" style={{ width: "100%", flex: "2" }}>
-          <Flex align="center" justify="center" style={{ height: "100%" }}>
-            <Text>No data selected.</Text>
-          </Flex>
-        </Card>
-      );
-    }
-
-    return (
-      <Card height="100%" style={{ width: "100%", flex: "2" }}>
-        <Flex justify="start" align="start" direction="column" style={{ height: "100%" }}>
-          {/* <Flex direction="column" align="start"> */}
-          <HoverCard.Root>
-            <HoverCard.Trigger>
-              <Table.Root>
-                <Table.ColumnHeaderCell>
-                  {/* {this.state.name} */}
-                  <Text weight="bold" size="3">
-                    {this.state.name}
-                  </Text>
-                </Table.ColumnHeaderCell>
-              </Table.Root>
-            </HoverCard.Trigger>
-            <HoverCard.Content maxWidth="300px">
-              <Flex gap="4" direction={"column"} justify={"start"}>
-                <Heading size="3" weight="bold">Market Settings</Heading>
-                <Flex gap="4" align="center" justify="start">
-                  <Text size="2" style={{ color: "var(--accent-a11)" }}>Materials</Text>
-                  <Select.Root defaultValue={this.props.materialsLocation} onValueChange={this.props.setMaterialsLocation}>
-                    <Select.Trigger />
-                    <Select.Content>
-                      <Select.Group>
-                        <Select.Label size="2">Trade hub</Select.Label>
-                        <Select.Item value="10000002">Jita</Select.Item>
-                        <Select.Item value="10000043">Amarr</Select.Item>
-                        <Select.Item value="10000030">Rens</Select.Item>
-                        <Select.Item value="10000042">Hek</Select.Item>
-                        <Select.Item value="10000032">Dodixie</Select.Item>
-                      </Select.Group>
-                    </Select.Content>
-                  </Select.Root>
-                  <Select.Root defaultValue={this.props.materialsOrderType} onValueChange={this.props.setMaterialsOrderType}>
-                    <Select.Trigger />
-                    <Select.Content>
-                      <Select.Group>
-                        <Select.Label size="2">Order Type</Select.Label>
-                        <Select.Item value="buy">Buy</Select.Item>
-                        <Select.Item value="sell">Sell</Select.Item>
-                      </Select.Group>
-                    </Select.Content>
-                  </Select.Root>
-                </Flex>
-                <Flex gap="4" align="center" justify="start">
-                  <Text size="2" style={{ color: "var(--accent-a11)" }}>Subsystems</Text>
-                  <Select.Root defaultValue={this.props.subsystemsLocation} onValueChange={this.props.setSubsystemsLocation}>
-                    <Select.Trigger />
-                    <Select.Content>
-                      <Select.Group>
-                        <Select.Label size="2">Trade hub</Select.Label>
-                        <Select.Item size="2" value="10000002">Jita</Select.Item>
-                        <Select.Item size="2" value="10000043">Amarr</Select.Item>
-                        <Select.Item size="2" value="10000030">Rens</Select.Item>
-                        <Select.Item size="2" value="10000042">Hek</Select.Item>
-                        <Select.Item size="2" value="10000032">Dodixie</Select.Item>
-                      </Select.Group>
-                    </Select.Content>
-                  </Select.Root>
-                  <Select.Root defaultValue={this.props.subsystemsOrderType} onValueChange={this.props.setSubsystemsOrderType}>
-                    <Select.Trigger />
-                    <Select.Content>
-                      <Select.Group>
-                        <Select.Label size="2">Order Type</Select.Label>
-                        <Select.Item size="2" value="buy">Buy</Select.Item>
-                        <Select.Item size="2" value="sell">Sell</Select.Item>
-                      </Select.Group>
-                    </Select.Content>
-                  </Select.Root>
-                </Flex>
-              </Flex>
-            </HoverCard.Content>
-          </HoverCard.Root>
-          {/* </Flex> */}
-          <InteractiveChart
-            data={chartData}
-          />
-        </Flex>
-      </Card>
-    );
-  }
-
   render() {
-    let { tableArr, isLoading, colorBlindMode } = this.state;
-
-    if (isLoading) {
-      return (
-        <Flex
-          id="detailed_analysis_page_main_container"
-          style={{ width: "100%" }}
-          direction="row"
-          gap="4"
-        >
-          <Card className="market_data_table" style={{ width: "100%", flex: "1" }}>
-            <Flex justify="center" align="center" style={{ height: "calc((44px*0.9)*11)" }}>
-              <FontAwesomeIcon icon={faCircleNotch} spin size="xl" />
-            </Flex>
-          </Card>
-          <Card height="100%" style={{ width: "100%", flex: "2" }}>
-            <Flex justify="center" align="center" style={{ height: "100%" }}>
-              <FontAwesomeIcon icon={faCircleNotch} spin size="xl" />
-            </Flex>
-          </Card>
-        </Flex>
-      );
-    }
+    let { tableArr, colorBlindMode, name, isLoading } = this.state;
+    const {
+      materialsLocation, 
+      setMaterialsLocation, 
+      materialsOrderType,
+      setMaterialsOrderType,
+      subsystemsLocation, 
+      setSubsystemsLocation,
+      subsystemsOrderType,
+      setSubsystemsOrderType
+    } = this.props;
 
     return (
-      <Flex
-        id="detailed_analysis_page_main_container"
-        style={{ width: "100%" }}
-        direction="row"
-        gap="4"
+      <Flex id="detailed_analysis_page_main_container" direction="row" gap="4"
+        style={{ width: "100%", height: "472px" }}
       >
-        <Card className="market_data_table">
-          {/* <Flex> */}
-            <Table.Root>
-              <Table.Header>
-                <Table.Row>
-                  <Table.ColumnHeaderCell>Data</Table.ColumnHeaderCell>
-                  <Table.ColumnHeaderCell>Value</Table.ColumnHeaderCell>
-                  <Table.ColumnHeaderCell>Add to graph</Table.ColumnHeaderCell>
-                </Table.Row>
-              </Table.Header>
-              <Table.Body>
-                {tableArr.map((item, index) => {
-                  if (!item) return null;
-                  return (
-                    <Table.Row key={index}>
-                      <Table.Cell>
-                        <Flex height="100%" align="center">
-                          {item.info ? (
-                            <HoverCard.Root>
-                              <HoverCard.Trigger>
-                                <Flex justify="start" align="center" gap="1">
-                                  <Text>{item.name} </Text><InfoCircledIcon className="info_icon" height="10px" width="10px" />
-                                </Flex>
-                              </HoverCard.Trigger>
-                              <HoverCard.Content maxWidth="300px">
-                                <Flex gap="1" direction={"column"} justify={"start"}>
-                                  <Heading size="3" mb="2">
-                                    {item.name}
-                                  </Heading>
-                                  <Text as="div" size="2" color="gray" mb="2">
-                                    {item.info}
-                                  </Text>
-                                  <Text size="2">
-                                    Material costs based on your{" "}
-                                    <Link size="2" href="/build" target="_blank">
-                                      build
-                                    </Link>{" "}
-                                    settings.
-                                  </Text>
-                                </Flex>
-                              </HoverCard.Content>
-                            </HoverCard.Root>
-                          ) : (
-                            <Text>{item.name}</Text>
-                          )}
-                        </Flex>
-                      </Table.Cell>
-                      <Table.Cell>
-                        <Flex gap="2" align="center">
-                          <Flex
-                            direction="column"
-                            justify="center"
-                            width="fit-content"
-                            align="center"
-                            className={this.getClassName(
-                              item.percentageChange,
-                              colorBlindMode
-                            )}
-                          >
-                            {item.percentageChange >= 0 ? (
-                              <DoubleArrowUpIcon height="15px" width="15px" />
-                            ) : (
-                              <DoubleArrowDownIcon height="15px" width="15px" />
-                            )}
-                            <Text size="1">{item.percentageChange}%</Text>
-                          </Flex>
-                          <Text>{Number(item.value).toLocaleString()}</Text>
-                        </Flex>
-                      </Table.Cell>
-                      <Table.Cell>
-                        <Flex height="100%" align="center">
-                          {this.renderIconButton(item, index)}
-                        </Flex>
-                      </Table.Cell>
-                    </Table.Row>
-                  );
-                })}
-              </Table.Body>
-            </Table.Root>
-          {/* </Flex> */}
-        </Card>
-        {this.renderChart()}
+        <MarketDataTable 
+          isLoading={isLoading}
+          renderIconButton={this.renderIconButton} 
+          tableArr={tableArr} 
+          colorBlindMode={colorBlindMode} 
+          getClassName={this.getClassName}
+        />
+        <GraphCard 
+          name={name} 
+          isLoading={isLoading}
+          chartData={tableArr}
+
+          materialsLocation={materialsLocation} 
+          setMaterialsLocation={setMaterialsLocation} 
+          materialsOrderType={materialsOrderType}
+          setMaterialsOrderType={setMaterialsOrderType}
+
+          subsystemsLocation={subsystemsLocation}
+          setSubsystemsLocation={setSubsystemsLocation}
+          subsystemsOrderType={subsystemsOrderType}
+          setSubsystemsOrderType={setSubsystemsOrderType}
+        />
       </Flex>
     );
   }

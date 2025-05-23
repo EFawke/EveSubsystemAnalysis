@@ -1,4 +1,3 @@
-import React from 'react';
 import {
   ComposedChart,
   XAxis,
@@ -10,6 +9,7 @@ import {
   Bar,
   CartesianGrid
 } from 'recharts';
+import { Text, Table, Flex, IconButton, Card, HoverCard, Link, Heading, Select } from "@radix-ui/themes";
 
 function isSmallScale(name = "") {
   const lower = name.toLowerCase();
@@ -20,7 +20,11 @@ function InteractiveChart(props) {
   const { data } = props;
 
   if (!data || data.length === 0) {
-    return <div>No chart data.</div>;
+    return (
+      <Flex height="100%" width="100%" justify="center" align="center">
+        No data selected.
+      </Flex>
+    )
   }
 
   // 1) Gather all timestamps from all datasets
@@ -54,10 +58,10 @@ function InteractiveChart(props) {
   const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#413ea0", "#888888"];
 
   return (
-    <ResponsiveContainer width="100%" height={400}>
+    <ResponsiveContainer width="100%" height="100%">
       <ComposedChart
         data={chartData}
-        margin={{ 
+        margin={{
           top: 5,
           left: 22,
         }}
@@ -65,21 +69,19 @@ function InteractiveChart(props) {
         <CartesianGrid strokeDasharray="3 3" />
         <XAxis
           dataKey="date"
-          tick={{ fill: 'white', fontSize: 'calc(14px * 0.9)' }}
+          tick={{ fill: 'white', fontSize: 'calc(16px * 0.9)' }}
         />
         <YAxis
           yAxisId="left"
-          tick={{ fill: 'white', fontSize: 'calc(14px * 0.9)' }}
+          tick={{ fill: 'white', fontSize: 'calc(16px * 0.9)' }}
         />
         <YAxis
           yAxisId="right"
           orientation="right"
-          tick={{ fill: 'white', fontSize: 'calc(14px * 0.9)' }}
+          tick={{ fill: 'white', fontSize: 'calc(16px * 0.9)' }}
           domain={[0, dataMax => (dataMax * 2)]}
         />
         <Tooltip
-          // wrapperStyle={{ pointerEvents: 'none' }}
-          // cursor={{ stroke: 'none' }}
           contentStyle={{
             backgroundColor: 'var(--mauve-2)',
             borderRadius: 'var(--radius-4)',
@@ -87,11 +89,11 @@ function InteractiveChart(props) {
             borderWidth: '1px',
             padding: "var(--space-3)",
             borderColor: 'color-mix(in oklab, var(--gray-a6), var(--gray-6) 25%)',
-            fontSize: 'calc(14px * 0.9)',
+            fontSize: 'calc(16px * 0.9)',
           }}
         />
         <Legend
-          wrapperStyle={{ color: 'white', fontSize: 'calc(14px * 0.9)' }}
+          wrapperStyle={{ color: 'white', fontSize: 'calc(16px * 0.9)' }}
         />
 
         {data.map((dataset, i) => {

@@ -1,9 +1,8 @@
-import React from 'react';
 import { Heading } from "@radix-ui/themes";
 
 function PageTitle({ pageTitle }) {
     return (
-        <Heading mb="6" mt="6" size="6">{pageTitle}</Heading>
+        <Heading mb="8" mt="8" size="6" weight="medium">{pageTitle}</Heading>
     )
 }
 

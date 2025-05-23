@@ -3,12 +3,12 @@ import * as Accordion from "@radix-ui/react-accordion";
 import classNames from "classnames";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
 import "./accordion-styles.css";
-import { Slider, TextField, Flex, Select, Text } from "@radix-ui/themes";
+import { Slider, TextField, Flex, Select, Text, Tooltip } from "@radix-ui/themes";
 
 const SettingsAccordion = (props) => (
 	<Accordion.Root className="AccordionRoot" type="single" collapsible width="100%">
 		<Accordion.Item className="AccordionItem" value="item-1">
-			<AccordionTrigger>Refinery</AccordionTrigger>
+			<AccordionTrigger><Text size="3">Refinery</Text></AccordionTrigger>
 			<AccordionContent>
 				<Flex direction="row" align="start" style={{ width: "100%" }} justify="between" mt="2" mb="2">
 					<Flex direction="column" gap="2" align="start" style={{ width: "50%" }}>
@@ -43,8 +43,11 @@ const SettingsAccordion = (props) => (
 						)}
 						{props.refinery === "Athanor" && (
 							<>
+								
 								<Flex direction="column" gap="1" align="start" style={{ width: "100%" }} justify="between">
-									<Text size="2" style={{ color: "var(--accent-a11)" }}>Time Efficiency Rig</Text>
+									<Tooltip content="Feature in development">
+										<Text size="2" style={{ color: "var(--accent-a11)" }}>Time Efficiency Rig</Text>
+									</Tooltip>
 									<Select.Root defaultValue={props.teRig || "None"} onValueChange={props.handleInputChange}>
 										<Select.Trigger />
 										<Select.Content>
@@ -89,10 +92,12 @@ const SettingsAccordion = (props) => (
 								</Select.Content>
 							</Select.Root>
 						</Flex>
-						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
-							<Text size="2" style={{ color: "var(--accent-a11)" }}>Reaction System Cost Index</Text>
-							<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.reactionCostIndex} onChange={(e) => props.handleInputChange(e.target.value, 'reactionCostIndex')} />
-						</Flex>
+						<Tooltip content="Found in the manufacturing window in-game">
+							<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
+								<Text size="2" style={{ color: "var(--accent-a11)" }}>Reaction System Cost Index</Text>
+								<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.reactionCostIndex} onChange={(e) => props.handleInputChange(e.target.value, 'reactionCostIndex')} />
+							</Flex>
+						</Tooltip>
 						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>Facility Tax</Text>
 							<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.reactionFacilityTax} onChange={(e) => props.handleInputChange(e.target.value, 'reactionFacilityTax')} />
@@ -102,7 +107,7 @@ const SettingsAccordion = (props) => (
 			</AccordionContent>
 		</Accordion.Item>
 		<Accordion.Item className="AccordionItem" value="item-2">
-			<AccordionTrigger>Manufacturing Complex</AccordionTrigger>
+			<AccordionTrigger><Text size="3">Manufacturing Complex</Text></AccordionTrigger>
 			<AccordionContent>
 				<Flex direction="row" align="start" style={{ width: "100%" }} justify="between" mt="2" mb="2">
 					<Flex direction="column" gap="2" align="start" style={{ width: "50%" }}>
@@ -138,7 +143,9 @@ const SettingsAccordion = (props) => (
 						{props.complex === "Raitaru" && (
 							<>
 								<Flex direction="column" gap="1" align="start" style={{ width: "100%" }} justify="between">
-									<Text size="2" style={{ color: "var(--accent-a11)" }}>Time Efficiency Rig</Text>
+									<Tooltip content="Feature in development">
+										<Text size="2" style={{ color: "var(--accent-a11)" }}>Time Efficiency Rig</Text>
+									</Tooltip>
 									<Select.Root defaultValue={props.complexTeRig || "None"} onValueChange={(value) => props.handleInputChange(value, 'complexTeRig')}>
 										<Select.Trigger />
 										<Select.Content>
@@ -184,10 +191,12 @@ const SettingsAccordion = (props) => (
 								</Select.Content>
 							</Select.Root>
 						</Flex>
+						<Tooltip content="Found in the manufacturing window in-game">
 						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>Build System Cost Index</Text>
 							<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.buildCostIndex || 0.14} onChange={(e) => props.handleInputChange(e.target.value, 'buildCostIndex')} />
 						</Flex>
+						</Tooltip>
 						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>Facility Tax</Text>
 							<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.complexFacilityTax || 0.25} onChange={(e) => props.handleInputChange(e.target.value, 'complexFacilityTax')} />
@@ -197,7 +206,7 @@ const SettingsAccordion = (props) => (
 			</AccordionContent>
 		</Accordion.Item>
 		<Accordion.Item className="AccordionItem" value="item-3">
-			<AccordionTrigger>Blueprints</AccordionTrigger>
+			<AccordionTrigger><Text size="3">Blueprints</Text></AccordionTrigger>
 			<AccordionContent>
 				<Flex direction="row" align="start" style={{ width: "100%" }} justify="between" mt="2" mb="2">
 					<Flex direction="column" gap="4" align="start" style={{ width: "100%" }}>
@@ -206,7 +215,9 @@ const SettingsAccordion = (props) => (
 							<Slider name="componentMaterialEfficiency" min={0} step={1} max={10} defaultValue={[10]} onValueCommit={(e) => props.handleSliderChange(e, "componentMaterialEfficiency")}/>
 						</Flex>
 						<Flex direction="column" gap="2" align="start" style={{ width: "50%" }}>
-							<Text size="2" style={{ color: "var(--accent-a11)" }}>Component Time Efficiency</Text>
+							<Tooltip content="Feature in development">
+								<Text size="2" style={{ color: "var(--accent-a11)" }}>Component Time Efficiency</Text>
+							</Tooltip>
 							<Slider name="componentTimeEfficiency" min={0} step={1} max={20} defaultValue={[20]} onValueCommit={(e) => props.handleSliderChange(e, "componentTimeEfficiency")}/>
 						</Flex>
 					</Flex>
@@ -214,7 +225,7 @@ const SettingsAccordion = (props) => (
 			</AccordionContent>
 		</Accordion.Item>
 		<Accordion.Item className="AccordionItem" value="item-4">
-			<AccordionTrigger>Invention</AccordionTrigger>
+			<AccordionTrigger><Text size="3">Invention</Text></AccordionTrigger>
 			<AccordionContent>
 				<Flex direction="row" align="start" style={{ width: "100%" }} justify="between" mt="2" mb="2">
 					<Flex direction="column" gap="2" align="start" style={{ width: "100%" }}>
@@ -257,7 +268,7 @@ const SettingsAccordion = (props) => (
 			</AccordionContent>
 		</Accordion.Item>
 		<Accordion.Item className="AccordionItem" value="item-5">
-			<AccordionTrigger>Build Volume</AccordionTrigger>
+			<AccordionTrigger><Text size="3">Build Volume</Text></AccordionTrigger>
 			<AccordionContent>
 				<Flex direction="row" align="start" style={{ width: "100%" }} justify="between" mt="2" mb="2">
 					<Flex direction="column" gap="1" align="start" style={{ width: "50%" }}>
@@ -276,7 +287,7 @@ const SettingsAccordion = (props) => (
 			</AccordionContent>
 		</Accordion.Item>
 		<Accordion.Item className="AccordionItem" value="item-6">
-			<AccordionTrigger>Character</AccordionTrigger>
+			<AccordionTrigger><Text size="3">Character</Text></AccordionTrigger>
 			<AccordionContent>
 				<Flex direction="row" align="start" style={{ width: "100%" }} justify="between" mt="2" mb="2">
 					<Flex direction="column" gap="4" align="start" style={{ width: "50%" }}>
@@ -284,14 +295,18 @@ const SettingsAccordion = (props) => (
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>Reaction Slots</Text>
 							<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.numSlots} onChange={(e) => props.handleInputChange(e.target.value, 'numSlots')} />
 						</Flex>
-						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
-							<Text size="2" style={{ color: "var(--accent-a11)" }}>Skill Level</Text>
-							<Slider name="skillLevel" min={0} step={1} max={5} defaultValue={[Number(props.skillLevel)]} onValueCommit={(e) => props.handleSliderChange(e, "skillLevel")}/>	
-						</Flex>
+						<Tooltip content="Character skills for invention success calculations">
+							<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
+								<Text size="2" style={{ color: "var(--accent-a11)" }}>Skill Level</Text>
+								<Slider name="skillLevel" min={0} step={1} max={5} defaultValue={[Number(props.skillLevel)]} onValueCommit={(e) => props.handleSliderChange(e, "skillLevel")}/>	
+							</Flex>
+						</Tooltip>
 					</Flex>
 					<Flex direction="column" gap="2" align="start" style={{ width: "50%" }}>
 						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
-							<Text size="2" style={{ color: "var(--accent-a11)" }}>Implant</Text>
+							<Tooltip content="Feature in development">
+								<Text size="2" style={{ color: "var(--accent-a11)" }}>Implant</Text>
+							</Tooltip>
 							<Select.Root defaultValue={props.implant} onValueChange={(value) => props.handleInputChange(value, 'implant')}>
 								<Select.Trigger />
 								<Select.Content>

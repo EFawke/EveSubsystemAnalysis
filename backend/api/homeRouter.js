@@ -1,6 +1,5 @@
 const express = require('express');
 const homeRouter = express.Router();
-const axios = require('axios');
 const { Client } = require('pg');
 
 let client;
@@ -23,136 +22,34 @@ client.connect();
 
 homeRouter.use(express.json());
 
-// Helper function to calculate the median of an array
-const calculateMedian = (arr) => {
-    const sorted = arr.slice().map(Number).sort((a, b) => a - b); // Ensure all elements are numbers
-    const mid = Math.floor(sorted.length / 2);
-    return sorted.length % 2 !== 0
-        ? sorted[mid]
-        : (sorted[mid - 1] + sorted[mid]) / 2;
-};
-
-// Function to get the lowest sell order price
-function getLowestSellOrderPrice(orders) {
-    const sellOrders = orders.filter(order => !order.is_buy_order);
-    return sellOrders.reduce((lowest, order) => {
-        return order.price < lowest ? order.price : lowest;
-    }, Infinity);
-}
-
-// Function to get the highest buy order price
-function getHighestBuyOrderPrice(orders) {
-    const buyOrders = orders.filter(order => order.is_buy_order);
-    return buyOrders.reduce((highest, order) => {
-        return order.price > highest ? order.price : highest;
-    }, -Infinity);
-}
-
-// Function to get the total sell volume
-function getSellVolume(orders) {
-    return orders
-        .filter(order => !order.is_buy_order)
-        .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
-}
-
-// Function to get the total buy volume
-function getBuyVolume(orders) {
-    return orders
-        .filter(order => order.is_buy_order)
-        .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
-}
-
 homeRouter.post('/', async (req, res) => {
     const tradeHub = req.body.tradeHub;
+
+    if (!tradeHub) {
+        return res.status(400).json({ error: "Missing tradeHub in request body" });
+    }
+
     try {
-        const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000); // One week ago in milliseconds
-
-        // Query to get the count of lost subsystems in the past week, ordered by count
-        const topLostSubsystems = await client.query(`
-            SELECT type_id, type_name, COUNT(*) AS loss_count
-            FROM subsystems
-            WHERE killtime >= $1
-            GROUP BY type_id, type_name
-            ORDER BY loss_count DESC
-            LIMIT 10;
-        `,
-        [oneWeekAgo]);
-
-        const topSubsystems = topLostSubsystems.rows;
-        const priceDataResults = [];
-        const thirtyDaysAgo = Date.now() - (30 * 24 * 60 * 60 * 1000);
-
-        // Loop over each top subsystem to fetch the last 30 days' price data
-        for (const subsystem of topSubsystems) {
-            const { type_id, type_name } = subsystem;
-
-            const historicalPriceData = await client.query(`
+        const { rows } = await client.query(`
+            SELECT *
+            FROM (
                 SELECT *
-                FROM price_data
-                WHERE type_id = $1
-                AND region = '${tradeHub}'
-                AND date >= $2
-                ORDER BY date DESC;
-            `, [type_id, thirtyDaysAgo]);
+                FROM home_snapshot
+                WHERE region = $1
+                AND date = (
+                    SELECT MAX(date)
+                    FROM home_snapshot
+                    WHERE region = $1
+                )
+                ORDER BY losses DESC
+                LIMIT 10
+            ) AS top_lost
+            ORDER BY min_sell DESC;
+        `, [tradeHub]);
 
-            const histData = historicalPriceData.rows;
-
-            const medianSell = calculateMedian(histData.map(row => Number(row.minsell)));
-            const medianBuy = calculateMedian(histData.map(row => Number(row.maxbuy)));
-            const medianSellVolume = calculateMedian(histData.map(row => Number(row.sellvolume)));
-            const medianBuyVolume = calculateMedian(histData.map(row => Number(row.buyvolume)));
-
-            const response = await axios.get(`https://esi.evetech.net/latest/markets/${tradeHub}/orders/?type_id=${type_id}`)
-            const priceData = {};
-
-            priceData.minSell = getLowestSellOrderPrice(response.data) || histData[0].minsell;
-            priceData.maxBuy = getHighestBuyOrderPrice(response.data) || histData[0].maxbuy;
-            priceData.sellVolume = getSellVolume(response.data) || histData[0].sellvolume;
-            priceData.buyVolume = getBuyVolume(response.data) || histData[0].buyvolume;
-            
-
-            const minSellPercentageChange = medianSell
-                ? ((Number(priceData.minSell) - medianSell) / medianSell) * 100
-                : 0;
-            const minBuyPercentageChange = medianBuy
-                ? ((Number(priceData.maxBuy) - medianBuy) / medianBuy) * 100
-                : 0;
-            const minSellVolumePercentageChange = medianSellVolume
-                ? ((Number(priceData.sellVolume) - medianSellVolume) / medianSellVolume) * 100
-                : 0;
-            const minBuyVolumePercentageChange = medianBuyVolume
-                ? ((Number(priceData.buyVolume) - medianBuyVolume) / medianBuyVolume) * 100
-                : 0;
-
-            if (!priceData) continue;
-
-            priceDataResults.push({
-                type_id,
-                type_name,
-                buy: Number(priceData.maxBuy),
-                sell: Number(priceData.minSell),
-                medianSell,
-                sellPercentageChange: minSellPercentageChange.toFixed(1),
-                buyPercentageChange: minBuyPercentageChange.toFixed(1),
-                sellVolumePercentageChange: minSellVolumePercentageChange.toFixed(1),
-                buyVolumePercentageChange: minBuyVolumePercentageChange.toFixed(1),
-                volRatio: (Number(priceData.sellVolume) / Number(priceData.buyVolume)).toFixed(1),
-                buyVolume: Number(priceData.buyVolume),
-                sellVolume: Number(priceData.sellVolume),
-                losses: Number(subsystem.loss_count),
-                price_data: priceData,
-            });
-        }
-
-        // Sort priceDataResults by sell
-        priceDataResults.sort((a, b) => Number(b.sell) - Number(a.sell));
-
-        // Send the combined result as JSON
-        res.json(priceDataResults);
-
-        // console.log(priceDataResults)
+        res.json(rows);
     } catch (error) {
-        console.error("Error fetching data:", error);
+        console.error("Error fetching home snapshot:", error);
         res.status(500).json({ error: "Internal Server Error" });
     }
 });

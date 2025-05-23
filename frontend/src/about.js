@@ -1,5 +1,5 @@
 import React from "react";
-import { Flex, Heading, Text, Blockquote} from "@radix-ui/themes";
+import { Flex, Text} from "@radix-ui/themes";
 import PageTitle from "./PageTitle";
 
 

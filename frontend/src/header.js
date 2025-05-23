@@ -1,5 +1,5 @@
 import React from 'react';
-import { Flex, Link, Heading, Text, IconButton, Container, Separator, Switch, Select } from "@radix-ui/themes";
+import { Flex, Link, Heading, Text, IconButton, Container, Separator, Switch, Select, Tooltip } from "@radix-ui/themes";
 import { GearIcon } from "@radix-ui/react-icons";
 import SearchBox from './searchbox.js';
 
@@ -107,22 +107,24 @@ class Header extends React.Component {
                     >
                         <GearIcon width="20" height="20" />
                     </IconButton>
-                    <Heading size="4" style={{ textDecoration: "underline" }}>Navigation</Heading>
-                    <Link href="/"><Text>Home</Text></Link>
-                    <Link href="/build"><Text>Build</Text></Link>
-                    <Link href="/about"><Text>About</Text></Link>
+                    <Text size="4" weight="bold" style={{ textDecoration: "underline" }}>Navigation</Text>
+                    <Link href="/"><Text size="3">Home</Text></Link>
+                    <Link href="/build"><Text size="3">Build</Text></Link>
+                    <Link href="/about"><Text size="3">About</Text></Link>
                     <Separator my="3" size="4" />
-                    <Heading size="4" style={{ textDecoration: "underline" }}>Appearance</Heading>
+                    <Text size="4" weight="bold" style={{ textDecoration: "underline" }}>Appearance</Text>
                     <Flex gap="4" align="center" justify="center">
-                        <Text style={{ color: "var(--accent-a11)" }}>Color blind mode</Text>
+                        <Tooltip content="If you struggle with greens and reds">
+                            <Text size="3" style={{ color: "var(--accent-a11)" }}>Color blind mode</Text>
+                        </Tooltip>
                         <Switch onCheckedChange={this.props.toggleColorBlindMode} checked={this.state.colorBlindMode} />
                     </Flex>
                     <Flex gap="4" align="center" justify="center">
-                        <Text style={{ color: "var(--accent-a11)" }}>Toggle backlight</Text>
+                        <Text size="3" style={{ color: "var(--accent-a11)" }}>Toggle backlight</Text>
                         <Switch onCheckedChange={this.props.toggleBackLight} checked={this.state.backlight} />
                     </Flex>
                     <Separator my="3" size="4" />
-                    <Heading size="4" style={{ textDecoration: "underline" }}>Market</Heading>
+                    <Text size="4" weight="bold" style={{ textDecoration: "underline" }}>Market</Text>
                     <Flex gap="4" align="center" justify="center">
                         <Text style={{ color: "var(--accent-a11)" }}>Materials</Text>
                         <Select.Root defaultValue={this.state.materialsLocation} onValueChange={this.props.setMaterialsLocation}>

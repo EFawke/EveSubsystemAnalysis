@@ -25,10 +25,11 @@ const runScheduleAlgorithm = (numAboveMean, sortedReactions, meanRuns, slots) =>
     } else {
         return runScheduleAlgorithm(numAboveMean + 1, sortedReactions, meanRuns, slots);
     }
- };
- const scheduleReactions = (reactions, slots) => {
+};
+
+const scheduleReactions = (reactions, slots) => {
     let schedule = false;
-    if(slots > 1000){
+    if (slots > 1000) {
         slots = 1000; // Users probably won't need more than 1000 slots but stops trolling
     }
     const sortedReactions = reactions.sort((a, b) => a.runs - b.runs)
@@ -41,5 +42,6 @@ const runScheduleAlgorithm = (numAboveMean, sortedReactions, meanRuns, slots) =>
         schedule = runScheduleAlgorithm(numAboveMean + 1, sortedReactions, meanRuns, slots);
     }
     return schedule;
- }
- module.exports = {scheduleReactions};
+}
+
+module.exports = { scheduleReactions };

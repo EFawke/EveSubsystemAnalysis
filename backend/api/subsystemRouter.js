@@ -238,7 +238,10 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
               AND date > '${oneYearAgo}' 
             ORDER BY date DESC;`),
         getSubsystemCosts(settings, oneYearAgo),
-        axios.get(`https://esi.evetech.net/latest/markets/${settings.subsystemsLocation}/history/?datasource=tranquility&type_id=${id}`),// for the trade volume!!! (defaults to date ASC and about 2 years of data!!)
+        // for the trade volume!!! (defaults to date ASC and about 2 years of data!!)
+        // fix this axios call
+        // needs to be a function that handles eve's api fucking up
+        axios.get(`https://esi.evetech.net/latest/markets/${settings.subsystemsLocation}/history/?datasource=tranquility&type_id=${id}`),
         client.query(`SELECT * FROM subsystems WHERE type_id = ${id} AND killtime > ${yesterday};`),
         axios.get(`https://esi.evetech.net/latest/markets/${settings.subsystemsLocation}/orders/?type_id=${id}`),
     ])

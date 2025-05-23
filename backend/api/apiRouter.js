@@ -2,6 +2,7 @@ const express = require('express');
 const apiRouter = express.Router();
 
 require('./updater.js');
+require('./homeSnapshot.js');
 
 /* TEST UPDATER */
     // require('./updater_test.js'); //remove later!!
