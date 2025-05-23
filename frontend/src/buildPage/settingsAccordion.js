@@ -2,7 +2,7 @@ import React from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import classNames from "classnames";
 import { ChevronDownIcon } from "@radix-ui/react-icons";
-import "./accordion-styles.css";
+import "../css/accordion-styles.css";
 import { Slider, TextField, Flex, Select, Text, Tooltip } from "@radix-ui/themes";
 
 const SettingsAccordion = (props) => (

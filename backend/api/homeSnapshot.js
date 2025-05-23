@@ -149,12 +149,16 @@ const updateHomeSnapshotTable = async (region, date) => {
             const currentLosses = thisWeekLossMap[id] || 0;
             const previousLosses = lastWeekLossMap[id] || 0;
 
-            const lossesPercentChange =
-                previousLosses > 0
-                    ? ((currentLosses - previousLosses) / previousLosses) * 100
-                    : currentLosses > 0
-                        ? 100  // went from 0 to something
-                        : 0;   // both 0
+            let lossesPercentChange;
+
+            if (previousLosses > 0) {
+                lossesPercentChange = ((currentLosses - previousLosses) / previousLosses) * 100;
+            } else if (currentLosses > 0) {
+                lossesPercentChange = 100;
+            } else {
+                lossesPercentChange = 0;
+            }
+            
 
             const historicalPriceData = await client.query(`
                 SELECT *
@@ -172,7 +176,6 @@ const updateHomeSnapshotTable = async (region, date) => {
             const medianSellVolume = calculateMedian(histData.map(row => Number(row.sellvolume)));
             const medianBuyVolume = calculateMedian(histData.map(row => Number(row.buyvolume)));
 
-            // const response = await axios.get(`https://esi.evetech.net/latest/markets/${tradeHub}/orders/?type_id=${id}`)
             let response;
             try {
                 response = await axios.get(`https://esi.evetech.net/latest/markets/${tradeHub}/orders/?type_id=${id}`);

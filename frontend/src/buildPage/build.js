@@ -10,7 +10,7 @@ import { faCircleNotch } from "@fortawesome/free-solid-svg-icons";
 import BuildHeader from "./buildHeader.js"
 import MatsTable from "./matsTable.js";
 import ScheduleTable from "./scheduleTable.js";
-import PageTitle from "./PageTitle.js"
+import PageTitle from "../layout/PageTitle.js"
 
 class Build extends React.Component {
     constructor(props) {

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect } from "react";
-import namesAndIds from "./namesAndIds";
+import namesAndIds from "../namesAndIds";
 import * as Ariakit from "@ariakit/react";
-import "./searchbox.css";
+import "../css/searchbox.css";
 
 export default function SearchBox() {
   const comboboxStore = Ariakit.useComboboxStore();

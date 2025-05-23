@@ -1,6 +1,6 @@
 import React from "react";
 import { Flex, Text} from "@radix-ui/themes";
-import PageTitle from "./PageTitle";
+import PageTitle from "../layout/PageTitle";
 
 
 class About extends React.Component {

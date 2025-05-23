@@ -1,6 +1,7 @@
 import React from "react";
 import { Table, Flex, Card, Heading, Link, Text, Button, DropdownMenu, Tooltip } from "@radix-ui/themes";
 import { DoubleArrowUpIcon, DoubleArrowDownIcon, DotsHorizontalIcon, ArrowUpIcon, ArrowDownIcon } from "@radix-ui/react-icons"
+import NumericTableCell from "./numericTableCell";
 
 class HomePageTable extends React.Component {
     constructor(props) {
@@ -95,6 +96,13 @@ class HomePageTable extends React.Component {
         }
     }
 
+    checkInfinity(value) {
+        if (value === Infinity || value === -Infinity || value === "Infinity" || value === "-Infinity") {
+            return "No Data";
+        }
+        return value;
+    }
+
     render() {
         const { sortConfig, colorBlindMode } = this.state
         const { data, hub } = this.props;
@@ -103,7 +111,6 @@ class HomePageTable extends React.Component {
 
         if (data) {
             rows = data.map((item) => {
-                console.log(item);
                 return {
                     type_id: item.type_id,
                     name: item.item_name,
@@ -194,70 +201,19 @@ class HomePageTable extends React.Component {
                                     </Flex>
                                 </Table.Cell>
                                 <Table.Cell >
-                                    <Flex height="100%" gap="2" align="center" >
-                                        <Tooltip content="30 day median delta">
-                                            <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.buyPercentageChange, colorBlindMode)}>
-                                                {row.buyPercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
-                                                <Text size="1">{row.buyPercentageChange}%</Text>
-                                            </Flex>
-                                        </Tooltip>
-                                        <Text size="3">
-                                            {Number(row.buy).toLocaleString()}
-                                        </Text>
-                                    </Flex>
+                                    <NumericTableCell value={row.buy} percentage={row.buyPercentageChange} tipMessage="30 day median delta" colorBlindMode={colorBlindMode} getClassName={this.getClassName} checkInfinity={this.checkInfinity} />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <Flex height="100%" gap="2" align="center" >
-                                        <Tooltip content="30 day median delta">
-                                            <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.sellPercentageChange, colorBlindMode)}>
-                                                {row.sellPercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
-                                                <Text size="1">{row.sellPercentageChange}%</Text>
-                                            </Flex>
-                                        </Tooltip>
-                                        <Text size="3">
-                                            {Number(row.sell).toLocaleString()}
-                                        </Text>
-                                    </Flex>
+                                    <NumericTableCell value={row.sell} percentage={row.sellPercentageChange} tipMessage="30 day median delta" colorBlindMode={colorBlindMode} getClassName={this.getClassName} checkInfinity={this.checkInfinity} />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <Flex height="100%" gap="2" align="center" >
-                                        <Tooltip content="30 day median delta">
-                                            <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.buyVolumePercentageChange, colorBlindMode)}>
-                                                {row.buyVolumePercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
-                                                <Text size="1">{row.buyVolumePercentageChange}%</Text>
-                                            </Flex>
-                                        </Tooltip>
-                                        <Text size="3">
-                                            {Number(row.buyVolume).toLocaleString()}
-                                        </Text>
-                                    </Flex>
+                                    <NumericTableCell value={row.buyVolume} percentage={row.buyVolumePercentageChange} tipMessage="30 day median delta" colorBlindMode={colorBlindMode} getClassName={this.getClassName} checkInfinity={this.checkInfinity} />
                                 </Table.Cell>
                                 <Table.Cell >
-                                    <Flex height="100%" gap="2" align="center" >
-                                        <Tooltip content="30 day median delta">
-                                            <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.sellVolumePercentageChange, colorBlindMode)}>
-                                                {row.sellVolumePercentageChange >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
-                                                <Text size="1">{row.sellVolumePercentageChange}%</Text>
-                                            </Flex>
-                                        </Tooltip>
-                                        <Text size="3">
-                                            {Number(row.sellVolume).toLocaleString()}
-                                        </Text>
-                                    </Flex>
+                                    <NumericTableCell value={row.sellVolume} percentage={row.sellVolumePercentageChange} tipMessage="30 day median delta" colorBlindMode={colorBlindMode} getClassName={this.getClassName} checkInfinity={this.checkInfinity} />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <Flex height="100%" gap="2" align="center" >
-                                        {/* <Text size="3">{Number(row.losses).toLocaleString()}</Text> */}
-                                        <Tooltip content="Percentage change from last week">
-                                            <Flex direction="column" justify="center" width="fit-content" align="center" className={this.getClassName(row.lossesPercent, colorBlindMode)}>
-                                                {row.lossesPercent >= 0 ? <DoubleArrowUpIcon height="15px" width="15px" /> : <DoubleArrowDownIcon height="15px" width="15px" />}
-                                                <Text size="1">{row.lossesPercent}%</Text>
-                                            </Flex>
-                                        </Tooltip>
-                                        <Text size="3">
-                                            {Number(row.losses).toLocaleString()}
-                                        </Text>
-                                    </Flex>
+                                    <NumericTableCell value={row.losses} percentage={row.lossesPercent} tipMessage="Percentage change from last week" colorBlindMode={colorBlindMode} getClassName={this.getClassName} checkInfinity={this.checkInfinity} />
                                 </Table.Cell>
                             </Table.Row>
                         ))}

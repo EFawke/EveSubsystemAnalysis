@@ -2,18 +2,18 @@ import 'bootstrap/dist/js/bootstrap.bundle.min';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import axios from 'axios';
-import Header from './header';
-import MarketData from './marketData';
-import HomePage from './homePage';
-import Footer from './footer';
+import Header from './layout/header.js';
+import MarketData from './analysisPage/marketData.js';
+import HomePage from './home/homePage.js';
+import Footer from './layout/footer.js';
 import namesAndIds from './namesAndIds.js';
-import Build from './build.js';
+import Build from './buildPage/build.js';
 import Cookies from 'js-cookie';
 import { Theme, Container, Heading, Flex } from "@radix-ui/themes";
 import "@radix-ui/themes/styles.css";
-import PageTitle from './PageTitle';
-import './App.css';
-import About from './about.js';
+import PageTitle from './layout/PageTitle.js';
+import './css/App.css';
+import About from './about/about.js';
 import weeb from './weeb.jpeg';
 
 class App extends React.Component {

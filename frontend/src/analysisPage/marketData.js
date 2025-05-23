@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import { Text, Table, Flex, IconButton, Card, HoverCard, Link, Heading, Select } from "@radix-ui/themes";
 import Cookies from 'js-cookie';
-import namesAndIds from './namesAndIds';
+import namesAndIds from '../namesAndIds';
 import {
   InfoCircledIcon,
   DoubleArrowDownIcon,
