@@ -1,6 +1,6 @@
 const { Client } = require('pg');
 const axios = require('axios');
-const { getMaterialRequirements } = require('./MaterialCalculator/getMaterialRequirements.js');
+const { getMaterialRequirements } = require('../MaterialCalculator/getMaterialRequirements.js');
 
 
 let client;

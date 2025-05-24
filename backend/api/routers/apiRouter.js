@@ -1,14 +1,11 @@
 const express = require('express');
 const apiRouter = express.Router();
 
-require('./updater.js');
-require('./homeSnapshot.js');
+//cron jobs
+require('../utils/updater.js');
+require('../utils/zkillUpdater.js');
 
-/* TEST UPDATER */
-    // require('./updater_test.js'); //remove later!!
-/* TEST UPDATER */
-
-require('./zkillUpdater.js');
+require('./dataSnapshotCron.js');
 
 const homeRouter = require('./homeRouter.js');
 const buildRouter = require('./buildRouter.js');

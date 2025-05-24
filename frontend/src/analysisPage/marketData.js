@@ -121,6 +121,7 @@ class MarketData extends Component {
       .post(`/api/subsystem/${id}`, settings)
       .then((response) => {
         const data = response.data;
+        console.log(response);
         const convertDates = (arr) => arr.map((d) => String(d));
 
         this.setState({

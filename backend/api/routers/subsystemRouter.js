@@ -1,7 +1,7 @@
 const express = require('express');
 const marketRouter = express.Router();
 const { Client } = require('pg');
-const { getSubsystemCosts, getProfits, getPriceData, calculateMedian } = require('./getProfitsGraph.js');
+const { getSubsystemCosts, getProfits, getPriceData, calculateMedian } = require('../utils/getProfitsGraph.js');
 const axios = require('axios');
 
 let client;
@@ -57,31 +57,14 @@ const getBuyVolume = (latestData, historicalData) => {
     const buyVolume = {};
     buyVolume.title = "Buy volume";
     let currentVolume;
-    if (!latestData || latestData.length === 0) {
+    if (!latestData) {
         currentVolume = historicalData[0].buyvolume;
     } else {
-        const buyOrders = latestData.filter(order => order.is_buy_order);
-        currentVolume = 0;
-        for (let i = 0; i < buyOrders.length; i++) {
-            currentVolume += buyOrders[i].volume_remain;
-        }
-        buyVolume.currentValue = currentVolume;
+        currentVolume = latestData.buy_volume;
     }
+    buyVolume.currentValue = currentVolume;
 
-    const thirtyDaysAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
-    const volumes = [];
-    for (let i = 0; i < historicalData.length; i++) {
-        if (historicalData[i].date < thirtyDaysAgo) {
-            break;
-        }
-        volumes.push(historicalData[i].buyvolume);
-    }
-
-    const thirtyDayMedian = calculateMedian(volumes);
-    const buyVolumePercentageChange = thirtyDayMedian
-        ? ((Number(buyVolume.currentValue) - thirtyDayMedian) / thirtyDayMedian) * 100
-        : 0;
-    buyVolume.thirtyDayMedianDelta = Number(buyVolumePercentageChange).toFixed(1);
+    buyVolume.thirtyDayMedianDelta = latestData.buy_volume_percent;
     const dates = [];
     const dataValues = [];
     for (let i = 0; i < historicalData.length; i++) {
@@ -97,30 +80,13 @@ const getSellVolume = (latestData, historicalData) => {
     const sellVolume = {};
     sellVolume.title = "Sell volume";
     let currentVolume;
-    if (!latestData || latestData.length === 0) {
+    if (!latestData) {
         currentVolume = historicalData[0].sellvolume;
     } else {
-        const sellOrders = latestData.filter(order => !order.is_buy_order);
-        currentVolume = 0;
-        for (let i = 0; i < sellOrders.length; i++) {
-            currentVolume += sellOrders[i].volume_remain;
-        }
+        currentVolume = latestData.sell_volume;
     }
     sellVolume.currentValue = currentVolume;
-    const thirtyDaysAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
-    const volumes = [];
-    for (let i = 0; i < historicalData.length; i++) {
-        if (historicalData[i].date < thirtyDaysAgo) {
-            break;
-        }
-        volumes.push(historicalData[i].sellvolume);
-    }
-
-    const thirtyDayMedian = calculateMedian(volumes);
-    const sellVolumePercentageChange = thirtyDayMedian
-        ? ((Number(sellVolume.currentValue) - thirtyDayMedian) / thirtyDayMedian) * 100
-        : 0;
-    sellVolume.thirtyDayMedianDelta = Number(sellVolumePercentageChange).toFixed(1);
+    sellVolume.thirtyDayMedianDelta = latestData.sell_volume_percent;
     const dates = [];
     const dataValues = [];
     for (let i = 0; i < historicalData.length; i++) {
@@ -132,32 +98,64 @@ const getSellVolume = (latestData, historicalData) => {
     return sellVolume;
 };
 
+const getMinSell = (latestData, historicalData) => {
+    const minSell = {};
+    minSell.title = "Min sell";
+    let currentVolume;
+    if (!latestData) {
+        currentVolume = historicalData[0].minsell;
+    } else {
+        currentVolume = latestData.min_sell;
+    }
+    minSell.currentValue = currentVolume;
+    minSell.thirtyDayMedianDelta = latestData.min_sell_percent;
+    const dates = [];
+    const dataValues = [];
+    for (let i = 0; i < historicalData.length; i++) {
+        dates.push(historicalData[i].date);
+        dataValues.push(historicalData[i].minsell);
+    }
+    minSell.dates = dates;
+    minSell.dataValues = dataValues;
+    return minSell;
+};
+
+const getMaxBuy = (latestData, historicalData) => {
+    const maxBuy = {};
+    maxBuy.title = "Min sell";
+    let currentVolume;
+    if (!latestData) {
+        currentVolume = historicalData[0].maxbuy;
+    } else {
+        currentVolume = latestData.max_buy;
+    }
+    maxBuy.currentValue = currentVolume;
+    maxBuy.thirtyDayMedianDelta = latestData.max_buy_percent;
+    const dates = [];
+    const dataValues = [];
+    for (let i = 0; i < historicalData.length; i++) {
+        dates.push(historicalData[i].date);
+        dataValues.push(historicalData[i].maxbuy);
+    }
+    maxBuy.dates = dates;
+    maxBuy.dataValues = dataValues;
+    return maxBuy;
+};
+
 const getTradeVolume = (historicalData) => {
     const tradeVolume = {};
     tradeVolume.title = "Trade volume";
     const dates = [];
     const dataValues = [];
-    const thirtyDaysAgo = new Date().getTime() - 30 * 24 * 60 * 60 * 1000;
-    const thirtyDaysTradeVolume = [];
-    let currentVolume = 0;
+    let currentVolume = historicalData[0].trade_volume || 0;
     for (let i = 0; i < historicalData.length; i++) {
-        const date = new Date(historicalData[i].date);
-        date.setUTCHours(0, 0, 0, 0);
-        dates.push(date.getTime());
-        dataValues.push(historicalData[i].volume);
-        if (date > thirtyDaysAgo) {
-            thirtyDaysTradeVolume.push(historicalData[i].volume);
-        }
-        if (i == 0) {
-            currentVolume = historicalData[i].volume;
-        }
+        const date = historicalData[i].date;
+        dates.push(date);
+        dataValues.push(historicalData[i].trade_volume);
     }
     tradeVolume.currentValue = currentVolume;
-    const thirtyDayMedian = calculateMedian(thirtyDaysTradeVolume);
-    const tradeVolumePercentageChange = thirtyDayMedian
-        ? ((Number(tradeVolume.currentValue) - thirtyDayMedian) / thirtyDayMedian) * 100
-        : 0;
-    tradeVolume.thirtyDayMedianDelta = Number(tradeVolumePercentageChange).toFixed(1);
+    const tradeVolumePercentageChange = historicalData[0].trade_volume_percent || 0;
+    tradeVolume.thirtyDayMedianDelta = tradeVolumePercentageChange;
     tradeVolume.dates = dates;
     tradeVolume.dataValues = dataValues;
 
@@ -238,22 +236,16 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
               AND date > '${oneYearAgo}' 
             ORDER BY date DESC;`),
         getSubsystemCosts(settings, oneYearAgo),
-        // for the trade volume!!! (defaults to date ASC and about 2 years of data!!)
-        // fix this axios call
-        // needs to be a function that handles eve's api fucking up
-        axios.get(`https://esi.evetech.net/latest/markets/${settings.subsystemsLocation}/history/?datasource=tranquility&type_id=${id}`),
+        client.query(`SELECT * FROM analysis_snapshot WHERE type_id = ${id} AND region = '${settings.subsystemsLocation}' ORDER BY date DESC;`),
         client.query(`SELECT * FROM subsystems WHERE type_id = ${id} AND killtime > ${yesterday};`),
-        axios.get(`https://esi.evetech.net/latest/markets/${settings.subsystemsLocation}/orders/?type_id=${id}`),
+        client.query(`SELECT * FROM home_snapshot WHERE type_id = ${id} AND region = ${settings.subsystemsLocation} ORDER BY date DESC;`)
     ])
         .then(data => {
             const subsystems = data[0].rows;
-            const priceData = data[1].rows;
             const costsData = data[2];
-            const historicalMarketData = data[3].data;
-            const dailyLosses = data[4].rows.length;
-            const marketDataCurrent = data[5].data;
-            const minSell = getPriceData(priceData, "minsell");
-            const maxBuy = getPriceData(priceData, "maxbuy");
+            const marketDataCurrent = data[5].rows[0];
+            const minSell = getMinSell(marketDataCurrent, data[1].rows);
+            const maxBuy = getMaxBuy(marketDataCurrent, data[1].rows);
             const matCosts = getMatCosts(costsData);
 
             let profit = null;
@@ -263,9 +255,9 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             if (settings.subsystemsOrderType == 'sell') {
                 profit = getProfits(matCosts, minSell);
             }
-            const buyVolume = getBuyVolume(data[5].data, data[1].rows);
-            const sellVolume = getSellVolume(data[5].data, data[1].rows);
-            const tradeVolume = getTradeVolume(data[3].data.reverse().splice(0, 362));
+            const buyVolume = getBuyVolume(marketDataCurrent, data[1].rows);
+            const sellVolume = getSellVolume(marketDataCurrent, data[1].rows);
+            const tradeVolume = getTradeVolume(data[3].rows);
             const lossesData = getLossesData(subsystems);
             res.status(200).json({ minSell, maxBuy, matCosts, profit, buyVolume, sellVolume, tradeVolume, lossesData });
         })

@@ -1,4 +1,4 @@
-const { namesAndIds, materialsNamesAndIds } = require('../namesAndIds.js');
+const { namesAndIds, materialsNamesAndIds } = require('../utils/namesAndIds.js');
 const { fetchData } = require('./utils.js');
 const axios = require('axios');
 

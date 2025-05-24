@@ -1,6 +1,6 @@
 const axios = require('axios');
 const { Client } = require('pg');
-const { updatePriceTable } = require('./TestUpdater/dailyDatabaseUploadTest.js');
+const { updatePriceTable } = require('../TestUpdater/dailyDatabaseUploadTest.js');
 
 let client;
 if (!process.env.DATABASE_URL) {

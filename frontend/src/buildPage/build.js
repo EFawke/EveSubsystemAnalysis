@@ -55,13 +55,13 @@ class Build extends React.Component {
 
     componentDidMount() {
         // Load settings from the cookie if available
-        const savedSettings = Cookies.get('buildSettings');
-        if (savedSettings) {
-            this.setState(JSON.parse(savedSettings), this.submitBuildData);
-        } else {
+        // const savedSettings = Cookies.get('buildSettings');
+        // if (savedSettings) {
+        //     this.setState(JSON.parse(savedSettings), this.submitBuildData);
+        // } else {
             // If no saved settings, make initial call with default state
             this.submitBuildData();
-        }
+        // }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -89,7 +89,6 @@ class Build extends React.Component {
     }
 
     submitBuildData = () => {
-        console.log("Submitting build data:", this.state);
         this.setState({ loading: true });
         axios.post('/api/build', this.state)
             .then(response => {

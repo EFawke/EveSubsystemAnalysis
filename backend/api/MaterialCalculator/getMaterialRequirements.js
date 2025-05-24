@@ -26,7 +26,7 @@ const { calculateSpecComponentQuantities } = require('./calculateSpecComponentQu
 const { getMaterialEfficiencyBonus } = require('./getMaterialEfficiencyBonus.js');
 const { calculateReactorMEEfficiency } = require('./calculateReactorMEEfficiency.js');
 const { aggregateItems } = require('./aggregateItems.js');
-const { materialsNamesAndIds } = require('../namesAndIds.js');
+const { materialsNamesAndIds } = require('../utils/namesAndIds.js');
 
 const getMaterialRequirements = (settings) => {
     let structure = settings.complex;
@@ -61,7 +61,7 @@ const getMaterialRequirements = (settings) => {
     let offensiveRequiredMaterials = [];
     let propulsionRequiredMaterials = [];
 
-    console.log(settings);
+    // console.log(settings);
 
     const blueprints = invent(relicType, decryptor, skillLevel, coreRuns, offRuns, propRuns, defRuns)
 

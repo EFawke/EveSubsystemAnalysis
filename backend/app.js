@@ -4,7 +4,7 @@ const cors = require('cors');
 const app = express();
 const errorHandler = require('errorhandler');
 const path = require('path');
-const apiRouter = require('./api/apiRouter')
+const apiRouter = require('./api/routers/apiRouter')
 
 if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', true);

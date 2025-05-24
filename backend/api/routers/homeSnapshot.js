@@ -1,7 +1,8 @@
 const cron = require('node-cron');
 const axios = require('axios');
 const { Client } = require('pg');
-const { namesAndIds, materialsNamesAndIds } = require('./namesAndIds.js');
+const { namesAndIds, materialsNamesAndIds } = require('../utils/namesAndIds.js');
+const { updateTradeVolumeSnapshotTable } = require('../utils/analysisSnapshot.js');
 
 let client;
 if (!process.env.DATABASE_URL) {
@@ -35,6 +36,10 @@ const dropTable = () => {
 }
 
 // dropTable();
+
+function delay(ms) {
+    return new Promise(resolve => setTimeout(resolve, ms));
+}
 
 const createHomeSnapshotTable = () => {
     client.query(`CREATE TABLE IF NOT EXISTS "home_snapshot" (
@@ -158,7 +163,7 @@ const updateHomeSnapshotTable = async (region, date) => {
             } else {
                 lossesPercentChange = 0;
             }
-            
+
 
             const historicalPriceData = await client.query(`
                 SELECT *
@@ -177,6 +182,7 @@ const updateHomeSnapshotTable = async (region, date) => {
             const medianBuyVolume = calculateMedian(histData.map(row => Number(row.buyvolume)));
 
             let response;
+            await delay(200) // Delay to avoid hitting ESI rate limits
             try {
                 response = await axios.get(`https://esi.evetech.net/latest/markets/${tradeHub}/orders/?type_id=${id}`);
             } catch (err) {
@@ -277,9 +283,13 @@ const updateHomeSnapshotTable = async (region, date) => {
     }
 }
 
-cron.schedule('*/5 * * * *', () => {
+const updateHomeSnapshotTableCron = async () => {
     const date = Date.now();
     const regions = ['10000002', '10000043', '10000030', '10000042', '10000032'];
 
     regions.forEach(region => updateHomeSnapshotTable(region, date));
-});
+}
+
+module.exports = {
+    updateHomeSnapshotTableCron
+};

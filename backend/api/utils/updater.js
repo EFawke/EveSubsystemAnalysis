@@ -1,8 +1,8 @@
 const axios = require('axios');
 const { Client } = require('pg');
-const { initialDatabaseUpdate } = require('./HistoricalDataUpdaters/initialDatabaseUpload.js');
-const { updatePriceTable } = require('./DailyDataUpdaters/dailyDatabaseUpload.js');
-const { backDate } = require('./DataBackdater-REMOVE_LATER/dataBackdater.js');
+const { initialDatabaseUpdate } = require('../HistoricalDataUpdaters/initialDatabaseUpload.js');
+const { updatePriceTable } = require('../DailyDataUpdaters/dailyDatabaseUpload.js');
+const { backDate } = require('../DataBackdater-REMOVE_LATER/dataBackdater.js');
 
 //remove later
 // const { updatePriceData } = require('./databaseUpdaterOneTime.js');
