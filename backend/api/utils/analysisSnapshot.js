@@ -38,22 +38,6 @@ const dropTable = () => {
 
 // dropTable();
 
-const createAnalysisSnapshotTable = () => {
-    client.query(`CREATE TABLE IF NOT EXISTS "analysis_snapshot" (
-        id SERIAL PRIMARY KEY,
-        date BIGINT,
-        region BIGINT,
-        type_id BIGINT,
-        trade_volume BIGINT,
-        trade_volume_percent NUMERIC
-        );`)
-        .then(() => {
-            console.log('Created analysis_snapshot');
-        });
-}
-
-createAnalysisSnapshotTable();
-
 const calculateMedian = (arr) => {
     const sorted = arr.slice().map(Number).sort((a, b) => a - b); // Ensure all elements are numbers
     const mid = Math.floor(sorted.length / 2);

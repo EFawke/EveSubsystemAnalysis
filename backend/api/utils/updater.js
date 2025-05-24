@@ -67,7 +67,9 @@ const createPriceDataTable = () => {
         })
 }
 
-const createAnalysisSnapshotTable = () => {
+createPriceDataTable();
+
+const createESISnapshotTable = () => {
     client.query(`
     CREATE TABLE IF NOT EXISTS esi_prices (
        type_id INTEGER PRIMARY KEY,
@@ -80,7 +82,7 @@ const createAnalysisSnapshotTable = () => {
         });
 }
 
-createAnalysisSnapshotTable();
+createESISnapshotTable();
 
 const logTable = () => {
     client.query(`SELECT * FROM price_data;`)
@@ -91,7 +93,22 @@ const logTable = () => {
 }
 
 // dropTable();
-createPriceDataTable();
+
+const createAnalysisSnapshotTable = () => {
+    client.query(`CREATE TABLE IF NOT EXISTS "analysis_snapshot" (
+        id SERIAL PRIMARY KEY,
+        date BIGINT,
+        region BIGINT,
+        type_id BIGINT,
+        trade_volume BIGINT,
+        trade_volume_percent NUMERIC
+        );`)
+        .then(() => {
+            console.log('Created analysis_snapshot');
+        });
+}
+
+createAnalysisSnapshotTable();
 
 client.query(`SELECT * FROM price_data LIMIT 1;`)
     .then((res) => {

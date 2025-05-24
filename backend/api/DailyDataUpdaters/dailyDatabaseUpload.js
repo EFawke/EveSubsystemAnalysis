@@ -9,7 +9,7 @@ const updatePriceTable = async (epoch, client) => {
 
     let date = new Date(epoch);
 
-    if (date.getUTCHours() !== 0 || date.getMinutes() !== 10 || date.getSeconds() >= 2) {
+    if (date.getUTCHours() !== 0 || date.getMinutes() !== 0 || date.getSeconds() >= 2) {
         return;
     }
 
