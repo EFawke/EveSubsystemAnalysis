@@ -5,36 +5,22 @@ const PRICES_URL = 'https://esi.evetech.net/latest/markets/prices/';
 
 let client;
 if (!process.env.DATABASE_URL) {
-    client = new Client({
-        user: 'tedfawke',
-        host: 'localhost',
-        database: 'evesubsystemanalysis_local',
-        password: '',
-        port: 5432
-    });
+  client = new Client({
+    user: 'tedfawke',
+    host: 'localhost',
+    database: 'evesubsystemanalysis_local',
+    password: '',
+    port: 5432
+  });
 } else {
-    client = new Client({
-        connectionString: process.env.DATABASE_URL,
-        ssl: {
-            rejectUnauthorized: false
-        },
-        allowExitOnIdle: true
-    });
+  client = new Client({
+    connectionString: process.env.DATABASE_URL,
+    ssl: {
+      rejectUnauthorized: false
+    },
+    allowExitOnIdle: true
+  });
 }
-
-client.query(`
-CREATE TABLE IF NOT EXISTS esi_prices (
-  type_id INTEGER PRIMARY KEY,
-  adjusted_price NUMERIC,
-  average_price NUMERIC,
-  last_updated TIMESTAMP DEFAULT now()
-);`)
-.then(() => {
-  console.log('esi_prices table is ready.');
-})
-.catch((err) => {
-  console.error('Error creating esi_prices table:', err.message);
-})
 
 async function fetchAndStorePrices() {
   try {

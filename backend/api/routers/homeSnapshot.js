@@ -2,7 +2,6 @@ const cron = require('node-cron');
 const axios = require('axios');
 const { Client } = require('pg');
 const { namesAndIds, materialsNamesAndIds } = require('../utils/namesAndIds.js');
-const { updateTradeVolumeSnapshotTable } = require('../utils/analysisSnapshot.js');
 
 let client;
 if (!process.env.DATABASE_URL) {

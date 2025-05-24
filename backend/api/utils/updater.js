@@ -67,6 +67,21 @@ const createPriceDataTable = () => {
         })
 }
 
+const createAnalysisSnapshotTable = () => {
+    client.query(`
+    CREATE TABLE IF NOT EXISTS esi_prices (
+       type_id INTEGER PRIMARY KEY,
+       adjusted_price NUMERIC,
+       average_price NUMERIC,
+       last_updated TIMESTAMP DEFAULT now()
+     );`)
+        .then(() => {
+            console.log('Created esi_prices');
+        });
+}
+
+createAnalysisSnapshotTable();
+
 const logTable = () => {
     client.query(`SELECT * FROM price_data;`)
         .then((res) => {
