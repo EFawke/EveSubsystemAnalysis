@@ -123,20 +123,20 @@ function consolidateByNameInPlace(arr) {
 }
 
 
-const fs = require('fs');
-const path = require('path');
+// const fs = require('fs');
+// const path = require('path');
 
-const CACHE_FILE = path.join(__dirname, 'type_prices_cache.json');
+// const CACHE_FILE = path.join(__dirname, 'type_prices_cache.json');
 
-function getCachedPrices() {
-    try {
-        const rawData = fs.readFileSync(CACHE_FILE, 'utf-8');
-        return JSON.parse(rawData);
-    } catch (err) {
-        console.error('Failed to read cached prices:', err.message);
-        return [];
-    }
-}
+// function getCachedPrices() {
+//     try {
+//         const rawData = fs.readFileSync(CACHE_FILE, 'utf-8');
+//         return JSON.parse(rawData);
+//     } catch (err) {
+//         console.error('Failed to read cached prices:', err.message);
+//         return [];
+//     }
+// }
 
 async function getLatestPriceForItem(client, typeId, region, orderType) {
     const column = orderType === 'buy' ? 'maxbuy' : 'minsell';

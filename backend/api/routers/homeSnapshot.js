@@ -287,7 +287,9 @@ const updateHomeSnapshotTableCron = async () => {
     const date = Date.now();
     const regions = ['10000002', '10000043', '10000030', '10000042', '10000032'];
 
-    regions.forEach(region => updateHomeSnapshotTable(region, date));
+    for (const region of regions) {
+        await updateHomeSnapshotTable(region, date);
+    }
 }
 
 module.exports = {
