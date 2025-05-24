@@ -93,7 +93,7 @@ const updateChartSnapshotTable = async (region, date, dateValues, oneYearAgo, th
             const { id, name } = subsystems[i];
             const tradeVolumeData = await getTradeVolumeData(id, region);
 
-            if(tradeVolumeData.length === 0) continue;
+            if (tradeVolumeData.length === 0) continue;
             client.query(`DELETE FROM analysis_snapshot WHERE region = '${region}' AND type_id = ${id};`);
 
             tradeVolumeData.forEach((data) => {
@@ -156,7 +156,10 @@ const updateTradeVolumeSnapshotTable = async () => {
         increment += 24 * 60 * 60 * 1000; // Increment by one day
         dateValues.push(increment);
     }
-    regions.forEach(region => updateChartSnapshotTable(region, date, dateValues, oneYearAgo, thirtyDaysAgo));
+    // regions.forEach(region => updateChartSnapshotTable(region, date, dateValues, oneYearAgo, thirtyDaysAgo));
+    for (const region of regions) {
+        await updateChartSnapshotTable(region, date, dateValues, oneYearAgo, thirtyDaysAgo);
+    }
 }
 
 module.exports = {
