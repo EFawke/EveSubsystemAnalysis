@@ -88,9 +88,17 @@ class Build extends React.Component {
         this.setState({ [e.target.name]: e.target.checked }, this.submitBuildData);
     }
 
+    controller = null; // Class property to track the current request
+
     submitBuildData = () => {
+        if (this.controller) {
+            this.controller.abort();
+        }
+        this.controller = new AbortController();
         this.setState({ loading: true });
-        axios.post('/api/build', this.state)
+        axios.post('/api/build', this.state, {
+            signal: this.controller.signal
+        })
             .then(response => {
                 this.setState({ buildResponseData: response.data }, () => {
                     const buildSettings = Object.keys(this.state).reduce((acc, key) => {
@@ -104,7 +112,12 @@ class Build extends React.Component {
                 this.setState({ loading: false });
             })
             .catch(error => {
-                console.error('Error sending data:', error);
+                if (axios.isCancel(error) || error.name === 'CanceledError') {
+                    console.log('Previous request canceled');
+                } else {
+                    console.error('Error sending data:', error);
+                }
+                this.setState({ loading: false });
             });
     }
 
