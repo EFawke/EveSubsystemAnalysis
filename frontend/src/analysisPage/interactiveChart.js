@@ -58,7 +58,7 @@ function InteractiveChart(props) {
   const colors = ["#8884d8", "#82ca9d", "#ffc658", "#ff7300", "#413ea0", "#888888"];
 
   return (
-    <ResponsiveContainer width="100%" height="100%">
+    <ResponsiveContainer width="100%" className="chart_container">
       <ComposedChart
         data={chartData}
         margin={{

@@ -14,7 +14,7 @@ export default function GraphCard(props) {
 
 
     return (
-        <Flex direction="column" style={{ width: "100%", flex: "2", height: "472px", paddingTop: "var(--space-3)" }}>
+        <Flex direction="column" style={{ width: "100%", flex: "2", paddingTop: "var(--space-3)" }}>
             <HoverCard.Root>
                 <HoverCard.Trigger>
                     <Table.Root>

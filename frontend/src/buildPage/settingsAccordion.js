@@ -43,7 +43,7 @@ const SettingsAccordion = (props) => (
 						)}
 						{props.refinery === "Athanor" && (
 							<>
-								
+
 								<Flex direction="column" gap="1" align="start" style={{ width: "100%" }} justify="between">
 									<Tooltip content="Feature in development">
 										<Text size="2" style={{ color: "var(--accent-a11)" }}>Time Efficiency Rig</Text>
@@ -95,12 +95,38 @@ const SettingsAccordion = (props) => (
 						<Tooltip content="Found in the manufacturing window in-game">
 							<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 								<Text size="2" style={{ color: "var(--accent-a11)" }}>Reaction System Cost Index</Text>
-								<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.reactionCostIndex} onChange={(e) => props.handleInputChange(e.target.value, 'reactionCostIndex')} />
+								<TextField.Root
+									style={{ maxWidth: "100px" }}
+									type="number"
+									min={0.14}
+									step={0.01}
+									value={props.reactionCostIndex}
+									onChange={(e) => {
+										const value = parseFloat(e.target.value);
+										props.handleInputChange(
+											isNaN(value) ? "" : Math.max(value, 0.14),
+											"reactionCostIndex"
+										);
+									}}
+								/>
 							</Flex>
 						</Tooltip>
 						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>Facility Tax</Text>
-							<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.reactionFacilityTax} onChange={(e) => props.handleInputChange(e.target.value, 'reactionFacilityTax')} />
+							<TextField.Root
+								style={{ maxWidth: "100px" }}
+								type="number"
+								min={0}
+								step={0.01}
+								value={props.reactionFacilityTax}
+								onChange={(e) => {
+									const value = parseFloat(e.target.value);
+									props.handleInputChange(
+										isNaN(value) ? "" : Math.max(value, 0),
+										"reactionFacilityTax"
+									);
+								}}
+							/>
 						</Flex>
 					</Flex>
 				</Flex>
@@ -192,14 +218,44 @@ const SettingsAccordion = (props) => (
 							</Select.Root>
 						</Flex>
 						<Tooltip content="Found in the manufacturing window in-game">
-						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
-							<Text size="2" style={{ color: "var(--accent-a11)" }}>Build System Cost Index</Text>
-							<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.buildCostIndex || 0.14} onChange={(e) => props.handleInputChange(e.target.value, 'buildCostIndex')} />
-						</Flex>
+							<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
+								<Text size="2" style={{ color: "var(--accent-a11)" }}>Build System Cost Index</Text>
+								{/* <TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.buildCostIndex || 0.14} onChange={(e) => props.handleInputChange(e.target.value, 'buildCostIndex')} /> */}
+								<TextField.Root
+									style={{ maxWidth: "100px" }}
+									type="number"
+									placeholder="0.14"
+									min={0.14}
+									step={0.01}
+									value={props.buildCostIndex}
+									onChange={(e) => {
+										const value = parseFloat(e.target.value);
+										props.handleInputChange(
+											isNaN(value) ? "" : Math.max(value, 0.14),
+											"buildCostIndex"
+										);
+									}}
+								/>
+							</Flex>
 						</Tooltip>
 						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>Facility Tax</Text>
-							<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.complexFacilityTax || 0.25} onChange={(e) => props.handleInputChange(e.target.value, 'complexFacilityTax')} />
+							{/* <TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.complexFacilityTax || 0.25} onChange={(e) => props.handleInputChange(e.target.value, 'complexFacilityTax')} /> */}
+							<TextField.Root
+								style={{ maxWidth: "100px" }}
+								type="number"
+								placeholder="0"
+								min={0}
+								step={0.01}
+								value={props.complexFacilityTax}
+								onChange={(e) => {
+									const value = parseFloat(e.target.value);
+									props.handleInputChange(
+										isNaN(value) ? "" : Math.max(value, 0),
+										"complexFacilityTax"
+									);
+								}}
+							/>
 						</Flex>
 					</Flex>
 				</Flex>
@@ -212,13 +268,13 @@ const SettingsAccordion = (props) => (
 					<Flex direction="column" gap="4" align="start" style={{ width: "100%" }}>
 						<Flex direction="column" gap="2" align="start" style={{ width: "50%" }}>
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>Component Mat. Efficiency</Text>
-							<Slider name="componentMaterialEfficiency" min={0} step={1} max={10} defaultValue={[10]} onValueCommit={(e) => props.handleSliderChange(e, "componentMaterialEfficiency")}/>
+							<Slider name="componentMaterialEfficiency" min={0} step={1} max={10} defaultValue={[10]} onValueCommit={(e) => props.handleSliderChange(e, "componentMaterialEfficiency")} />
 						</Flex>
 						<Flex direction="column" gap="2" align="start" style={{ width: "50%" }}>
 							<Tooltip content="Feature in development">
 								<Text size="2" style={{ color: "var(--accent-a11)" }}>Component Time Efficiency</Text>
 							</Tooltip>
-							<Slider name="componentTimeEfficiency" min={0} step={1} max={20} defaultValue={[20]} onValueCommit={(e) => props.handleSliderChange(e, "componentTimeEfficiency")}/>
+							<Slider name="componentTimeEfficiency" min={0} step={1} max={20} defaultValue={[20]} onValueCommit={(e) => props.handleSliderChange(e, "componentTimeEfficiency")} />
 						</Flex>
 					</Flex>
 				</Flex>
@@ -273,15 +329,75 @@ const SettingsAccordion = (props) => (
 				<Flex direction="row" align="start" style={{ width: "100%" }} justify="between" mt="2" mb="2">
 					<Flex direction="column" gap="1" align="start" style={{ width: "50%" }}>
 						<Text size="2" style={{ color: "var(--accent-a11)" }}>Core</Text>
-						<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.coreVolume} onChange={(e) => props.handleInputChange(e.target.value, 'coreVolume')} />
+						{/* <TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.coreVolume} onChange={(e) => props.handleInputChange(e.target.value, 'coreVolume')} /> */}
+						<TextField.Root
+								style={{ maxWidth: "100px" }}
+								type="number"
+								placeholder="0"
+								min={0}
+								step={1}
+								value={props.coreVolume}
+								onChange={(e) => {
+									const value = parseInt(e.target.value);
+									props.handleInputChange(
+										isNaN(value) ? "" : Math.max(value, 0),
+										"coreVolume"
+									);
+								}}
+							/>
 						<Text size="2" style={{ color: "var(--accent-a11)" }}>Defensive</Text>
-						<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.defensiveVolume} onChange={(e) => props.handleInputChange(e.target.value, 'defensiveVolume')} />
+						{/* <TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.defensiveVolume} onChange={(e) => props.handleInputChange(e.target.value, 'defensiveVolume')} /> */}
+						<TextField.Root
+								style={{ maxWidth: "100px" }}
+								type="number"
+								placeholder="0"
+								min={0}
+								step={1}
+								value={props.defensiveVolume}
+								onChange={(e) => {
+									const value = parseInt(e.target.value);
+									props.handleInputChange(
+										isNaN(value) ? "" : Math.max(value, 0),
+										"defensiveVolume"
+									);
+								}}
+							/>
 					</Flex>
 					<Flex direction="column" gap="1" align="start" style={{ width: "50%" }}>
 						<Text size="2" style={{ color: "var(--accent-a11)" }}>Offensive</Text>
-						<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.offensiveVolume} onChange={(e) => props.handleInputChange(e.target.value, 'offensiveVolume')} />
+						{/* <TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.offensiveVolume} onChange={(e) => props.handleInputChange(e.target.value, 'offensiveVolume')} /> */}
+						<TextField.Root
+								style={{ maxWidth: "100px" }}
+								type="number"
+								placeholder="0"
+								min={0}
+								step={1}
+								value={props.offensiveVolume}
+								onChange={(e) => {
+									const value = parseInt(e.target.value);
+									props.handleInputChange(
+										isNaN(value) ? "" : Math.max(value, 0),
+										"offensiveVolume"
+									);
+								}}
+							/>
 						<Text size="2" style={{ color: "var(--accent-a11)" }}>Propulsion</Text>
-						<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.propulsionVolume} onChange={(e) => props.handleInputChange(e.target.value, 'propulsionVolume')} />
+						{/* <TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.propulsionVolume} onChange={(e) => props.handleInputChange(e.target.value, 'propulsionVolume')} /> */}
+						<TextField.Root
+								style={{ maxWidth: "100px" }}
+								type="number"
+								placeholder="0"
+								min={0}
+								step={1}
+								value={props.propulsionVolume}
+								onChange={(e) => {
+									const value = parseInt(e.target.value);
+									props.handleInputChange(
+										isNaN(value) ? "" : Math.max(value, 0),
+										"propulsionVolume"
+									);
+								}}
+							/>
 					</Flex>
 				</Flex>
 			</AccordionContent>
@@ -293,12 +409,27 @@ const SettingsAccordion = (props) => (
 					<Flex direction="column" gap="4" align="start" style={{ width: "50%" }}>
 						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>Reaction Slots</Text>
-							<TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.numSlots} onChange={(e) => props.handleInputChange(e.target.value, 'numSlots')} />
+							{/* <TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.numSlots} onChange={(e) => props.handleInputChange(e.target.value, 'numSlots')} /> */}
+							<TextField.Root
+								style={{ maxWidth: "100px" }}
+								type="number"
+								placeholder="0"
+								min={0}
+								step={1}
+								value={props.numSlots}
+								onChange={(e) => {
+									const value = parseInt(e.target.value);
+									props.handleInputChange(
+										isNaN(value) ? "" : Math.max(value, 0),
+										"numSlots"
+									);
+								}}
+							/>
 						</Flex>
 						<Tooltip content="Character skills for invention success calculations">
 							<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 								<Text size="2" style={{ color: "var(--accent-a11)" }}>Skill Level</Text>
-								<Slider name="skillLevel" min={0} step={1} max={5} defaultValue={[Number(props.skillLevel)]} onValueCommit={(e) => props.handleSliderChange(e, "skillLevel")}/>	
+								<Slider name="skillLevel" min={0} step={1} max={5} defaultValue={[Number(props.skillLevel)]} onValueCommit={(e) => props.handleSliderChange(e, "skillLevel")} />
 							</Flex>
 						</Tooltip>
 					</Flex>

@@ -136,55 +136,50 @@ class HomePageTable extends React.Component {
             <Card style={{ width: "100%" }}>
                 <Flex justify="between" align="center">
                     <Heading mb="4" mt="4" size="5" weight="medium">{" "}</Heading>
-                    {
-                        width < 740
-                            ? (
-                                <DropdownMenu.Root>
-                                    <DropdownMenu.Trigger asChild>
-                                        <Button variant="outline">
-                                            <DotsHorizontalIcon />
-                                        </Button>
-                                    </DropdownMenu.Trigger>
-                                    <DropdownMenu.Content sideOffset={5} align="end">
-                                        <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000002 })}>
-                                            <Text size="3">Jita</Text>
-                                        </DropdownMenu.Item>
-                                        <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000043 })}>
-                                            <Text size="3">Amarr</Text>
-                                        </DropdownMenu.Item>
-                                        <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000032 })}>
-                                            <Text size="3">Dodixie</Text>
-                                        </DropdownMenu.Item>
-                                        <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000042 })}>
-                                            <Text size="3">Hek</Text>
-                                        </DropdownMenu.Item>
-                                        <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000030 })}>
-                                            <Text size="3">Rens</Text>
-                                        </DropdownMenu.Item>
-                                    </DropdownMenu.Content>
-                                </DropdownMenu.Root>
-                            )
-                            : (
-                                <Flex justify="between" gap="2" mb="4" mt="4" mr="4" height="100%" align="center">
-                                    <Button variant={hub.tradeHub == "10000002" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000002 })}><Text size="3">Jita</Text></Button>
-                                    <Button variant={hub.tradeHub == "10000043" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000043 })}><Text size="3">Amarr</Text></Button>
-                                    <Button variant={hub.tradeHub == "10000032" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000032 })}><Text size="3">Dodixie</Text></Button>
-                                    <Button variant={hub.tradeHub == "10000042" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000042 })}><Text size="3">Hek</Text></Button>
-                                    <Button variant={hub.tradeHub == "10000030" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000030 })}><Text size="3">Rens</Text></Button>
-                                </Flex>
-                            )
-                    }
+                    <Flex className="mobile_home_navi">
+                        <DropdownMenu.Root>
+                            <DropdownMenu.Trigger asChild>
+                                <Button variant="outline">
+                                    <DotsHorizontalIcon />
+                                </Button>
+                            </DropdownMenu.Trigger>
+                            <DropdownMenu.Content sideOffset={5} align="end">
+                                <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000002 })}>
+                                    <Text size="3">Jita</Text>
+                                </DropdownMenu.Item>
+                                <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000043 })}>
+                                    <Text size="3">Amarr</Text>
+                                </DropdownMenu.Item>
+                                <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000032 })}>
+                                    <Text size="3">Dodixie</Text>
+                                </DropdownMenu.Item>
+                                <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000042 })}>
+                                    <Text size="3">Hek</Text>
+                                </DropdownMenu.Item>
+                                <DropdownMenu.Item onClick={() => this.props.refreshData({ tradeHub: 10000030 })}>
+                                    <Text size="3">Rens</Text>
+                                </DropdownMenu.Item>
+                            </DropdownMenu.Content>
+                        </DropdownMenu.Root>
+                    </Flex>
+                    <Flex className="desktop_home_navi" justify="between" gap="2" mb="4" mt="4" mr="4" height="100%" align="center">
+                        <Button variant={hub.tradeHub == "10000002" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000002 })}><Text size="3">Jita</Text></Button>
+                        <Button variant={hub.tradeHub == "10000043" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000043 })}><Text size="3">Amarr</Text></Button>
+                        <Button variant={hub.tradeHub == "10000032" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000032 })}><Text size="3">Dodixie</Text></Button>
+                        <Button variant={hub.tradeHub == "10000042" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000042 })}><Text size="3">Hek</Text></Button>
+                        <Button variant={hub.tradeHub == "10000030" ? "solid" : "outline"} onClick={() => this.props.refreshData({ tradeHub: 10000030 })}><Text size="3">Rens</Text></Button>
+                    </Flex>
                 </Flex>
                 <Table.Root>
                     <Table.Header>
                         <Table.Row>
                             <Table.ColumnHeaderCell><Text size="3">Item</Text></Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('name')}><Text size="3">Name</Text>{this.renderArrow(sortConfig, 'name')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('buy')}><Text size="3">Buy Price</Text>{this.renderArrow(sortConfig, 'buy')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('sell')}><Text size="3">Sell Price</Text>{this.renderArrow(sortConfig, 'sell')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('buyVolume')}><Text size="3">Buy Volume</Text>{this.renderArrow(sortConfig, 'buyVolume')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('sellVolume')}><Text size="3">Sell Volume</Text>{this.renderArrow(sortConfig, 'sellVolume')}</Table.ColumnHeaderCell>
-                            <Table.ColumnHeaderCell onClick={() => this.handleSort('losses')}><Tooltip content="Number of subsystems destroyed this week"><Text size="3">Recent Losses</Text></Tooltip>{this.renderArrow(sortConfig, 'losses')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('name')} style={{ whiteSpace: 'nowrap' }}><Text size="3">Name</Text>{this.renderArrow(sortConfig, 'name')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('buy')} style={{ whiteSpace: 'nowrap' }}><Text size="3">Buy Price</Text>{this.renderArrow(sortConfig, 'buy')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('sell')} style={{ whiteSpace: 'nowrap' }}><Text size="3">Sell Price</Text>{this.renderArrow(sortConfig, 'sell')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('buyVolume')} style={{ whiteSpace: 'nowrap' }}><Text size="3">Buy Volume</Text>{this.renderArrow(sortConfig, 'buyVolume')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('sellVolume')} style={{ whiteSpace: 'nowrap' }}><Text size="3">Sell Volume</Text>{this.renderArrow(sortConfig, 'sellVolume')}</Table.ColumnHeaderCell>
+                            <Table.ColumnHeaderCell onClick={() => this.handleSort('losses')} style={{ whiteSpace: 'nowrap' }}><Tooltip content="Number of subsystems destroyed this week"><Text size="3">Recent Losses</Text></Tooltip>{this.renderArrow(sortConfig, 'losses')}</Table.ColumnHeaderCell>
                         </Table.Row>
                     </Table.Header>
                     <Table.Body>

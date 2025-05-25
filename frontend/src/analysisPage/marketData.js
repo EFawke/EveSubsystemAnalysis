@@ -121,7 +121,6 @@ class MarketData extends Component {
       .post(`/api/subsystem/${id}`, settings)
       .then((response) => {
         const data = response.data;
-        console.log(response);
         const convertDates = (arr) => arr.map((d) => String(d));
 
         this.setState({
@@ -320,7 +319,7 @@ class MarketData extends Component {
 
     return (
       <Flex id="detailed_analysis_page_main_container" direction="row" gap="4"
-        style={{ width: "100%", height: "472px" }}
+        // style={{ width: "100%", height: "472px" }}
       >
         <MarketDataTable 
           isLoading={isLoading}

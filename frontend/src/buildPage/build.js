@@ -166,11 +166,13 @@ class Build extends React.Component {
     }
 
     renderRequiredMaterialsTable = () => {
-        const width = window.innerWidth;
-        const isNarrow = width < 1111;
         const { buildResponseData, darkMode, loading, coreVolume, defensiveVolume, offensiveVolume, propulsionVolume } = this.state;
+        console.log(buildResponseData)
         const filteredMaterials = buildResponseData?.requiredMaterialsForAll
             .filter(material => material.quantity !== 0 && material.name !== "None" && ![30002, 30476, 30464, 30474, 30470, 29992, 29994, 30478, 30008].includes(material.id));
+        let components = buildResponseData?.requiredMaterialsForAll
+        .filter(material => material.quantity !== 0 && material.name !== "None" && [30002, 30476, 30464, 30474, 30470, 29992, 29994, 30478, 30008].includes(material.id));
+        components?.sort((a, b) => a.quantity - b.quantity);
         const materialBuyCost = buildResponseData?.maxBuys != null ? buildResponseData?.maxBuys : 0;
         const industryTaxTotal = buildResponseData?.totalTax != null ? buildResponseData?.totalTax : 0;
         const totalBuildCost = materialBuyCost + industryTaxTotal;
@@ -180,7 +182,7 @@ class Build extends React.Component {
         const schedule = buildResponseData?.schedule != null ? buildResponseData.schedule : null;
 
         return (
-            <Flex direction="column" gap="4" class="container" style={{ width: "100%", overflowY: "scroll" }}>
+            <Flex direction="column" gap="4" class="container" style={{ width: "100%"}}>
                 <BuildHeader
                     numRuns={numRuns}
                     coreVolume={coreVolume}
@@ -190,6 +192,8 @@ class Build extends React.Component {
                     materialBuyCost={materialBuyCost}
                     industryTaxTotal={industryTaxTotal}
                     totalBuildCost={totalBuildCost}
+                    components={components}
+                    loading={loading}
                 />
                 {/* <Divider /> */}
 
@@ -208,18 +212,12 @@ class Build extends React.Component {
             offensiveVolume, propulsionVolume, numSlots, skillLevel,
             implant, buildingComponents, runningReactions,
             reactionCostIndex, buildCostIndex,
-            reactionFacilityTax, complexFacilityTax
+            reactionFacilityTax, complexFacilityTax, loading
         } = this.state;
 
-        // Check window width
-        const width = window.innerWidth;
-        const isNarrow = width < 1111;
-
         return (
-            <Flex className="build_container" width="100%" direction={isNarrow ? "column" : "row"} gap="4">
+            <Flex className="build_container" width="100%" gap="4">
                 <Flex direction="column" className="settings_accordion" style={{ height: "fit-content" }}>
-                    {/* <PageTitle pageTitle="Manufacturing tool" /> */}
-                    {/* <Heading weight="light" color="gray" mb="7" mt="-6" size="4">Build settings and material calculator</Heading> */}
                     <SettingsAccordion
                         refinery={refinery}
                         teRig={teRig}

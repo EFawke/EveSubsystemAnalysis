@@ -76,10 +76,68 @@ body {
     display: flex;
 }
 
+#detailed_analysis_page_main_container{
+    height: "472px";
+    width:"100%;"
+}
+
+.build_container{
+    flex-direction: row;
+}
+
+.dashboard-loading {
+    height: calc((26px * 0.9) + (16px * 0.9) + (16px * 0.9) + (20px * 0.9) + (12px * 0.9) + (12px * 0.9) + ((44px + 12px * 0.9) * 10))
+}
+
+p {
+    margin-bottom: 0;
+}
+
+.settings_accordion {
+    width: calc(100% / 3);
+    height: 100vh;
+    position: sticky;
+    top: var(--space-9);
+}
+
+.mobile_home_navi {
+    display: none;
+}
+
+.desktop_home_navi {
+    display: flex;
+}
+
+.subs_build_container {
+    width: 55%;
+}
+
+.subs_build_container > div {
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+@media (max-width: 800px) {
+    .mobile_home_navi {
+        display: flex;
+    }
+    
+    .desktop_home_navi {
+        display: none;
+    }
+}
+
 /* if screen is less than 1111px wide */
 @media (max-width: 1111px) {
+    .chart_container {
+        min-height: 400px;
+    }
+    
     .settings_accordion {
         width: 100%;
+        position: relative;
+        top: 0;
+        height: auto;
     }
 
     .required_materials {
@@ -88,6 +146,7 @@ body {
 
     #detailed_analysis_page_main_container {
         flex-direction: column;
+        height: auto;
     }
 
     .market_data_table {
@@ -115,19 +174,4 @@ body {
     .build_container {
         flex-direction: column;
     }
-}
-
-.dashboard-loading {
-    height: calc((26px * 0.9) + (16px * 0.9) + (16px * 0.9) + (20px * 0.9) + (12px * 0.9) + (12px * 0.9) + ((44px + 12px * 0.9) * 10))
-}
-
-p {
-    margin-bottom: 0;
-}
-
-.settings_accordion {
-    width: calc(100% / 3);
-    height: 100vh;
-    position: sticky;
-    top: var(--space-9);
 }
