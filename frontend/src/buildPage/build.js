@@ -55,13 +55,13 @@ class Build extends React.Component {
 
     componentDidMount() {
         // Load settings from the cookie if available
-        // const savedSettings = Cookies.get('buildSettings');
-        // if (savedSettings) {
-        //     this.setState(JSON.parse(savedSettings), this.submitBuildData);
-        // } else {
+        const savedSettings = Cookies.get('buildSettings');
+        if (savedSettings) {
+            this.setState(JSON.parse(savedSettings), this.submitBuildData);
+        } else {
             // If no saved settings, make initial call with default state
             this.submitBuildData();
-        // }
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -165,48 +165,6 @@ class Build extends React.Component {
         )
     }
 
-    // renderScheduleChart = (schedule) => {
-    //     return (
-    //         <>
-    //             <Heading mt="4" mb="4" size="3">Reaction schedule</Heading>
-    //             <Table.Root>
-    //                 <Table.Header>
-    //                     <Table.Row>
-    //                         <Table.ColumnHeaderCell></Table.ColumnHeaderCell>
-    //                         <Table.ColumnHeaderCell><Text size="3">Name</Text></Table.ColumnHeaderCell>
-    //                         <Table.ColumnHeaderCell><Text size="3">Runs</Text></Table.ColumnHeaderCell>
-    //                         <Table.ColumnHeaderCell><Text size="3">Completed</Text></Table.ColumnHeaderCell>
-    //                     </Table.Row>
-    //                 </Table.Header>
-    //                 <Table.Body>
-    //                     {schedule?.map((material, index) => (
-    //                         <Table.Row key={index}>
-    //                             <Table.Cell>
-    //                                 <img style={{ width: "25px", height: "25px" }} src={`https://image.eveonline.com/Type/${material.id}_64.png`} alt="Item" className="img-fluid" />
-    //                             </Table.Cell>
-    //                             <Table.Cell>
-    //                                 <Flex height="100%" align="center">
-    //                                     <Text size="3">{material.name}</Text>
-    //                                 </Flex>
-    //                             </Table.Cell>
-    //                             <Table.Cell>
-    //                                 <Flex height="100%" align="center">
-    //                                     <Text size="3">{Number(material.runs).toLocaleString()}</Text>
-    //                                 </Flex>
-    //                             </Table.Cell>
-    //                             <Table.Cell>
-    //                                 <Flex height="100%" align="center">
-    //                                     <Checkbox />
-    //                                 </Flex>
-    //                             </Table.Cell>
-    //                         </Table.Row>
-    //                     ))}
-    //                 </Table.Body>
-    //             </Table.Root>
-    //         </>
-    //     )
-    // }
-
     renderRequiredMaterialsTable = () => {
         const width = window.innerWidth;
         const isNarrow = width < 1111;
@@ -242,7 +200,7 @@ class Build extends React.Component {
     }
 
     render() {
-        const { darkMode,
+        const {
             refinery, teRig, meRig, system, tataraRig, complex,
             complexTeRig, complexMeRig, complexSystem, complexLargeRig,
             componentMaterialEfficiency, componentTimeEfficiency,

@@ -49,24 +49,46 @@ class App extends React.Component {
     }
 
     setMaterialsLocation = (location) => {
-        this.setState({ materialsLocation: location });
-        Cookies.set('materialsLocation', location);
+        this.setState({ materialsLocation: location }, () => {
+            Cookies.set('materialsLocation', location);
+    
+            const buildSettings = Cookies.get('buildSettings');
+            const parsed = buildSettings ? JSON.parse(buildSettings) : {};
+            parsed.materialsLocation = location;
+            Cookies.set('buildSettings', JSON.stringify(parsed), { expires: 365 * 100 });
+        });
     }
+    
 
-    setMaterialsOrderType = (orderType) => {
-        this.setState({ materialsOrderType: orderType });
-        Cookies.set('materialsOrderType', orderType);
+    setMaterialsOrderType = (type) => {
+        this.setState({ materialsOrderType: type }, () => {
+            Cookies.set('materialsOrderType', type);
+    
+            const buildSettings = Cookies.get('buildSettings');
+            const parsed = buildSettings ? JSON.parse(buildSettings) : {};
+            parsed.materialsOrderType = type;
+            Cookies.set('buildSettings', JSON.stringify(parsed), { expires: 365 * 100 });
+        });
     }
-
+    
     setSubsystemsLocation = (location) => {
-        this.setState({ subsystemsLocation: location });
-        Cookies.set('subsystemsLocation', location);
+        this.setState({ subsystemsLocation: location }, () => {
+            const buildSettings = Cookies.get('buildSettings');
+            const parsed = buildSettings ? JSON.parse(buildSettings) : {};
+            parsed.subsystemsLocation = location;
+            Cookies.set('buildSettings', JSON.stringify(parsed), { expires: 365 * 100 });
+        });
     }
-
-    setSubsystemsOrderType = (orderType) => {
-        this.setState({ subsystemsOrderType: orderType });
-        Cookies.set('subsystemsOrderType', orderType);
+    
+    setSubsystemsOrderType = (type) => {
+        this.setState({ subsystemsOrderType: type }, () => {
+            const buildSettings = Cookies.get('buildSettings');
+            const parsed = buildSettings ? JSON.parse(buildSettings) : {};
+            parsed.subsystemsOrderType = type;
+            Cookies.set('buildSettings', JSON.stringify(parsed), { expires: 365 * 100 });
+        });
     }
+    
 
     toggleColorBlindMode = () => {
         this.setState({ colorBlindMode: !this.state.colorBlindMode });

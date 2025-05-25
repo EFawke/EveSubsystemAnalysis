@@ -122,7 +122,7 @@ const getMinSell = (latestData, historicalData) => {
 
 const getMaxBuy = (latestData, historicalData) => {
     const maxBuy = {};
-    maxBuy.title = "Min sell";
+    maxBuy.title = "Max buy";
     let currentVolume;
     if (!latestData) {
         currentVolume = historicalData[0].maxbuy;
