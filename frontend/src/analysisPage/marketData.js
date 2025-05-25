@@ -43,49 +43,40 @@ class MarketData extends Component {
 
   componentDidMount() {
     const { id } = this.props;
+    const buildSettings = Cookies.get('buildSettings')
+    const parsed = buildSettings ? JSON.parse(buildSettings) : {};
+    console.log("Parsed build settings:", parsed);
     const settings = {
-      numSlots: Cookies.get('numSlots') || '8',
-      refinery: Cookies.get('refinery') || 'Tatara',
-      refineryTeRig: Cookies.get('refineryTeRig') || 'None',
-      refineryMeRig: Cookies.get('refineryMeRig') || 'None',
-      refinerySystem: Cookies.get('refinerySystem') || 'wormhole',
-      complex: Cookies.get('complex') || 'Azbel',
-      complexLargeRig: Cookies.get('complexLargeRig') || 'T1',
-      complexTeRig: Cookies.get('complexTeRig') || 'None',
-      complexMeRig: Cookies.get('complexMeRig') || 'None',
-      complexSystem: Cookies.get('complexSystem') || 'wormhole',
-      tataraRig: Cookies.get('tataraRig') || 'T1',
-      componentMaterialEfficiency: Cookies.get('componentMaterialEfficiency') || 10,
-      componentTimeEfficiency: Cookies.get('componentTimeEfficiency') || 20,
-      ancientRelic: Cookies.get('ancientRelic') || 'Intact',
-      decryptor: Cookies.get('decryptor') || 'Optimized Attainment Decryptor',
-      coreVolume: Cookies.get('coreVolume') || 0,
-      defensiveVolume: Cookies.get('defensiveVolume') || 0,
-      offensiveVolume: Cookies.get('offensiveVolume') || 0,
-      propulsionVolume: Cookies.get('propulsionVolume') || 0,
-      skillLevel: Cookies.get('skillLevel') || 4,
-      implant: Cookies.get('implant') || '4%',
-      buildCostIndex: Cookies.get('buildCostIndex') || '0.14',
-      reactionCostIndex: Cookies.get('reactionCostIndex') || '0.14',
-      reactionFacilityTax: Cookies.get('reactionFacilityTax') || 0.25,
-      complexFacilityTax: Cookies.get('complexFacilityTax') || 0.25,
-      system: Cookies.get('system') || 'wormhole',
-      materialsLocation:
-        Cookies.get('materialsLocation') != null
-          ? Cookies.get('materialsLocation')
-          : "10000002",
-      materialsOrderType:
-        Cookies.get('materialsOrderType') != null
-          ? Cookies.get('materialsOrderType')
-          : "buy",
-      subsystemsLocation:
-        Cookies.get('subsystemsLocation') != null
-          ? Cookies.get('subsystemsLocation')
-          : "10000002",
-      subsystemsOrderType:
-        Cookies.get('subsystemsOrderType') != null
-          ? Cookies.get('subsystemsOrderType')
-          : "sell",
+      numSlots: parsed?.numSlots || '8',
+      refinery: parsed?.refinery || 'Tatara',
+      refineryTeRig: parsed?.refineryTeRig || 'None',
+      refineryMeRig: parsed?.refineryMeRig || 'None',
+      refinerySystem: parsed?.refinerySystem || 'wormhole',
+      complex: parsed?.complex || 'Azbel',
+      complexLargeRig: parsed?.complexLargeRig || 'T1',
+      complexTeRig: parsed?.complexTeRig || 'None',
+      complexMeRig: parsed?.complexMeRig || 'None',
+      complexSystem: parsed?.complexSystem || 'wormhole',
+      tataraRig: parsed?.tataraRig || 'T1',
+      componentMaterialEfficiency: parsed?.componentMaterialEfficiency || 10,
+      componentTimeEfficiency: parsed?.componentTimeEfficiency || 20,
+      ancientRelic: parsed?.ancientRelic || 'Intact',
+      decryptor: parsed?.decryptor || 'Optimized Attainment Decryptor',
+      coreVolume: parsed?.coreVolume || 0,
+      defensiveVolume: parsed?.defensiveVolume || 0,
+      offensiveVolume: parsed?.offensiveVolume || 0,
+      propulsionVolume: parsed?.propulsionVolume || 0,
+      skillLevel: parsed?.skillLevel || 4,
+      implant: parsed?.implant || '4%',
+      buildCostIndex: parsed?.buildCostIndex || '0.14',
+      reactionCostIndex: parsed?.reactionCostIndex || '0.14',
+      reactionFacilityTax: parsed?.reactionFacilityTax || 0.25,
+      complexFacilityTax: parsed?.complexFacilityTax || 0.25,
+      system: parsed?.system || 'wormhole',
+      materialsLocation: parsed?.materialsLocation || '10000002',
+      materialsOrderType: parsed?.materialsOrderType || "buy",
+      subsystemsLocation: parsed?.subsystemsLocation || '10000002',
+      subsystemsOrderType: parsed?.subsystemsOrderType || "sell"
     };
 
     this.setState({ settings });

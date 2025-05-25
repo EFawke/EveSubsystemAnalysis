@@ -38,10 +38,30 @@ class App extends React.Component {
                 secondary: "black"
             },
             // description: null,
-            materialsLocation: Cookies.get('materialsLocation') != null ? Cookies.get('materialsLocation') : "10000002",
-            materialsOrderType: Cookies.get('materialsOrderType') != null ? Cookies.get('materialsOrderType') : "buy",
-            subsystemsLocation: Cookies.get('subsystemsLocation') != null ? Cookies.get('subsystemsLocation') : "10000002",
-            subsystemsOrderType: Cookies.get('subsystemsOrderType') != null ? Cookies.get('subsystemsOrderType') : "sell",
+            // materialsLocation: Cookies.get('materialsLocation') != null ? Cookies.get('materialsLocation') : "10000002",
+            // materialsOrderType: Cookies.get('materialsOrderType') != null ? Cookies.get('materialsOrderType') : "buy",
+            // subsystemsLocation: Cookies.get('subsystemsLocation') != null ? Cookies.get('subsystemsLocation') : "10000002",
+            // subsystemsOrderType: Cookies.get('subsystemsOrderType') != null ? Cookies.get('subsystemsOrderType') : "sell",
+            subsystemsOrderType: (() => {
+                const buildSettings = Cookies.get('buildSettings');
+                const parsed = buildSettings ? JSON.parse(buildSettings) : {};
+                return parsed.subsystemsOrderType || "sell";
+            }),
+            subsystemsLocation: (() => {
+                const buildSettings = Cookies.get('buildSettings');
+                const parsed = buildSettings ? JSON.parse(buildSettings) : {};
+                return parsed.subsystemsLocation || "10000002";
+            }),
+            materialsOrderType: (() => {
+                const buildSettings = Cookies.get('buildSettings');
+                const parsed = buildSettings ? JSON.parse(buildSettings) : {};
+                return parsed.materialsOrderType || "buy";
+            }),
+            materialsLocation: (() => {
+                const buildSettings = Cookies.get('buildSettings');
+                const parsed = buildSettings ? JSON.parse(buildSettings) : {};
+                return parsed.materialsLocation || "10000002";
+            })
         };
         this.source = axios.CancelToken.source();
         this.handleMouseMove = this.handleMouseMove.bind(this);
@@ -89,7 +109,6 @@ class App extends React.Component {
         });
     }
     
-
     toggleColorBlindMode = () => {
         this.setState({ colorBlindMode: !this.state.colorBlindMode });
         Cookies.set('colorBlind', !this.state.colorBlindMode);
