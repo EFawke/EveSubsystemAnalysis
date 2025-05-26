@@ -43,7 +43,7 @@ export default function BuildHeader(props) {
                         <>
                             <HoverCard.Root>
                                 <HoverCard.Trigger>
-                                    <Flex direction="row" justify={"between"} align={"center"} style={{ width: "100%", paddingRight: "20px", paddingTop: "5px", paddingBottom: "5px" }}>
+                                    <Flex className="build_header_mobile_container" justify={"between"} align={"center"} style={{ width: "100%", paddingRight: "20px", paddingTop: "5px", paddingBottom: "5px" }}>
                                         <Flex justify="center" align="center" direction="column" gap="2" className="subs_build_container">
                                             <Flex align="center" direction="row" justify="start" gap="4" mt="4" mb="4">
                                                 <Tooltip content={"Defensive"}>

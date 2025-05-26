@@ -129,7 +129,15 @@ p {
     justify-content: space-evenly;
 }
 
+.build_header_mobile_container {
+    flex-direction: row;
+}
+
 @media (max-width: 800px) {
+    .build_header_mobile_container {
+        flex-direction: column;
+    }
+
     .mobile_home_navi {
         display: flex;
     }
