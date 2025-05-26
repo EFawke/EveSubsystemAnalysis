@@ -154,7 +154,7 @@ class MarketData extends Component {
             dataValues: data.profit.dataValues,
             percentageChange: data.profit.thirtyDayMedianDelta,
             addToGraph: false,
-            info: `Buying materials from ${this.props.materialsOrderType} orders in ${this.getLocationName(this.props.materialsLocation)} and selling subsystems to ${this.props.subsystemsOrderType} orders in ${this.getLocationName(this.props.subsystemsLocation)}.`,
+            info: `Buying materials from ${settings.materialsOrderType} orders in ${this.getLocationName(settings.materialsLocation)} and selling subsystems to ${settings.subsystemsOrderType} orders in ${this.getLocationName(settings.subsystemsLocation)}.`,
           },
           materialsCost: {
             name: data.matCosts.title,
@@ -163,7 +163,7 @@ class MarketData extends Component {
             dataValues: data.matCosts.dataValues,
             percentageChange: data.matCosts.thirtyDayMedianDelta,
             addToGraph: false,
-            info: `Buying materials from ${this.props.materialsOrderType} orders in ${this.getLocationName(this.props.materialsLocation)} and selling subsystems to ${this.props.subsystemsOrderType} orders in ${this.getLocationName(this.props.subsystemsLocation)}.`,
+            info: `Buying materials from ${settings.materialsOrderType} orders in ${this.getLocationName(settings.materialsLocation)} and selling subsystems to ${settings.subsystemsOrderType} orders in ${this.getLocationName(settings.subsystemsLocation)}.`,
           },
           tradeVolume: {
             name: data.tradeVolume.title,

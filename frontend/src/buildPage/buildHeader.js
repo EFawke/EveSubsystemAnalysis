@@ -113,10 +113,10 @@ export default function BuildHeader(props) {
                                     </Flex>
                                 </HoverCard.Trigger>
                                 <HoverCard.Content>
-                                    <Heading size="3" mb="2">Components</Heading>
-                                    <Flex align="start" direction="row" justify="between" gap="4">
+                                    <Heading size="3" mb="2" className="component_header">Components</Heading>
+                                    <Flex align="start" direction="row" justify="between" gap="4" className="components_container">
                                         {components.map((component, index) => (
-                                            <Flex key={index} direction="column" gap="2" align="start" justify="between">
+                                            <Flex pr="2" pl="2" key={index} direction="column" gap="2" align="center" justify="between" className="component_container">
                                                 <img style={{ width: "28px", height: "28px" }} className="counter_icon" src={`https://images.evetech.net/types/${component.id}/icon`} alt={component.name} />
                                                 <Text size="2" color="gray">{component.name}</Text>
                                                 <Text size="2" color="gray">{`${component.quantity} units`}</Text>
