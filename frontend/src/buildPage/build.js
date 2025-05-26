@@ -15,47 +15,59 @@ import PageTitle from "../layout/PageTitle.js"
 class Build extends React.Component {
     constructor(props) {
         super(props);
+    
+        const savedSettings = Cookies.get('buildSettings');
+        let parsed = {};
+        try {
+            parsed = savedSettings ? JSON.parse(savedSettings) : {};
+        } catch (e) {
+            console.error("Invalid buildSettings cookie, resetting...");
+            Cookies.remove('buildSettings');
+        }
+    
         this.state = {
-            numSlots: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.numSlots : 1,
-            darkMode: this.props.darkMode || false,
-            refinery: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.refinery : 'Tatara',
-            materialsLocation: this.props.materialsLocation || "10000002",
-            materialsOrderType: this.props.materialsOrderType || "buy",
-            refineryTeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.refineryTeRig : 'None',
-            refineryMeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.refineryMeRig : 'None',
-            refinerySystem: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.refinerySystem : 'wormhole',
-            complex: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complex : 'Azbel',
-            complexLargeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexLargeRig : 'None',
-            complexTeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexTeRig : 'None',
-            complexMeRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexMeRig : 'None',
-            complexSystem: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexSystem : 'wormhole',
-            tataraRig: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.tataraRig : 'None',
-            componentMaterialEfficiency: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.componentMaterialEfficiency : 0,
-            componentTimeEfficiency: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.componentTimeEfficiency : 0,
-            ancientRelic: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.ancientRelic : 'Intact',
-            decryptor: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.decryptor : 'None',
-            coreVolume: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.coreVolume : 1,
-            defensiveVolume: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.defensiveVolume : 1,
-            offensiveVolume: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.offensiveVolume : 1,
-            propulsionVolume: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.propulsionVolume : 1,
-            skillLevel: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.skillLevel : 1,
-            implant: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.implant : 'None',
+            numSlots: parsed.numSlots || 1,
+            darkMode: props.darkMode || false,
+            refinery: parsed.refinery || 'Tatara',
+            materialsLocation: props.materialsLocation || "10000002",
+            materialsOrderType: props.materialsOrderType || "buy",
+            refineryTeRig: parsed.refineryTeRig || 'None',
+            refineryMeRig: parsed.refineryMeRig || 'None',
+            refinerySystem: parsed.refinerySystem || 'wormhole',
+            complex: parsed.complex || 'Azbel',
+            complexLargeRig: parsed.complexLargeRig || 'None',
+            complexTeRig: parsed.complexTeRig || 'None',
+            complexMeRig: parsed.complexMeRig || 'None',
+            complexSystem: parsed.complexSystem || 'wormhole',
+            tataraRig: parsed.tataraRig || 'None',
+            componentMaterialEfficiency: parsed.componentMaterialEfficiency || 10,
+            componentTimeEfficiency: parsed.componentTimeEfficiency || 20,
+            ancientRelic: parsed.ancientRelic || 'Intact',
+            decryptor: parsed.decryptor || 'None',
+            coreVolume: parsed.coreVolume || 1,
+            defensiveVolume: parsed.defensiveVolume || 1,
+            offensiveVolume: parsed.offensiveVolume || 1,
+            propulsionVolume: parsed.propulsionVolume || 1,
+            skillLevel: parsed.skillLevel || 1,
+            implant: parsed.implant || 'None',
             buildingComponents: false,
             runningReactions: false,
-            buildCostIndex: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.buildCostIndex : 0.14,
-            reactionCostIndex: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.reactionCostIndex : 0.14,
-            reactionFacilityTax: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.reactionFacilityTax : 1,
-            complexFacilityTax: Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings'))?.complexFacilityTax : 1,
-            buildResponseData: null,  // new state variable for response data
+            buildCostIndex: parsed.buildCostIndex || 0.14,
+            reactionCostIndex: parsed.reactionCostIndex || 0.14,
+            reactionFacilityTax: parsed.reactionFacilityTax || 1,
+            complexFacilityTax: parsed.complexFacilityTax || 1,
+            buildResponseData: null,
             loading: true,
-        }
+        };
+    
         this.renderMatsTable = this.renderMatsTable.bind(this);
-        // this.renderScheduleChart = this.renderScheduleChart.bind(this);
     }
+    
 
     componentDidMount() {
         // Load settings from the cookie if available
         const savedSettings = Cookies.get('buildSettings');
+        // console.log(JSON.parse(savedSettings));
         if (savedSettings) {
             this.setState(JSON.parse(savedSettings), this.submitBuildData);
         } else {
@@ -96,10 +108,12 @@ class Build extends React.Component {
         }
         this.controller = new AbortController();
         this.setState({ loading: true });
+        console.log(this.state)
         axios.post('/api/build', this.state, {
             signal: this.controller.signal
         })
             .then(response => {
+                console.log('Data sent successfully:', response.data);
                 this.setState({ buildResponseData: response.data }, () => {
                     const buildSettings = Object.keys(this.state).reduce((acc, key) => {
                         if (typeof this.state[key] !== 'object') {
@@ -180,11 +194,10 @@ class Build extends React.Component {
 
     renderRequiredMaterialsTable = () => {
         const { buildResponseData, darkMode, loading, coreVolume, defensiveVolume, offensiveVolume, propulsionVolume } = this.state;
-        console.log(buildResponseData)
         const filteredMaterials = buildResponseData?.requiredMaterialsForAll
             .filter(material => material.quantity !== 0 && material.name !== "None" && ![30002, 30476, 30464, 30474, 30470, 29992, 29994, 30478, 30008].includes(material.id));
         let components = buildResponseData?.requiredMaterialsForAll
-        .filter(material => material.quantity !== 0 && material.name !== "None" && [30002, 30476, 30464, 30474, 30470, 29992, 29994, 30478, 30008].includes(material.id));
+        .filter(material => [30002, 30476, 30464, 30474, 30470, 29992, 29994, 30478, 30008].includes(material.id));
         components?.sort((a, b) => a.quantity - b.quantity);
         const materialBuyCost = buildResponseData?.maxBuys != null ? buildResponseData?.maxBuys : 0;
         const industryTaxTotal = buildResponseData?.totalTax != null ? buildResponseData?.totalTax : 0;
@@ -193,6 +206,8 @@ class Build extends React.Component {
         const numRuns = buildResponseData?.blueprints.numRuns;
 
         const schedule = buildResponseData?.schedule != null ? buildResponseData.schedule : null;
+
+        console.log(buildResponseData);
 
         return (
             <Flex direction="column" gap="4" class="container" style={{ width: "100%"}}>
@@ -268,7 +283,8 @@ class Build extends React.Component {
                     // mt="9" 
                     // pt="9"
                 >
-                    {this.renderRequiredMaterialsTable()}
+                    {!loading && this.renderRequiredMaterialsTable()}
+                    {/* {this.renderRequiredMaterialsTable()} */}
                 </Flex>
             </Flex>
         );

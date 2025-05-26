@@ -42,8 +42,8 @@ const getMaterialRequirements = (settings) => {
     let BPOME = settings.componentMaterialEfficiency || 10;
     let BPOTE = settings.componentTimeEfficiency || 20;
 
-    let relicType = settings.ancientRelic;
-    let decryptor = settings.decryptor;
+    let relicType = settings.ancientRelic || "Intact";
+    let decryptor = settings.decryptor || "None";
 
     let coreRuns = settings.coreVolume == "" ? 0 : settings.coreVolume;
     let offRuns = settings.offensiveVolume == "" ? 0 : settings.offensiveVolume;

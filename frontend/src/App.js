@@ -19,6 +19,7 @@ import weeb from './weeb.jpeg';
 class App extends React.Component {
     constructor(props) {
         super(props);
+        const buildSettings = Cookies.get('buildSettings') ? JSON.parse(Cookies.get('buildSettings')) : {};
         this.state = {
             error: null,
             id: window.location.pathname.split('/')[2],
@@ -33,39 +34,15 @@ class App extends React.Component {
             backlight: Cookies.get('backlight') === 'true' ? true : false,
             backgroundColors: {
                 primary: "rgb(18 39 69)",
-                // primary: "teal",
-                // primary: "blue",
                 secondary: "black"
             },
-            // description: null,
-            // materialsLocation: Cookies.get('materialsLocation') != null ? Cookies.get('materialsLocation') : "10000002",
-            // materialsOrderType: Cookies.get('materialsOrderType') != null ? Cookies.get('materialsOrderType') : "buy",
-            // subsystemsLocation: Cookies.get('subsystemsLocation') != null ? Cookies.get('subsystemsLocation') : "10000002",
-            // subsystemsOrderType: Cookies.get('subsystemsOrderType') != null ? Cookies.get('subsystemsOrderType') : "sell",
-            subsystemsOrderType: (() => {
-                const buildSettings = Cookies.get('buildSettings');
-                const parsed = buildSettings ? JSON.parse(buildSettings) : {};
-                return parsed.subsystemsOrderType || "sell";
-            }),
-            subsystemsLocation: (() => {
-                const buildSettings = Cookies.get('buildSettings');
-                const parsed = buildSettings ? JSON.parse(buildSettings) : {};
-                return parsed.subsystemsLocation || "10000002";
-            }),
-            materialsOrderType: (() => {
-                const buildSettings = Cookies.get('buildSettings');
-                const parsed = buildSettings ? JSON.parse(buildSettings) : {};
-                return parsed.materialsOrderType || "buy";
-            }),
-            materialsLocation: (() => {
-                const buildSettings = Cookies.get('buildSettings');
-                const parsed = buildSettings ? JSON.parse(buildSettings) : {};
-                return parsed.materialsLocation || "10000002";
-            })
+            subsystemsOrderType: buildSettings.subsystemsOrderType || 'sell',
+            subsystemsLocation: buildSettings.subsystemsLocation || '10000002',
+            materialsOrderType: buildSettings.materialsOrderType || 'buy',
+            materialsLocation: buildSettings.materialsLocation || '10000002',
         };
         this.source = axios.CancelToken.source();
         this.handleMouseMove = this.handleMouseMove.bind(this);
-        // this.renderErrorPage = this.renderErrorPage.bind(this);
     }
 
     setMaterialsLocation = (location) => {
@@ -79,7 +56,6 @@ class App extends React.Component {
         });
     }
     
-
     setMaterialsOrderType = (type) => {
         this.setState({ materialsOrderType: type }, () => {
             Cookies.set('materialsOrderType', type);
@@ -155,6 +131,7 @@ class App extends React.Component {
     };
 
     render() {
+        console.log(this.state)
         const { darkMode, profit, cursorState, backgroundColors, colorBlindMode, backlight, materialsLocation, materialsOrderType, subsystemsLocation, subsystemsOrderType } = this.state;
         const isValidUrl = (url, array) => {
             const urlParts = url.split('/');
@@ -236,7 +213,9 @@ class App extends React.Component {
         }
         if (window.location.pathname === "/build/" || window.location.pathname === "/build") {
             return (
-                <Theme className="top_container" style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }} id="theme_element" scaling="90%" grayColor="mauve" accentColor="teal" panelBackground="translucent" appearance="dark">
+                <Theme 
+                    className="top_container" 
+                    style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }} id="theme_element" scaling="90%" grayColor="mauve" accentColor="teal" panelBackground="translucent" appearance="dark">
                     <Header
                         toggleBackLight={this.toggleBackLight} toggleColorBlindMode={this.toggleColorBlindMode} colorBlindMode={colorBlindMode}
                         backlight={backlight}
