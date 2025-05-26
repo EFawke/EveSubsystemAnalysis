@@ -32,14 +32,14 @@ export default function BuildHeader(props) {
         <>
             <Heading mt="4" mb="4" size="4">Production overview and costs</Heading>
             <Card style={{ width: "100%" }}>
-                {
+                {/* {
                     loading ? (
 
                         <Flex direction="row" justify="center" align="center" style={{ width: "100%", height: "104px" }}>
                             <FontAwesomeIcon icon={faCircleNotch} spin size="xl" />
                         </Flex>
 
-                    ) : (
+                    ) : ( */}
                         <>
                             <HoverCard.Root>
                                 <HoverCard.Trigger>
@@ -126,8 +126,8 @@ export default function BuildHeader(props) {
                                 </HoverCard.Content>
                             </HoverCard.Root>
                         </>
-                    )
-                }
+                    {/* )
+                } */}
             </Card>
 
         </>

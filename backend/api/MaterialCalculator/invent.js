@@ -9,6 +9,7 @@ const {
     optimizedAugmentationDecryptor} = require('./staticVars.js');
 
 const invent = (relicType, decryptor, skillLevel, coreRuns, offRuns, propRuns, defRuns) => {
+    console.log(skillLevel);
     let output = {};
 
     let baseProbability;
@@ -91,6 +92,7 @@ const invent = (relicType, decryptor, skillLevel, coreRuns, offRuns, propRuns, d
     output.propRuns = Math.ceil(propRuns / output.successChance);
     output.defRuns = Math.ceil(defRuns / output.successChance);
 
+    // console.log(output);
     return output;
 }
 

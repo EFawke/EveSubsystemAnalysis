@@ -211,18 +211,29 @@ class Build extends React.Component {
 
         return (
             <Flex direction="column" gap="4" class="container" style={{ width: "100%"}}>
-                <BuildHeader
-                    numRuns={numRuns}
-                    coreVolume={coreVolume}
-                    defensiveVolume={defensiveVolume}
-                    offensiveVolume={offensiveVolume}
-                    propulsionVolume={propulsionVolume}
-                    materialBuyCost={materialBuyCost}
-                    industryTaxTotal={industryTaxTotal}
-                    totalBuildCost={totalBuildCost}
-                    components={components}
-                    loading={loading}
-                />
+                {loading ? 
+                <>
+                <Heading mt="4" mb="4" size="4">Production overview and costs</Heading>
+                <Card style={{ width: "100%" }}>
+                <Flex direction="row" justify="center" align="center" style={{ width: "100%", height: "104px" }}>
+                            <FontAwesomeIcon icon={faCircleNotch} spin size="xl" />
+                        </Flex>
+                        </Card>
+                        </>
+                        : <BuildHeader
+                        numRuns={numRuns}
+                        coreVolume={coreVolume}
+                        defensiveVolume={defensiveVolume}
+                        offensiveVolume={offensiveVolume}
+                        propulsionVolume={propulsionVolume}
+                        materialBuyCost={materialBuyCost}
+                        industryTaxTotal={industryTaxTotal}
+                        totalBuildCost={totalBuildCost}
+                        components={components}
+                        loading={loading}
+                    />
+                        }
+                
                 {/* <Divider /> */}
 
                 {loading ? <table>{this.renderTableLoading()}</table> : <MatsTable filteredMaterials={filteredMaterials} />}
@@ -283,8 +294,8 @@ class Build extends React.Component {
                     // mt="9" 
                     // pt="9"
                 >
-                    {!loading && this.renderRequiredMaterialsTable()}
-                    {/* {this.renderRequiredMaterialsTable()} */}
+                    {/* {!loading && this.renderRequiredMaterialsTable()} */}
+                    {this.renderRequiredMaterialsTable()}
                 </Flex>
             </Flex>
         );

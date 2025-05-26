@@ -39,8 +39,8 @@ const getMaterialRequirements = (settings) => {
     let reactionRigTwo = settings.teRig || "None";
     let reactionLocation = settings.system || "wormhole";
 
-    let BPOME = settings.componentMaterialEfficiency || 10;
-    let BPOTE = settings.componentTimeEfficiency || 20;
+    let BPOME = settings.componentMaterialEfficiency ?? 10;
+    let BPOTE = settings.componentTimeEfficiency ?? 20;
 
     let relicType = settings.ancientRelic || "Intact";
     let decryptor = settings.decryptor || "None";
@@ -51,7 +51,7 @@ const getMaterialRequirements = (settings) => {
     let defRuns = settings.defensiveVolume == "" ? 0 : settings.defensiveVolume;
 
     let reactionSlots = settings.numSlots || 1;
-    let skillLevel = settings.skillLevel || 1;
+    let skillLevel = settings.skillLevel ?? 1;
     let implantBonus = settings.implant;
 
     let requiredMaterials = [];

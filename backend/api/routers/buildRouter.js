@@ -142,7 +142,7 @@ async function getLatestPriceForItem(client, typeId, region, orderType) {
 buildRouter.post('/', async (req, res) => {
     const settings = req.body;
 
-    console.log(settings);
+    // console.log(settings);
     const materialRequirements = getMaterialRequirements(settings);
 
     // axios.get(`https://esi.evetech.net/latest/markets/prices/?datasource=tranquility`).then(async (response) => {
