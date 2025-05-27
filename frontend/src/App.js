@@ -1,5 +1,5 @@
-import 'bootstrap/dist/js/bootstrap.bundle.min';
-import 'bootstrap/dist/css/bootstrap.min.css';
+// import 'bootstrap/dist/js/bootstrap.bundle.min';
+// import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import axios from 'axios';
 import Header from './layout/header.js';
@@ -15,6 +15,10 @@ import PageTitle from './layout/PageTitle.js';
 import './css/App.css';
 import About from './about/about.js';
 import weeb from './weeb.jpeg';
+
+import ReactGA from "react-ga4";
+
+const TRACKING_ID = "G-SW0JLZCZFZ";
 
 class App extends React.Component {
     constructor(props) {
@@ -95,8 +99,17 @@ class App extends React.Component {
         this.setState({ backlight: !this.state.backlight });
     }
 
+    trackPageView = () => {
+        ReactGA.send({ hitType: "pageview", page: window.location.pathname });
+      };
+      
     componentDidMount() {
-        window.addEventListener('mousemove', this.handleMouseMove);
+        if (TRACKING_ID) {
+            ReactGA.initialize(TRACKING_ID);
+            this.trackPageView();
+        }
+        
+        window.addEventListener("popstate", this.trackPageView);
 
         this.source = axios.CancelToken.source();
         if (this.state.id !== window.location.pathname.split('/')[2]) {
@@ -117,7 +130,7 @@ class App extends React.Component {
 
     componentWillUnmount() {
         window.removeEventListener('mousemove', this.handleMouseMove);
-        // existing componentWillUnmount code...
+        window.removeEventListener("popstate", this.trackPageView);
     }
 
     handleMouseMove = (event) => {
@@ -131,7 +144,7 @@ class App extends React.Component {
     };
 
     render() {
-        console.log(this.state)
+        // console.log(this.state)
         const { darkMode, profit, cursorState, backgroundColors, colorBlindMode, backlight, materialsLocation, materialsOrderType, subsystemsLocation, subsystemsOrderType } = this.state;
         const isValidUrl = (url, array) => {
             const urlParts = url.split('/');

@@ -44,6 +44,7 @@
     "react-bootstrap": "^2.10.1",
     "react-chartjs-2": "^5.2.0",
     "react-dom": "^17.0.2",
+    "react-ga4": "^2.1.0",
     "react-loading-skeleton": "^3.4.0",
     "react-scripts": "^5.0.1",
     "react-ui-animate": "^4.2.0",

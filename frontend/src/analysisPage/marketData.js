@@ -45,7 +45,6 @@ class MarketData extends Component {
     const { id } = this.props;
     const buildSettings = Cookies.get('buildSettings')
     const parsed = buildSettings ? JSON.parse(buildSettings) : {};
-    console.log("Parsed build settings:", parsed);
     const settings = {
       numSlots: parsed?.numSlots || '8',
       refinery: parsed?.refinery || 'Tatara',
