@@ -15,7 +15,7 @@ export default function BuildHeader(props) {
     const [propulsionVolume, setPropulsionVolume] = useState(props.propulsionVolume);
     const [offensiveVolume, setOffensiveVolume] = useState(props.offensiveVolume);
     const [numRuns, setNumRuns] = useState(props.numRuns)
-    const [components, setComponents] = useState(props.components)
+    const [components, setComponents] = useState(props.components || []);
     const [loading, setLoading] = useState(true)
 
     useEffect(() => {
@@ -115,7 +115,7 @@ export default function BuildHeader(props) {
                                 <HoverCard.Content>
                                     <Heading size="3" mb="2" className="component_header">Components</Heading>
                                     <Flex align="start" direction="row" justify="between" gap="4" className="components_container">
-                                        {components.map((component, index) => (
+                                        {components?.map((component, index) => (
                                             <Flex pr="2" pl="2" key={index} direction="column" gap="2" align="center" justify="between" className="component_container">
                                                 <img style={{ width: "28px", height: "28px" }} className="counter_icon" src={`https://images.evetech.net/types/${component.id}/icon`} alt={component.name} />
                                                 <Text size="2" color="gray">{component.name}</Text>
