@@ -1,0 +1,54 @@
+{
+  "name": "evesubsystemanalysis",
+  "version": "1.0.0",
+  "description": "Rage-roll is a heat map for Eve Online sorted by ship class. Currently it only covers wormholes, but we can look into expanding to k-space also.",
+  "main": "backend/app.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "frontend": "cd frontend && npm i && npm start",
+    "backend": "cd backend && npm i && node app",
+    "dev": "concurrently --kill-others-on-fail \"npm run backend\" \"npm run frontend\"",
+    "heroku-postbuild": "cd frontend && npm install && npm run build"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/EFawke/evesubsystemanalysis.git"
+  },
+  "author": "ted",
+  "license": "ISC",
+  "engines": {
+    "node": "v19.7.0"
+  },
+  "bugs": {
+    "url": "https://github.com/EFawke/evesubsystemanalysis/issues"
+  },
+  "homepage": "https://github.com/EFawke/evesubsystemanalysis#readme",
+  "dependencies": {
+    "apexcharts": "^3.47.0",
+    "bootstrap": "^5.2.3",
+    "chalk": "^5.2.0",
+    "concurrently": "^7.0.0",
+    "cors": "^2.8.5",
+    "crypto-js": "^4.1.1",
+    "csv-stringify": "^6.5.1",
+    "express": "^4.17.2",
+    "jquery": "^3.6.0",
+    "jquery-csv": "^1.0.21",
+    "js-cookie": "^3.0.5",
+    "openai": "^3.2.1",
+    "pg": "^8.7.3",
+    "postgresql": "^0.0.1",
+    "react-apexcharts": "^1.4.1",
+    "react-bootstrap": "^2.7.4",
+    "react-scripts": "^5.0.1",
+    "webpack": "^5.83.1"
+  },
+  "keywords": [
+    "eve",
+    "subsystem",
+    "analysis"
+  ],
+  "devDependencies": {
+    "typescript": "^4.9.5"
+  }
+}

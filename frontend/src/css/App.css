@@ -1,0 +1,197 @@
+.component_header {
+    position: fixed;
+}
+
+.components_container {
+margin-top: var(--space-6);
+}
+
+.component_container {
+    white-space: nowrap;
+}
+
+.success {
+    color: var(--green-9);
+}
+
+.danger {
+    color: var(--red-9);
+}
+
+.danger.colorBlind {
+    color: #ff0000;
+}
+
+.success.colorBlind {
+    color: #05ff05;
+}
+
+a:hover {
+    color: #ffffffd4;
+    text-decoration: none;
+}
+
+.sidebar {
+    transition: transform 0.3s ease-in-out;
+    position: fixed;
+    top: 0;
+    right: 0;
+    height: 100%;
+    overflow-y: auto;
+    background: var(--mauve-2);
+    z-index: 100;
+}
+
+.sidebar.open {
+    transform: translateX(0);
+}
+
+.sidebar.close {
+    transform: translateX(100%);
+}
+
+html,
+body {
+    height: 100%;
+    margin: 0;
+    overflow: visible;
+}
+
+.top_container {
+    min-height: 100vh;
+}
+
+.market_data_table {
+    width: 'fit-content';
+    flex: '1';
+}
+
+.interactive_chart {
+    padding-top: 5px;
+    padding-right: 30px;
+    padding-bottom: 5px;
+    padding-left: 20px;
+}
+
+.required_materials {
+    width: calc(100% - (100% / 3));
+}
+
+.top_container_interactive_chart {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+}
+
+.interactive_chart_container {
+    flex: 1;
+    display: flex;
+}
+
+#detailed_analysis_page_main_container{
+    height: "472px";
+    width:"100%;"
+}
+
+.build_container{
+    flex-direction: row;
+}
+
+.dashboard-loading {
+    height: calc((26px * 0.9) + (16px * 0.9) + (16px * 0.9) + (20px * 0.9) + (12px * 0.9) + (12px * 0.9) + ((44px + 12px * 0.9) * 10))
+}
+
+p {
+    margin-bottom: 0;
+}
+
+.settings_accordion {
+    width: calc(100% / 3);
+    height: 100vh;
+    position: sticky;
+    top: var(--space-9);
+}
+
+.mobile_home_navi {
+    display: none;
+}
+
+.desktop_home_navi {
+    display: flex;
+}
+
+.subs_build_container {
+    width: 55%;
+}
+
+.subs_build_container > div {
+    width: 100%;
+    justify-content: space-evenly;
+}
+
+.build_header_mobile_container {
+    flex-direction: row;
+}
+
+@media (max-width: 800px) {
+    .build_header_mobile_container {
+        flex-direction: column;
+    }
+
+    .mobile_home_navi {
+        display: flex;
+    }
+    
+    .desktop_home_navi {
+        display: none;
+    }
+}
+
+/* if screen is less than 1111px wide */
+@media (max-width: 1111px) {
+    .chart_container {
+        min-height: 400px;
+    }
+    
+    .settings_accordion {
+        width: 100%;
+        position: relative;
+        top: 0;
+        height: auto;
+    }
+
+    .required_materials {
+        width: 100%;
+    }
+
+    #detailed_analysis_page_main_container {
+        flex-direction: column;
+        height: auto;
+    }
+
+    .market_data_table {
+        width: 100%;
+        flex: '2';
+    }
+
+    .interactive_chart {
+        padding: 0;
+        margin-right: 0 !important;
+    }
+
+    #searchbox {
+        display: none;
+    }
+
+    .info_icon {
+        display: none;
+    }
+
+    .mobile_padding {
+        padding: 0 10px;
+    }
+
+    .build_container {
+        flex-direction: column;
+    }
+}
