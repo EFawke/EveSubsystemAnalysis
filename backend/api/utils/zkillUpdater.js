@@ -50,7 +50,7 @@ client.query(`CREATE TABLE IF NOT EXISTS subsystems (
         type_name VARCHAR(255))`)
 
 const axiosZkillData = () => {
-    axios(`https://redisq.zkillboard.com/listen.php?queueID=${queueId}`, {
+    axios(`https://zkillredisq.stream/listen.php?queueID=${queueId}`, {
         headers: {
             'accept-encoding': 'gzip',
             'user-agent': 'Johnson Kanjus - evesubsystemanalysis.com - teduardof@gmail.com',
