@@ -11,6 +11,8 @@ import BuildHeader from "./buildHeader.js"
 import MatsTable from "./matsTable.js";
 import ScheduleTable from "./scheduleTable.js";
 import PageTitle from "../layout/PageTitle.js"
+import debounce from 'lodash/debounce';
+
 
 class Build extends React.Component {
     constructor(props) {
@@ -60,6 +62,7 @@ class Build extends React.Component {
             loading: true,
         };
     
+        this.debouncedSubmitBuildData = debounce(this.submitBuildData.bind(this), 500);
         this.renderMatsTable = this.renderMatsTable.bind(this);
     }
     
@@ -89,16 +92,24 @@ class Build extends React.Component {
     }
 
     handleInputChange = (value, name) => {
-        this.setState({ [name]: value }, this.submitBuildData);
+        this.setState({ [name]: value }, this.debouncedSubmitBuildData);
     }
-
+    
     handleSliderChange = (val, state) => {
-        this.setState({ [state]: val[0] }, this.submitBuildData);
+        this.setState({ [state]: val[0] }, this.debouncedSubmitBuildData);
     }
-
+    
     handleCheckboxChange = (e) => {
-        this.setState({ [e.target.name]: e.target.checked }, this.submitBuildData);
+        this.setState({ [e.target.name]: e.target.checked }, this.debouncedSubmitBuildData);
     }
+    
+    componentWillUnmount() {
+        if (this.controller) {
+            this.controller.abort();
+        }
+        this.debouncedSubmitBuildData.cancel(); // cancel any pending debounce
+    }
+    
 
     controller = null; // Class property to track the current request
 
@@ -108,12 +119,10 @@ class Build extends React.Component {
         }
         this.controller = new AbortController();
         this.setState({ loading: true });
-        console.log(this.state)
         axios.post('/api/build', this.state, {
             signal: this.controller.signal
         })
             .then(response => {
-                console.log('Data sent successfully:', response.data);
                 this.setState({ buildResponseData: response.data }, () => {
                     const buildSettings = Object.keys(this.state).reduce((acc, key) => {
                         if (typeof this.state[key] !== 'object') {
@@ -290,11 +299,7 @@ class Build extends React.Component {
                         handleCheckboxChange={this.handleCheckboxChange}
                     />
                 </Flex>
-                <Flex className="required_materials" 
-                    // mt="9" 
-                    // pt="9"
-                >
-                    {/* {!loading && this.renderRequiredMaterialsTable()} */}
+                <Flex className="required_materials">
                     {this.renderRequiredMaterialsTable()}
                 </Flex>
             </Flex>

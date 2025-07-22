@@ -137,8 +137,6 @@ async function getLatestPriceForItem(client, typeId, region, orderType) {
     return result.rows[0]?.[column] || 0;
 }
 
-
-
 buildRouter.post('/', async (req, res) => {
     const settings = req.body;
 

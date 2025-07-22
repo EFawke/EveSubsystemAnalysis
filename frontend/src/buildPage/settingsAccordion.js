@@ -43,7 +43,6 @@ const SettingsAccordion = (props) => (
 						)}
 						{props.refinery === "Athanor" && (
 							<>
-
 								<Flex direction="column" gap="1" align="start" style={{ width: "100%" }} justify="between">
 									<Tooltip content="Feature in development">
 										<Text size="2" style={{ color: "var(--accent-a11)" }}>Time Efficiency Rig</Text>

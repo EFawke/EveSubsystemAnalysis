@@ -27,7 +27,6 @@ function getMidnightEpochsPastYear() {
     return epochArray.reverse(); // Reverse to get oldest dates first
 }
 
-
 const getMarketData = async (subsystemType, locationId, client, axios, name, locationName, epochs) => {
     const endpoint = makeUrl(subsystemType, locationId);
     const responses = await axios.get(endpoint);
