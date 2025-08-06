@@ -76,7 +76,6 @@ const axiosZkillData = () => {
                         insertKillIntoDatabase(itemTypeId, assocKill, killTime, location);
                     }
                 }
-                axiosZkillData();
             }
         })
         .catch(err => {
@@ -97,4 +96,4 @@ const insertKillIntoDatabase = (itemTypeId, assocKill, killTime, location) => {
     }
 }
 
-setInterval(axiosZkillData, 15 * 60 * 1000);
+setInterval(axiosZkillData, 1000);

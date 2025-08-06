@@ -3,7 +3,8 @@ const { fetchData } = require('./utils.js');
 const axios = require('axios');
 
 const getMaxHistData = async (client) => {
-    const maxHistData = await client.query(`SELECT MAX(date)
+    const maxHistData = await client.query(`
+        SELECT MAX(date)
         FROM price_data
         WHERE region = 10000002
         AND type_id = 34
@@ -19,7 +20,8 @@ const getMaxHistData = async (client) => {
 }
 
 const getMinStatData = async (client) => {
-    const minStatData = await client.query(`SELECT MIN(date)
+    const minStatData = await client.query(`
+        SELECT MIN(date)
         FROM price_data
         WHERE region = 10000002
         AND type_id = 34
@@ -55,6 +57,11 @@ const backDate = async (client) => {
         console.log("Unable to fetch minimum or maximum historical data.");
         return;
     }
+
+    console.log("min hist data");
+    console.log(new Date(Number(minStatData)).toLocaleDateString())
+    console.log("max hist data");
+    console.log(new Date(Number(maxHistData)).toLocaleDateString())
 
     // Calculate the range of missing dates in daily intervals
     let currentMissingDate = Number(maxHistData) + 1000 * 60 * 60 * 24; // Start from the day after the latest historical date

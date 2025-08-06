@@ -125,7 +125,7 @@ client.query(`SELECT * FROM price_data LIMIT 1;`)
 
 // i think this can be commented out now
 // setInterval(() => {
-//     backDate(client);
+    backDate(client);
 // }, 1000 * 60 * 60 * 24);
 
 setInterval(() => {
