@@ -49,39 +49,66 @@ client.query(`CREATE TABLE IF NOT EXISTS subsystems (
         type_id BIGINT, 
         type_name VARCHAR(255))`)
 
-const axiosZkillData = () => {
-    axios(`https://zkillredisq.stream/listen.php?queueID=${queueId}`, {
-        headers: {
-            'accept-encoding': 'gzip',
-            'user-agent': 'Johnson Kanjus - evesubsystemanalysis.com - teduardof@gmail.com',
-            'connection': 'close'
+// const axiosZkillData = () => {
+//     axios(`https://zkillredisq.stream/listen.php?queueID=${queueId}`, {
+//         headers: {
+//             'accept-encoding': 'gzip',
+//             'user-agent': 'Johnson Kanjus - evesubsystemanalysis.com - teduardof@gmail.com',
+//             'connection': 'close'
+//         }
+//     })
+//         .then((response) => {
+//             handleResponse(response);
+//         })
+//         .catch(err => {
+//             console.error('Axios error:', err);
+//         });
+// };
+
+const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
+
+const listenToRedisQ = async () => {
+    while (true) {
+        try {
+            const response = await axios(`https://zkillredisq.stream/listen.php?queueID=${queueId}&ttw=1`, {
+                headers: {
+                    'accept-encoding': 'gzip',
+                    'user-agent': 'Johnson Kanjus - evesubsystemanalysis.com - teduardof@gmail.com',
+                    'connection': 'close'
+                },
+                timeout: 15000
+            });
+
+            handleResponse(response);
+
+        } catch (err) {
+            console.error("RedisQ polling error:", err.message || err);
+            await sleep(5000); // wait before retrying
         }
-    })
-        .then((response) => {
-            if (response && response.data.package !== null && response.data.package !== undefined && response.data.package.zkb.labels !== null) {
-                const items = response.data.package.killmail.victim.items;
-                let loc = "";
-                if (response.data.package.zkb.labels[3]) {
-                    loc = response.data.package.zkb.labels[3];
-                }
-                loc = loc.substring(4);
-                let subsystemCount = 0;
-                for (let i = 0; i < items.length; i++) {
-                    if (subsystemIDArr.includes(items[i].item_type_id)) {
-                        subsystemCount++;
-                        const itemTypeId = Number(items[i].item_type_id);
-                        const assocKill = Number(response.data.package.killmail.killmail_id);
-                        const killTime = new Date(response.data.package.killmail.killmail_time).getTime();
-                        const location = loc;
-                        insertKillIntoDatabase(itemTypeId, assocKill, killTime, location);
-                    }
-                }
-            }
-        })
-        .catch(err => {
-            console.error('Axios error:', err);
-        });
+    }
 };
+
+const handleResponse = (response) => {
+    if (response && response.data.package !== null && response.data.package !== undefined && response.data.package.zkb.labels !== null) {
+        const items = response.data.package.killmail.victim.items;
+        let loc = "";
+        if (response.data.package.zkb.labels[3]) {
+            loc = response.data.package.zkb.labels[3];
+        }
+        loc = loc.substring(4);
+        let subsystemCount = 0;
+        for (let i = 0; i < items.length; i++) {
+            if (subsystemIDArr.includes(items[i].item_type_id)) {
+                subsystemCount++;
+                const itemTypeId = Number(items[i].item_type_id);
+                const assocKill = Number(response.data.package.killmail.killmail_id);
+                const killTime = new Date(response.data.package.killmail.killmail_time).getTime();
+                const location = loc;
+                insertKillIntoDatabase(itemTypeId, assocKill, killTime, location);
+            }
+        }
+    }
+}
 
 const insertKillIntoDatabase = (itemTypeId, assocKill, killTime, location) => {
     for (let i = 0; i < namesAndIds.length; i++) {
@@ -96,4 +123,6 @@ const insertKillIntoDatabase = (itemTypeId, assocKill, killTime, location) => {
     }
 }
 
-setInterval(axiosZkillData, 1000);
+listenToRedisQ();
+
+// setInterval(axiosZkillData, 1000);

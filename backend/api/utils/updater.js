@@ -2,7 +2,7 @@ const axios = require('axios');
 const { Client } = require('pg');
 const { initialDatabaseUpdate } = require('../HistoricalDataUpdaters/initialDatabaseUpload.js');
 const { updatePriceTable } = require('../DailyDataUpdaters/dailyDatabaseUpload.js');
-const { backDate } = require('../DataBackdater-REMOVE_LATER/dataBackdater.js');
+// const { backDate } = require('../DataBackdater-REMOVE_LATER/dataBackdater.js');
 
 //remove later
 // const { updatePriceData } = require('./databaseUpdaterOneTime.js');
@@ -110,22 +110,22 @@ const createAnalysisSnapshotTable = () => {
 
 createAnalysisSnapshotTable();
 
-client.query(`SELECT * FROM price_data LIMIT 1;`)
-    .then((res) => {
-        if (res.rows.length === 0) {
-            console.log("initializing price data");
-            initialDatabaseUpdate(client);
-        } else {
-            console.log("price data has already been initialized");
-        }
-    })
-    .catch((err) => {
-        console.log(err);
-    })
+// client.query(`SELECT * FROM price_data LIMIT 1;`)
+//     .then((res) => {
+//         if (res.rows.length === 0) {
+//             console.log("initializing price data");
+//             initialDatabaseUpdate(client);
+//         } else {
+//             console.log("price data has already been initialized");
+//         }
+//     })
+//     .catch((err) => {
+//         console.log(err);
+//     })
 
 // i think this can be commented out now
 // setInterval(() => {
-    backDate(client);
+    // backDate(client);
 // }, 1000 * 60 * 60 * 24);
 
 setInterval(() => {
