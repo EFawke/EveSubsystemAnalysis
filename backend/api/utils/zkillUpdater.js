@@ -6,11 +6,11 @@ let client;
 let queueId = "";
 if (!process.env.DATABASE_URL) {
     client = new Client({
-        user: 'tedfawke',        // Your local PostgreSQL username
-        host: 'localhost',       // Host should be localhost for local development
-        database: 'evesubsystemanalysis_local',  // Your local database name
-        password: '',            // Local password if needed (empty if not used)
-        port: 5432               // Default PostgreSQL port
+        user: 'tedfawke',
+        host: 'localhost',
+        database: 'evesubsystemanalysis_local',
+        password: '',
+        port: 5432
     });
     queueId = "esalocal";
 } else {
@@ -49,21 +49,26 @@ client.query(`CREATE TABLE IF NOT EXISTS subsystems (
         type_id BIGINT, 
         type_name VARCHAR(255))`)
 
-// const axiosZkillData = () => {
-//     axios(`https://zkillredisq.stream/listen.php?queueID=${queueId}`, {
-//         headers: {
-//             'accept-encoding': 'gzip',
-//             'user-agent': 'Johnson Kanjus - evesubsystemanalysis.com - teduardof@gmail.com',
-//             'connection': 'close'
-//         }
-//     })
-//         .then((response) => {
-//             handleResponse(response);
-//         })
-//         .catch(err => {
-//             console.error('Axios error:', err);
-//         });
-// };
+
+const fetchKillDataFromESI = async (killmailId, killHash) => {
+    const options = {
+        method: 'GET',
+        url: `https://esi.evetech.net/killmails/${killmailId}/${killHash}`,
+        headers: {
+          'Accept-Language': '',
+          'If-None-Match': '',
+          'X-Tenant': '',
+          Accept: 'application/json'
+        }
+      };
+      
+      try {
+        const { data } = await axios.request(options);
+        return data
+      } catch (error) {
+        console.error(error);
+      }
+} 
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
@@ -78,7 +83,6 @@ const listenToRedisQ = async () => {
                 },
                 timeout: 15000
             });
-
             handleResponse(response);
 
         } catch (err) {
@@ -88,21 +92,32 @@ const listenToRedisQ = async () => {
     }
 };
 
-const handleResponse = (response) => {
+const handleResponse = async (response) => {
     if (response && response.data.package !== null && response.data.package !== undefined && response.data.package.zkb.labels !== null) {
-        const items = response.data.package.killmail.victim.items;
-        let loc = "";
-        if (response.data.package.zkb.labels[3]) {
-            loc = response.data.package.zkb.labels[3];
+        const killmailId = response.data.package.killID;
+        const killHash = response.data.package.zkb.hash;
+
+        const data = await fetchKillDataFromESI(killmailId, killHash)
+
+        console.log("DATA:L")
+        console.log(data);
+
+        if(!data || !data?.victim || !data?.victim?.items){
+            return;
         }
-        loc = loc.substring(4);
-        let subsystemCount = 0;
+
+        // console.log(data.victim);
+        const items = data.victim.items;
+        let loc = "";
+        if (data.solar_system_id) {
+            loc = data.solar_system_id;
+        }
         for (let i = 0; i < items.length; i++) {
             if (subsystemIDArr.includes(items[i].item_type_id)) {
-                subsystemCount++;
+                console.log(items[i])
                 const itemTypeId = Number(items[i].item_type_id);
-                const assocKill = Number(response.data.package.killmail.killmail_id);
-                const killTime = new Date(response.data.package.killmail.killmail_time).getTime();
+                const assocKill = Number(data.killmail_id);
+                const killTime = new Date(data.killmail_time).getTime();
                 const location = loc;
                 insertKillIntoDatabase(itemTypeId, assocKill, killTime, location);
             }
