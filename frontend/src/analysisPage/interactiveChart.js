@@ -9,7 +9,7 @@ import {
   Bar,
   CartesianGrid
 } from 'recharts';
-import { Text, Table, Flex, IconButton, Card, HoverCard, Link, Heading, Select } from "@radix-ui/themes";
+import { Flex } from "@radix-ui/themes";
 
 function isSmallScale(name = "") {
   const lower = name.toLowerCase();
@@ -63,7 +63,7 @@ function InteractiveChart(props) {
         data={chartData}
         margin={{
           top: 5,
-          left: 22,
+          left: 30,
         }}
       >
         <CartesianGrid strokeDasharray="3 3" />

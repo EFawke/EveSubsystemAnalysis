@@ -16,8 +16,8 @@ class About extends React.Component {
             <Flex width="100%" maxWidth="700px" direction="column" gap="2">
                 <Text size="4" color="gray">
                     Eve Subsystem Analysis is a tool built for the purpose of maximising profits in Tech 3 subsystem production in Eve Online. The website contians three pages which each work together in order to further this aim.
-                    </Text>
-                    <Text size="4" color="gray">
+                </Text>
+                <Text size="4" color="gray">
                     The dashboard/home page contains a table of suggested subsystems. These are the 10 most destroyed subsystems in the past week, ordered by the current sell price. Percentage changes, in that table or throughout the site indicate the 30 day median delta for that value.
                 </Text>
                 <Text size="4" color="gray">

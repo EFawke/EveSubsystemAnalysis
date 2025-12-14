@@ -68,7 +68,7 @@ const getTradeVolumeData = async (id, region) => {
 }
 
 
-const updateChartSnapshotTable = async (region, date, dateValues, oneYearAgo, thirtyDaysAgo) => {
+const updateChartSnapshotTable = async (region, date, dateValues, oneMonthAgo, thirtyDaysAgo) => {
     const regionName = getRegionName(region);
     try {
         const subsystems = namesAndIds;
@@ -132,17 +132,16 @@ const updateTradeVolumeSnapshotTable = async () => {
     const date = new Date(Date.now());
     const regions = ['10000002', '10000043', '10000030', '10000042', '10000032'];
     const lastNight = date.setUTCHours(0, 0, 0, 0);
-    let oneYearAgo = new Date(date - (365 * 24 * 60 * 60 * 1000)).setUTCHours(0, 0, 0, 0);
+    let oneMonthAgo = new Date(date - (30 * 24 * 60 * 60 * 1000)).setUTCHours(0, 0, 0, 0);
     const thirtyDaysAgo = new Date(date - (30 * 24 * 60 * 60 * 1000)).setUTCHours(0, 0, 0, 0);
     const dateValues = [];
-    let increment = oneYearAgo;
+    let increment = oneMonthAgo;
     while (increment < lastNight) {
         increment += 24 * 60 * 60 * 1000; // Increment by one day
         dateValues.push(increment);
     }
-    // regions.forEach(region => updateChartSnapshotTable(region, date, dateValues, oneYearAgo, thirtyDaysAgo));
     for (const region of regions) {
-        await updateChartSnapshotTable(region, date, dateValues, oneYearAgo, thirtyDaysAgo);
+        await updateChartSnapshotTable(region, date, dateValues, oneMonthAgo, thirtyDaysAgo);
     }
 }
 

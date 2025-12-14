@@ -224,18 +224,17 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
     const time = new Date().getTime();
     const twentyfourhours = 24 * 60 * 60 * 1000
     const yesterday = time - twentyfourhours;
-    const oneYearAgo = time - (twentyfourhours * 364);
-    // const oneYearAgo = Math.floor(new Date().setFullYear(new Date().getFullYear() - 1));
+    const oneMonthAgo = time - (twentyfourhours * 30);
     Promise.all([
-        client.query(`SELECT * FROM subsystems WHERE type_id = ${id} AND killtime > ${oneYearAgo} ORDER BY killtime DESC;`),
+        client.query(`SELECT * FROM subsystems WHERE type_id = ${id} AND killtime > ${oneMonthAgo} ORDER BY killtime DESC;`),
         client.query(`
             SELECT DISTINCT ON (date) date, minsell, maxbuy, buyvolume, sellvolume 
             FROM price_data 
             WHERE type_id = ${id} 
               AND region = '${settings.subsystemsLocation}' 
-              AND date > '${oneYearAgo}' 
+              AND date > '${oneMonthAgo}' 
             ORDER BY date DESC;`),
-        getSubsystemCosts(settings, oneYearAgo),
+        getSubsystemCosts(settings, oneMonthAgo),
         client.query(`SELECT * FROM analysis_snapshot WHERE type_id = ${id} AND region = '${settings.subsystemsLocation}' ORDER BY date DESC;`),
         client.query(`SELECT * FROM subsystems WHERE type_id = ${id} AND killtime > ${yesterday};`),
         client.query(`SELECT * FROM home_snapshot WHERE type_id = ${id} AND region = ${settings.subsystemsLocation} ORDER BY date DESC;`)
@@ -247,7 +246,6 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             const minSell = getMinSell(marketDataCurrent, data[1].rows);
             const maxBuy = getMaxBuy(marketDataCurrent, data[1].rows);
             const matCosts = getMatCosts(costsData);
-
             let profit = null;
             if (settings.subsystemsOrderType == 'buy') {
                 profit = getProfits(matCosts, maxBuy);

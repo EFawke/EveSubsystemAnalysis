@@ -14,8 +14,8 @@ export default function GraphCard(props) {
 
 
     return (
-        <Flex direction="column" style={{ width: "100%", flex: "2", paddingTop: "var(--space-3)" }}>
-            <HoverCard.Root>
+        <Flex direction="column" style={{ width: "100%", flex: "2" }}>
+            {/* <HoverCard.Root>
                 <HoverCard.Trigger>
                     <Table.Root>
                         <Table.ColumnHeaderCell style={{ boxShadow: "none", paddingTop: "var(--space-3)" }}>
@@ -82,8 +82,8 @@ export default function GraphCard(props) {
                         </Flex>
                     </Flex>
                 </HoverCard.Content>
-            </HoverCard.Root>
-            <Card height="100%" style={{ flex: "1", marginTop: "var(--space-3)" }}>
+            </HoverCard.Root> */}
+            <Card height="100%" style={{ flex: "1" }}>
                 <Flex height="100%" style={{ padding: "var(--space-3)" }}>
                     <InteractiveChart data={chartData} />
                 </Flex>

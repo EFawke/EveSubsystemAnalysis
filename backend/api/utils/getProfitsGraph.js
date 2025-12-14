@@ -29,9 +29,9 @@ const calculateMedian = (arr) => {
         : (sorted[mid - 1] + sorted[mid]) / 2;
 };
 
-const getSubsystemCosts = async (settings, oneYearAgo) => {
+const getSubsystemCosts = async (settings, oneMonthAgo) => {
     // console.log(settings);
-    // console.log(oneYearAgo);
+    // console.log(oneMonthAgo);
     // console.log(type);
 
 
@@ -54,8 +54,6 @@ const getSubsystemCosts = async (settings, oneYearAgo) => {
         }
     }
 
-    // const oneYearAgo = Math.floor(new Date().setFullYear(new Date().getFullYear() - 1) / 1000);
-
     const dailyCosts = [];
 
     try {
@@ -67,7 +65,7 @@ const getSubsystemCosts = async (settings, oneYearAgo) => {
             const priceDataResponse = await client.query(`
                 SELECT DISTINCT ON (date) date, ${column}
                 FROM price_data
-                WHERE type_id = ${id} AND date > ${oneYearAgo} AND region = '${settings.materialsLocation}'
+                WHERE type_id = ${id} AND date > ${oneMonthAgo} AND region = '${settings.materialsLocation}'
                 ORDER BY date DESC;`);
 
             priceDataResponse.rows.forEach(row => {

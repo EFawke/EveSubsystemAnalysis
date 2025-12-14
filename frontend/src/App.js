@@ -217,7 +217,7 @@ class App extends React.Component {
                     />
                     <Container size="4" mb="9" className="mobile_padding">
                         <PageTitle pageTitle="Suggested subsystems" />
-                        <Heading weight="light" color="gray" mb="8" mt="-7" size="4">The most used subsystems ordered by price</Heading>
+                        <Heading weight="light" color="gray" mb="8" mt="-2" size="4">The most used subsystems ordered by price</Heading>
                         <HomePage profit={profit} darkMode={darkMode} colorBlindMode={colorBlindMode} />
                     </Container>
                     <Footer />
@@ -243,7 +243,7 @@ class App extends React.Component {
                     />
                     <Container size="4" mb="9" className="mobile_padding">
                         <PageTitle pageTitle="Manufacturing tool"/>
-                        <Heading weight="light" color="gray" mb="8" mt="-7" size="4">Build settings and material calculator</Heading>
+                        <Heading weight="light" color="gray" mb="8" mt="-2" size="4">Build settings and material calculator</Heading>
                         <Build
                             colorBlindMode={colorBlindMode}
                             materialsLocation={materialsLocation}
@@ -315,7 +315,7 @@ class App extends React.Component {
                     />
                     <Container size="4" mb="9" className="mobile_padding interactive_chart_container">
                         <PageTitle pageTitle="Interactive chart"></PageTitle>
-                        <Heading weight="light" color="gray" mb="8" mt="-7" size="4">{name.name}</Heading>
+                        <Heading weight="light" color="gray" mb="6" mt="-2" size="4">{name.name}</Heading>
                         <MarketData
                             name={name.name}
                             id={this.state.id}
