@@ -1,5 +1,6 @@
+backend/node_modules/
 node_modules/.cache/
-.DS_Storelatest.dump # This makes sure Git ignores the .dump file in future commits.
+.DS_Storelatest.dump
 latest.dump
 frontend/node_modules/
 file-size.txt

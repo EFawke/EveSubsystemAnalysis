@@ -30,11 +30,6 @@ const calculateMedian = (arr) => {
 };
 
 const getSubsystemCosts = async (settings, oneMonthAgo) => {
-    // console.log(settings);
-    // console.log(oneMonthAgo);
-    // console.log(type);
-
-
     let allMatsAndQuantities = getMaterialRequirements(settings);
     let matRequirements;
     if (settings.name.toLowerCase().includes('core')) {

@@ -98,15 +98,9 @@ const handleResponse = async (response) => {
         const killHash = response.data.package.zkb.hash;
 
         const data = await fetchKillDataFromESI(killmailId, killHash)
-
-        console.log("DATA:L")
-        console.log(data);
-
         if(!data || !data?.victim || !data?.victim?.items){
             return;
         }
-
-        // console.log(data.victim);
         const items = data.victim.items;
         let loc = "";
         if (data.solar_system_id) {
@@ -114,7 +108,6 @@ const handleResponse = async (response) => {
         }
         for (let i = 0; i < items.length; i++) {
             if (subsystemIDArr.includes(items[i].item_type_id)) {
-                console.log(items[i])
                 const itemTypeId = Number(items[i].item_type_id);
                 const assocKill = Number(data.killmail_id);
                 const killTime = new Date(data.killmail_time).getTime();

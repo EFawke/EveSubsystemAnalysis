@@ -190,10 +190,11 @@ function getLossesData(subsystems) {
 
     // Generate date range
     const firstLossTime = sortedSubsystems[0].killtime;
-    const startDate = new Date(firstLossTime).setUTCHours(0, 0, 0, 0);
+    let startDate = new Date(firstLossTime).setUTCHours(0, 0, 0, 0);
     const endDate = new Date(now).setUTCHours(0, 0, 0, 0);
 
     for (let day = startDate; day <= endDate; day += oneDayMs) {
+        console.log(day)
         losses.dates.push(day);
         const dayStart = day;
         const dayEnd = day + oneDayMs;
@@ -221,7 +222,7 @@ function getLossesData(subsystems) {
 marketRouter.post(`/:subsystemID`, async (req, res) => {
     const id = req.params.subsystemID;
     const settings = req.body;
-    const time = new Date().getTime();
+    const time = new Date().setUTCHours(0, 0, 0, 0);
     const twentyfourhours = 24 * 60 * 60 * 1000
     const yesterday = time - twentyfourhours;
     const oneMonthAgo = time - (twentyfourhours * 30);
@@ -257,6 +258,8 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             const sellVolume = getSellVolume(marketDataCurrent, data[1].rows);
             const tradeVolume = getTradeVolume(data[3].rows);
             const lossesData = getLossesData(subsystems);
+            // console.log(lossesData);
+            // console.log(minSell);
             res.status(200).json({ minSell, maxBuy, matCosts, profit, buyVolume, sellVolume, tradeVolume, lossesData });
         })
 });
