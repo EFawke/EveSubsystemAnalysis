@@ -193,8 +193,15 @@ function getLossesData(subsystems) {
     let startDate = new Date(firstLossTime).setUTCHours(0, 0, 0, 0);
     const endDate = new Date(now).setUTCHours(0, 0, 0, 0);
 
+    const thirtyDayStop = now - oneDayMs * 30;
+
+    console.log(thirtyDayStop)
+
     for (let day = startDate; day <= endDate; day += oneDayMs) {
         console.log(day)
+        if(day < thirtyDayStop){
+            continue;
+        }
         losses.dates.push(day);
         const dayStart = day;
         const dayEnd = day + oneDayMs;
