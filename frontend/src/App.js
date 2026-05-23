@@ -15,11 +15,7 @@ import About from './about/about.js';
 import weeb from './weeb.jpeg';
 import ReactGA from "react-ga4";
 
-console.log(process.env);
-
 const TRACKING_ID = process.env.NODE_ENV === "production" ? process.env.REACT_APP_TRACKING_ID : null;
-
-console.log(TRACKING_ID);
 
 class App extends React.Component {
     constructor(props) {
