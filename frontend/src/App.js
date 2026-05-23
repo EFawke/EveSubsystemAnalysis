@@ -1,5 +1,3 @@
-// import 'bootstrap/dist/js/bootstrap.bundle.min';
-// import 'bootstrap/dist/css/bootstrap.min.css';
 import React from 'react';
 import axios from 'axios';
 import Header from './layout/header.js';
@@ -37,8 +35,8 @@ class App extends React.Component {
             cursorState: { xPos: 0, yPos: 0 },
             backlight: Cookies.get('backlight') === 'true' ? true : false,
             backgroundColors: {
-                primary: "rgb(18 39 69)",
-                secondary: "black"
+                primary: "rgba(29, 78, 216, 0.15)",
+                secondary: "var(--color-background);"
             },
             subsystemsOrderType: buildSettings.subsystemsOrderType || 'sell',
             subsystemsLocation: buildSettings.subsystemsLocation || '10000002',
@@ -52,25 +50,25 @@ class App extends React.Component {
     setMaterialsLocation = (location) => {
         this.setState({ materialsLocation: location }, () => {
             Cookies.set('materialsLocation', location);
-    
+
             const buildSettings = Cookies.get('buildSettings');
             const parsed = buildSettings ? JSON.parse(buildSettings) : {};
             parsed.materialsLocation = location;
             Cookies.set('buildSettings', JSON.stringify(parsed), { expires: 365 * 100 });
         });
     }
-    
+
     setMaterialsOrderType = (type) => {
         this.setState({ materialsOrderType: type }, () => {
             Cookies.set('materialsOrderType', type);
-    
+
             const buildSettings = Cookies.get('buildSettings');
             const parsed = buildSettings ? JSON.parse(buildSettings) : {};
             parsed.materialsOrderType = type;
             Cookies.set('buildSettings', JSON.stringify(parsed), { expires: 365 * 100 });
         });
     }
-    
+
     setSubsystemsLocation = (location) => {
         this.setState({ subsystemsLocation: location }, () => {
             const buildSettings = Cookies.get('buildSettings');
@@ -79,7 +77,7 @@ class App extends React.Component {
             Cookies.set('buildSettings', JSON.stringify(parsed), { expires: 365 * 100 });
         });
     }
-    
+
     setSubsystemsOrderType = (type) => {
         this.setState({ subsystemsOrderType: type }, () => {
             const buildSettings = Cookies.get('buildSettings');
@@ -88,7 +86,7 @@ class App extends React.Component {
             Cookies.set('buildSettings', JSON.stringify(parsed), { expires: 365 * 100 });
         });
     }
-    
+
     toggleColorBlindMode = () => {
         this.setState({ colorBlindMode: !this.state.colorBlindMode });
         Cookies.set('colorBlind', !this.state.colorBlindMode);
@@ -101,14 +99,16 @@ class App extends React.Component {
 
     trackPageView = () => {
         ReactGA.send({ hitType: "pageview", page: window.location.pathname });
-      };
-      
+    };
+
     componentDidMount() {
         if (TRACKING_ID) {
             ReactGA.initialize(TRACKING_ID);
             this.trackPageView();
         }
-        
+
+        window.addEventListener('mousemove', this.handleMouseMove);
+
         window.addEventListener("popstate", this.trackPageView);
 
         this.source = axios.CancelToken.source();
@@ -129,12 +129,14 @@ class App extends React.Component {
     }
 
     componentWillUnmount() {
-        window.removeEventListener('mousemove', this.handleMouseMove);
+        // window.removeEventListener('mousemove', this.handleMouseMove);
         window.removeEventListener("popstate", this.trackPageView);
     }
 
     handleMouseMove = (event) => {
         const { clientX, clientY } = event;
+        console.log(`x = ${clientX}`)
+        console.log(`y = ${clientY + window.scrollY}`)
         this.setState({
             cursorState: {
                 xPos: clientX,
@@ -155,190 +157,11 @@ class App extends React.Component {
             return url.includes('/subsystem/') && array.some(item => item.id === id);
         };
         const name = namesAndIds.find(x => x.id == this.state.id);
-        if (this.state.error) {
-            return (
-                <Theme
-                    className="top_container"
-                    style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }}
-                    id="theme_element"
-                    scaling="90%"
-                    grayColor="mauve"
-                    accentColor="teal"
-                    panelBackground="translucent"
-                    appearance="dark"
-                >
-                    <Header toggleBackLight={this.toggleBackLight}
-                        toggleColorBlindMode={this.toggleColorBlindMode}
-                        colorBlindMode={colorBlindMode}
-                        backlight={backlight}
-                        setMaterialsLocation={this.setMaterialsLocation}
-                        setMaterialsOrderType={this.setMaterialsOrderType}
-                        setSubsystemsLocation={this.setSubsystemsLocation}
-                        setSubsystemsOrderType={this.setSubsystemsOrderType}
-                        materialsLocation={materialsLocation}
-                        materialsOrderType={materialsOrderType}
-                        subsystemsLocation={subsystemsLocation}
-                        subsystemsOrderType={subsystemsOrderType}
-                    />
-                    <Container size="4" mb="9" className="mobile_padding">
-                        <PageTitle pageTitle="Page not found" />
-                        <Flex direction="column" mt="5" mb="5" width="100%">
-                            <img src={weeb} alt="weeb" />
-                        </Flex>
-                    </Container>
-                    <Footer />
-                </Theme>
-            )
-        }
-        if (window.location.pathname === "/") {
-            return (
-                <Theme
-                    className="top_container"
-                    style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }}
-                    id="theme_element"
-                    scaling="90%"
-                    grayColor="mauve"
-                    accentColor="teal"
-                    panelBackground="translucent"
-                    appearance="dark"
-                >
-                    <Header toggleBackLight={this.toggleBackLight}
-                        toggleColorBlindMode={this.toggleColorBlindMode}
-                        colorBlindMode={colorBlindMode}
-                        backlight={backlight}
-                        setMaterialsLocation={this.setMaterialsLocation}
-                        setMaterialsOrderType={this.setMaterialsOrderType}
-                        setSubsystemsLocation={this.setSubsystemsLocation}
-                        setSubsystemsOrderType={this.setSubsystemsOrderType}
-                        materialsLocation={materialsLocation}
-                        materialsOrderType={materialsOrderType}
-                        subsystemsLocation={subsystemsLocation}
-                        subsystemsOrderType={subsystemsOrderType}
-                    />
-                    <Container size="4" mb="9" className="mobile_padding">
-                        <PageTitle pageTitle="Suggested subsystems" />
-                        <Heading weight="light" color="gray" mb="8" mt="-2" size="4">The most used subsystems ordered by price</Heading>
-                        <HomePage profit={profit} darkMode={darkMode} colorBlindMode={colorBlindMode} />
-                    </Container>
-                    <Footer />
-                </Theme>
-            )
-        }
-        if (window.location.pathname === "/build/" || window.location.pathname === "/build") {
-            return (
-                <Theme 
-                    className="top_container" 
-                    style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }} id="theme_element" scaling="90%" grayColor="mauve" accentColor="teal" panelBackground="translucent" appearance="dark">
-                    <Header
-                        toggleBackLight={this.toggleBackLight} toggleColorBlindMode={this.toggleColorBlindMode} colorBlindMode={colorBlindMode}
-                        backlight={backlight}
-                        setMaterialsLocation={this.setMaterialsLocation}
-                        setMaterialsOrderType={this.setMaterialsOrderType}
-                        setSubsystemsLocation={this.setSubsystemsLocation}
-                        setSubsystemsOrderType={this.setSubsystemsOrderType}
-                        materialsLocation={materialsLocation}
-                        materialsOrderType={materialsOrderType}
-                        subsystemsLocation={subsystemsLocation}
-                        subsystemsOrderType={subsystemsOrderType}
-                    />
-                    <Container size="4" mb="9" className="mobile_padding">
-                        <PageTitle pageTitle="Manufacturing tool"/>
-                        <Heading weight="light" color="gray" mb="8" mt="-2" size="4">Build settings and material calculator</Heading>
-                        <Build
-                            colorBlindMode={colorBlindMode}
-                            materialsLocation={materialsLocation}
-                            materialsOrderType={materialsOrderType}
-                            subsystemsLocation={subsystemsLocation}
-                            subsystemsOrderType={subsystemsOrderType}
-                        />
-                    </Container>
-                    <Footer />
-                </Theme>
-            )
-        }
-        if (window.location.pathname === "/about/" || window.location.pathname === "/about") {
-            return (
-                <Theme className="top_container" style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }} id="theme_element" scaling="90%" grayColor="mauve" accentColor="teal" panelBackground="translucent" appearance="dark">
-                    <Header
-                        toggleBackLight={this.toggleBackLight} toggleColorBlindMode={this.toggleColorBlindMode} colorBlindMode={colorBlindMode}
-                        backlight={backlight}
-                        setMaterialsLocation={this.setMaterialsLocation}
-                        setMaterialsOrderType={this.setMaterialsOrderType}
-                        setSubsystemsLocation={this.setSubsystemsLocation}
-                        setSubsystemsOrderType={this.setSubsystemsOrderType}
-                        materialsLocation={materialsLocation}
-                        materialsOrderType={materialsOrderType}
-                        subsystemsLocation={subsystemsLocation}
-                        subsystemsOrderType={subsystemsOrderType}
-                    />
-                    <Container size="4" mb="9" className="mobile_padding">
-                        <PageTitle pageTitle="What's this?" />
-                        <About
-                            colorBlindMode={colorBlindMode}
-                        />
-                    </Container>
-                    <Footer />
-                </Theme>
-            )
-
-
-        }
-        if (isValidUrl(window.location.pathname, namesAndIds) && name) {
-            return (
-                <Theme
-                    style={
-                    backlight ? { 
-                        backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` 
-                    } : { 
-                        backgroundColor: `${backgroundColors.secondary} 90%` 
-                    }}
-                    id="theme_element"
-                    className="top_container top_container_interactive_chart"
-                    scaling="90%"
-                    grayColor="mauve"
-                    accentColor="teal"
-                    panelBackground="translucent"
-                    appearance="dark">
-                    <Header
-                        toggleBackLight={this.toggleBackLight}
-                        toggleColorBlindMode={this.toggleColorBlindMode}
-                        colorBlindMode={colorBlindMode}
-                        backlight={backlight}
-                        setMaterialsLocation={this.setMaterialsLocation}
-                        setMaterialsOrderType={this.setMaterialsOrderType}
-                        setSubsystemsLocation={this.setSubsystemsLocation}
-                        setSubsystemsOrderType={this.setSubsystemsOrderType}
-                        materialsLocation={materialsLocation}
-                        materialsOrderType={materialsOrderType}
-                        subsystemsLocation={subsystemsLocation}
-                        subsystemsOrderType={subsystemsOrderType}
-                    />
-                    <Container size="4" mb="9" className="mobile_padding interactive_chart_container">
-                        <PageTitle pageTitle="Interactive chart"></PageTitle>
-                        <Heading weight="light" color="gray" mb="6" mt="-2" size="4">{name.name}</Heading>
-                        <MarketData
-                            name={name.name}
-                            id={this.state.id}
-                            darkMode={darkMode}
-                            setMaterialsLocation={this.setMaterialsLocation}
-                            setMaterialsOrderType={this.setMaterialsOrderType}
-                            setSubsystemsLocation={this.setSubsystemsLocation}
-                            setSubsystemsOrderType={this.setSubsystemsOrderType}
-                            materialsLocation={materialsLocation}
-                            materialsOrderType={materialsOrderType}
-                            subsystemsLocation={subsystemsLocation}
-                            subsystemsOrderType={subsystemsOrderType}
-                            colorBlindMode={colorBlindMode}
-                        />
-                    </Container>
-                    <Footer />
-                </Theme>
-            )
-        }
+        const page = window.location.pathname;
         return (
             <Theme
                 className="top_container"
-                style={backlight ? { backgroundImage: `radial-gradient(circle at ${cursorState.xPos}px ${cursorState.yPos}px, ${backgroundColors.primary} 0%, ${backgroundColors.secondary} 80%)` } : { backgroundColor: `${backgroundColors.secondary} 90%` }}
+                style={{ background: 'var(--color-background)' }}
                 id="theme_element"
                 scaling="90%"
                 grayColor="mauve"
@@ -346,26 +169,96 @@ class App extends React.Component {
                 panelBackground="translucent"
                 appearance="dark"
             >
-                <Header toggleBackLight={this.toggleBackLight}
-                    toggleColorBlindMode={this.toggleColorBlindMode}
-                    colorBlindMode={colorBlindMode}
-                    backlight={backlight}
-                    setMaterialsLocation={this.setMaterialsLocation}
-                    setMaterialsOrderType={this.setMaterialsOrderType}
-                    setSubsystemsLocation={this.setSubsystemsLocation}
-                    setSubsystemsOrderType={this.setSubsystemsOrderType}
-                    materialsLocation={materialsLocation}
-                    materialsOrderType={materialsOrderType}
-                    subsystemsLocation={subsystemsLocation}
-                    subsystemsOrderType={subsystemsOrderType}
-                />
-                <Container size="4" mb="9" className="mobile_padding">
-                    <PageTitle pageTitle="Page not found" />
-                    <Flex direction="column" mt="5" mb="5" width="100%">
-                        <img src={weeb} alt="weeb" />
-                    </Flex>
-                </Container>
-                <Footer />
+                <div
+                    style={backlight ? { background: `radial-gradient(600px at ${cursorState.xPos}px ${cursorState.yPos}px, rgb(18, 39, 69), var(--color-background) 80%)` } : { background: 'var(--color-background)' }}
+                >
+                    <Header toggleBackLight={this.toggleBackLight}
+                        toggleColorBlindMode={this.toggleColorBlindMode}
+                        colorBlindMode={colorBlindMode}
+                        backlight={backlight}
+                        setMaterialsLocation={this.setMaterialsLocation}
+                        setMaterialsOrderType={this.setMaterialsOrderType}
+                        setSubsystemsLocation={this.setSubsystemsLocation}
+                        setSubsystemsOrderType={this.setSubsystemsOrderType}
+                        materialsLocation={materialsLocation}
+                        materialsOrderType={materialsOrderType}
+                        subsystemsLocation={subsystemsLocation}
+                        subsystemsOrderType={subsystemsOrderType}
+                        location={page}
+                    />
+                    {
+                        page == "/" ? (
+                            <Container size="4" mb="9" className="mobile_padding">
+                                <PageTitle pageTitle="Suggested subsystems" />
+                                <Heading weight="light" color="gray" mb="8" mt="-2" size="4">The most used subsystems ordered by price</Heading>
+                                <HomePage profit={profit} darkMode={darkMode} colorBlindMode={colorBlindMode} />
+                            </Container>
+                        )
+                            :
+                            this.state.error ? (
+                                <Container size="4" mb="9" className="mobile_padding">
+                                    <PageTitle pageTitle="Page not found" />
+                                    <Flex direction="column" mt="5" mb="5" width="100%">
+                                        <img src={weeb} alt="weeb" />
+                                    </Flex>
+                                </Container>
+                            )
+                                :
+                                page == "/build" || page == "/build/" ? (
+                                    <Container size="4" mb="9" className="mobile_padding">
+                                        <PageTitle pageTitle="Manufacturing tool" />
+                                        <Heading weight="light" color="gray" mb="8" mt="-2" size="4">Build settings and material calculator</Heading>
+                                        <Build
+                                            colorBlindMode={colorBlindMode}
+                                            materialsLocation={materialsLocation}
+                                            materialsOrderType={materialsOrderType}
+                                            subsystemsLocation={subsystemsLocation}
+                                            subsystemsOrderType={subsystemsOrderType}
+                                        />
+                                    </Container>
+                                )
+                                    :
+                                    page == "/about/" || page == "/about" ? (
+                                        <Container size="4" mb="9" className="mobile_padding">
+                                            <PageTitle pageTitle="What's this?" />
+                                            <About
+                                                colorBlindMode={colorBlindMode}
+                                            />
+                                        </Container>
+                                    )
+                                        :
+                                        isValidUrl(window.location.pathname, namesAndIds) && name ? (
+                                            <Container size="4" mb="9" className="mobile_padding interactive_chart_container">
+                                                <PageTitle pageTitle="Interactive chart"></PageTitle>
+                                                <Heading weight="light" color="gray" mb="6" mt="-2" size="4">{name.name}</Heading>
+                                                <MarketData
+                                                    name={name.name}
+                                                    id={this.state.id}
+                                                    darkMode={darkMode}
+                                                    setMaterialsLocation={this.setMaterialsLocation}
+                                                    setMaterialsOrderType={this.setMaterialsOrderType}
+                                                    setSubsystemsLocation={this.setSubsystemsLocation}
+                                                    setSubsystemsOrderType={this.setSubsystemsOrderType}
+                                                    materialsLocation={materialsLocation}
+                                                    materialsOrderType={materialsOrderType}
+                                                    subsystemsLocation={subsystemsLocation}
+                                                    subsystemsOrderType={subsystemsOrderType}
+                                                    colorBlindMode={colorBlindMode}
+                                                />
+                                            </Container>
+                                        ) :
+                                            (
+                                                <Container size="4" mb="9" className="mobile_padding">
+                                                    <PageTitle pageTitle="Page not found" />
+                                                    <Flex direction="column" mt="5" mb="5" width="100%">
+                                                        <img src={weeb} alt="weeb" />
+                                                    </Flex>
+                                                </Container>
+                                            )
+                    }
+
+                    <Footer />
+                </div>
             </Theme>
         )
     }

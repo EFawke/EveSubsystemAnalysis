@@ -37,11 +37,9 @@ const dropTable = () => {
 }
 
 // HAS TO BE OF TYPE NUMBER VERY IMPORTANT NOT STRING!!!
-const subsystemIDArr = [45622, 45623, 45624, 45625, 45626, 45627, 45628, 45629, 45630, 45631, 45632, 45633, 45586, 45587, 45588, 45589, 45590, 45591, 45592, 45593, 45594, 45595, 45596, 45597, 45610, 45611, 45612, 45613, 45614, 45615, 45616, 45617, 45618, 45619, 45620, 45621, 45598, 45599, 45600, 45601, 45602, 45603, 45604, 45605, 45606, 45607, 45608, 45609]
 
-// dropTable();
+const subsystemIDArr = [45586, 45587, 45588, 45589, 45590, 45591, 45592, 45593, 45594, 45595, 45596, 45597, 45598, 45599, 45600, 45601, 45602, 45603, 45604, 45605, 45606, 45607, 45608, 45609, 45610, 45611, 45612, 45613, 45614, 45615, 45616, 45617, 45618, 45619, 45620, 45621, 45622, 45623, 45624, 45625, 45626, 45627, 45628, 45629, 45630, 45631, 45632, 45633]
 
-//make a database table to store the data
 client.query(`CREATE TABLE IF NOT EXISTS subsystems (
         assocKill BIGINT, 
         killTime BIGINT, 
@@ -55,50 +53,66 @@ const fetchKillDataFromESI = async (killmailId, killHash) => {
         method: 'GET',
         url: `https://esi.evetech.net/killmails/${killmailId}/${killHash}`,
         headers: {
-          'Accept-Language': '',
-          'If-None-Match': '',
-          'X-Tenant': '',
-          Accept: 'application/json'
+            'Accept-Language': '',
+            'If-None-Match': '',
+            'X-Tenant': '',
+            Accept: 'application/json'
         }
-      };
-      
-      try {
+    };
+
+    try {
         const { data } = await axios.request(options);
         return data
-      } catch (error) {
+    } catch (error) {
         console.error(error);
-      }
-} 
+    }
+}
 
 const sleep = (ms) => new Promise(resolve => setTimeout(resolve, ms));
 
-const listenToRedisQ = async () => {
-    while (true) {
-        try {
-            const response = await axios(`https://zkillredisq.stream/listen.php?queueID=${queueId}&ttw=1`, {
-                headers: {
-                    'accept-encoding': 'gzip',
-                    'user-agent': 'Johnson Kanjus - evesubsystemanalysis.com - teduardof@gmail.com',
-                    'connection': 'close'
-                },
-                timeout: 15000
-            });
-            handleResponse(response);
+const getSequenceFromSequenceJson = async () => {
+    try {
+        const response = await axios.get(`https://r2z2.zkillboard.com/ephemeral/sequence.json`);
+        return response.data.sequence;
+    }
+    catch (err) {
+        console.log("hmm something went wrong here...");
+        return false;
+    }
 
-        } catch (err) {
-            console.error("RedisQ polling error:", err.message || err);
-            await sleep(5000); // wait before retrying
+}
+
+const getSequenceFile = async (sequence) => {
+    try {
+        const response = await axios.get(`https://r2z2.zkillboard.com/ephemeral/${sequence}.json`);
+        return response;
+    } catch (err) {
+        console.log("caught an err");
+        return false;
+    }
+}
+
+const listenToR272 = async () => {
+    let sequence = await getSequenceFromSequenceJson(); // starting id
+    while (true) {
+        raw = await getSequenceFile(sequence)
+        if (raw?.status == 200) {
+            await handleResponse(raw);
+            await sleep(200);
+            sequence++
+        } else {
+            await sleep(6000)
         }
     }
-};
+}
 
 const handleResponse = async (response) => {
-    if (response && response.data.package !== null && response.data.package !== undefined && response.data.package.zkb.labels !== null) {
-        const killmailId = response.data.package.killID;
-        const killHash = response.data.package.zkb.hash;
+    if (response && response.data.zkb.labels !== null && response.status == 200) {
+        const killmailId = response.data.killmail_id;
+        const killHash = response.data.hash;
 
         const data = await fetchKillDataFromESI(killmailId, killHash)
-        if(!data || !data?.victim || !data?.victim?.items){
+        if (!data || !data?.victim || !data?.victim?.items) {
             return;
         }
         const items = data.victim.items;
@@ -119,18 +133,12 @@ const handleResponse = async (response) => {
 }
 
 const insertKillIntoDatabase = (itemTypeId, assocKill, killTime, location) => {
-    for (let i = 0; i < namesAndIds.length; i++) {
-        if (namesAndIds[i].id === itemTypeId) {
-            const itemTypeName = namesAndIds[i].name;
-            client.query(`INSERT INTO subsystems (assocKill, killTime, location, type_id, type_name) VALUES (${assocKill}, ${killTime}, '${location}', ${itemTypeId}, '${itemTypeName}')`)
-            .catch(err => {
-                console.log("Error inserting into database");
-                console.log(err)
-            });
-        }
-    }
+    const name = namesAndIds.find((subsystem) => subsystem.id == itemTypeId).name;
+    client.query(`INSERT INTO subsystems (assocKill, killTime, location, type_id, type_name) VALUES (${assocKill}, ${killTime}, '${location}', ${itemTypeId}, '${name}')`)
+    .catch(err => {
+        console.log("Error inserting into database");
+        console.log(err)
+    });
 }
 
-listenToRedisQ();
-
-// setInterval(axiosZkillData, 1000);
+listenToR272();

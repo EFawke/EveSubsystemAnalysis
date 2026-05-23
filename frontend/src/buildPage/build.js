@@ -12,6 +12,7 @@ import MatsTable from "./matsTable.js";
 import ScheduleTable from "./scheduleTable.js";
 import PageTitle from "../layout/PageTitle.js"
 import debounce from 'lodash/debounce';
+import "./build.css";
 
 
 class Build extends React.Component {
@@ -136,9 +137,9 @@ class Build extends React.Component {
             })
             .catch(error => {
                 if (axios.isCancel(error) || error.name === 'CanceledError') {
-                    console.log('Previous request canceled');
+                    // console.log('Previous request canceled');
                 } else {
-                    console.error('Error sending data:', error);
+                    // console.error('Error sending data:', error);
                 }
                 this.setState({ loading: false });
             });
@@ -216,10 +217,14 @@ class Build extends React.Component {
 
         const schedule = buildResponseData?.schedule != null ? buildResponseData.schedule : null;
 
-        console.log(buildResponseData);
 
         return (
             <Flex direction="column" gap="4" class="container" style={{ width: "100%"}}>
+                <style>
+                    {`.build_tool_link {
+                        display: none;
+                    }`}
+                </style>
                 {loading ? 
                 <>
                 <Heading mt="4" mb="4" size="4">Production overview and costs</Heading>

@@ -92,7 +92,7 @@ const updateChartSnapshotTable = async (region, date, dateValues, oneMonthAgo, t
                     tradeValuesArray.push(tradeVolumeData[i]);
                 }
             }
-            const tradeVolumeLatest = tradeValuesArray[tradeValuesArray.length - 1].volume || 0;
+            const tradeVolumeLatest = tradeValuesArray[tradeValuesArray.length - 1]?.volume || 0;
             const lastThirtyDays = tradeValuesArray.filter(data => Number(data.date) >= Number(thirtyDaysAgo));
             const lastThirtyDaysVolume = [];
             lastThirtyDays.forEach(data => {

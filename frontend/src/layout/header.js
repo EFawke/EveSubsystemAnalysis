@@ -14,6 +14,7 @@ class Header extends React.Component {
             materialsOrderType: this.props.materialsOrderType,
             subsystemsLocation: this.props.subsystemsLocation,
             subsystemsOrderType: this.props.subsystemsOrderType,
+            location: this.props.location,
         };
 
         this.headerIconRef = React.createRef();
@@ -200,7 +201,6 @@ class Header extends React.Component {
     }
 
     render() {
-        console.log(this.props)
         return (
             <>
                 {this.renderSidebar()}
@@ -230,6 +230,18 @@ class Header extends React.Component {
                             </IconButton>
                             <SearchBox />
                         </Flex>
+                    </Flex>
+                </Container>
+                <Container pt="4" pb="4" className="mobile_padding" size="4" style={ this.props.location.includes('subsystem') || this.props.location.includes('build') || this.props.location.includes('about') ? {display: 'none'} : {
+                    background: '#007acc', color: "var(--accent-contrast)", position: "relative", zIndex: 0,
+                }}>
+                    <Flex justify="center" class="build_tool_link">
+                        <Link href="/build">
+                            <Flex align="center" gap="2">
+                                <Heading mb="0">Try out the build tool</Heading>
+                                <Heading mb="0">🔨</Heading>
+                            </Flex>
+                        </Link>
                     </Flex>
                 </Container>
             </>
