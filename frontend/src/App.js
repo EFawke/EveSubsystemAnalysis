@@ -13,8 +13,9 @@ import PageTitle from './layout/PageTitle.js';
 import './css/App.css';
 import About from './about/about.js';
 import weeb from './weeb.jpeg';
-
 import ReactGA from "react-ga4";
+
+console.log(process.env);
 
 const TRACKING_ID = "G-SW0JLZCZFZ";
 
@@ -135,8 +136,6 @@ class App extends React.Component {
 
     handleMouseMove = (event) => {
         const { clientX, clientY } = event;
-        console.log(`x = ${clientX}`)
-        console.log(`y = ${clientY + window.scrollY}`)
         this.setState({
             cursorState: {
                 xPos: clientX,
@@ -146,7 +145,6 @@ class App extends React.Component {
     };
 
     render() {
-        // console.log(this.state)
         const { darkMode, profit, cursorState, backgroundColors, colorBlindMode, backlight, materialsLocation, materialsOrderType, subsystemsLocation, subsystemsOrderType } = this.state;
         const isValidUrl = (url, array) => {
             const urlParts = url.split('/');
