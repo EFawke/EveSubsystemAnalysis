@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
-import { Table, Flex, Card, Heading, Link, Text, Button, DropdownMenu, Tooltip, Badge } from "@radix-ui/themes";
-import { DoubleArrowUpIcon, DoubleArrowDownIcon, DotsHorizontalIcon, ArrowUpIcon, ArrowDownIcon } from "@radix-ui/react-icons"
+import { Flex, Text, Tooltip, Badge } from "@radix-ui/themes";
+import { DoubleArrowUpIcon, DoubleArrowDownIcon } from "@radix-ui/react-icons"
 
 export default function NumericTableCell(props) {
     const [value, setValue] = useState(() => {
