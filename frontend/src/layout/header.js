@@ -236,7 +236,7 @@ class Header extends React.Component {
                     background: '#007acc', color: "var(--accent-contrast)", position: "relative", zIndex: 0,
                 }}>
                     <Flex justify="center" class="build_tool_link">
-                        <Link href="/build">
+                        <Link href="/build" style={{color: "var(--accent-contrast)"}}>
                             <Flex align="center" gap="2">
                                 <Heading mb="0">Try out the build tool</Heading>
                                 <Heading mb="0">🔨</Heading>
