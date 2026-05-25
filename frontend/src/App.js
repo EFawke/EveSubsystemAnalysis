@@ -32,7 +32,7 @@ class App extends React.Component {
             darkMode: true,
             colorBlindMode: Cookies.get('colorBlind') === 'true' ? true : false,
             cursorState: { xPos: 0, yPos: 0 },
-            backlight: Cookies.get('backlight') === 'true' ? true : true,
+            backlight: Cookies.get('backlight') !== 'false' ? true : false,
             backgroundColors: {
                 primary: "rgba(29, 78, 216, 0.15)",
                 secondary: "var(--color-background);"
