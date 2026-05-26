@@ -186,8 +186,7 @@ const getMarketData = async (subsystemType, locationId, client, axios, name, loc
         query += `(${epoch}, '${locationId}', '${subsystemType}', ${Number(data.maxBuy)}, ${0}, ${0}, ${0}, ${0}, ${Number(data.buyVolume)}, ${Number(data.sellVolume)}, ${Number(data.buyOrders)}, ${Number(data.sellOrders)}, ${Number(data.maxBuy)}, ${Number(data.minSell)})`;
     }
 
-    //UNCOMMENT HERE LATER
-    // client.query(query);
+    client.query(query);
 }
 
 const fetchData = async (subsystemIDArr, client, axios, epoch, type) => {

@@ -102,8 +102,7 @@ const createAnalysisSnapshotTable = () => {
 
 createAnalysisSnapshotTable();
 
-//UNCOMMENT HERE LATER
-// setInterval(() => {
+setInterval(() => {
     updatePriceTable(Date.now(), client);
-// }, 1000);
+}, 1000);
 
