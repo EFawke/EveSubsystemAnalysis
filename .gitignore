@@ -6,3 +6,5 @@ latest.dump
 frontend/node_modules/
 file-size.txt
 frontend/build/static/.DS_Store
+.env.development
+frontend/.env.development
