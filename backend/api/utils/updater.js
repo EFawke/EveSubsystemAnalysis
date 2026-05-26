@@ -2,10 +2,6 @@ const axios = require('axios');
 const { Client } = require('pg');
 const { initialDatabaseUpdate } = require('../HistoricalDataUpdaters/initialDatabaseUpload.js');
 const { updatePriceTable } = require('../DailyDataUpdaters/dailyDatabaseUpload.js');
-// const { backDate } = require('../DataBackdater-REMOVE_LATER/dataBackdater.js');
-
-//remove later
-// const { updatePriceData } = require('./databaseUpdaterOneTime.js');
 
 let client;
 if (!process.env.DATABASE_URL) {
@@ -37,10 +33,6 @@ const dropTable = () => {
             console.log(err);
         })
 }
-
-// dropTable();
-
-// updatePriceData();
 
 //this has to store price data
 //for every item (subsystem and materials)
@@ -110,25 +102,8 @@ const createAnalysisSnapshotTable = () => {
 
 createAnalysisSnapshotTable();
 
-// client.query(`SELECT * FROM price_data LIMIT 1;`)
-//     .then((res) => {
-//         if (res.rows.length === 0) {
-//             console.log("initializing price data");
-//             initialDatabaseUpdate(client);
-//         } else {
-//             console.log("price data has already been initialized");
-//         }
-//     })
-//     .catch((err) => {
-//         console.log(err);
-//     })
-
-// i think this can be commented out now
+//UNCOMMENT HERE LATER
 // setInterval(() => {
-    // backDate(client);
-// }, 1000 * 60 * 60 * 24);
-
-setInterval(() => {
     updatePriceTable(Date.now(), client);
-}, 1000);
+// }, 1000);
 

@@ -87,7 +87,7 @@ const getSequenceFile = async (sequence) => {
         const response = await axios.get(`https://r2z2.zkillboard.com/ephemeral/${sequence}.json`);
         return response;
     } catch (err) {
-        console.log("caught an err");
+        // console.log("caught an err");
         return false;
     }
 }

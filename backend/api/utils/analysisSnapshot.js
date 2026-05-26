@@ -67,7 +67,6 @@ const getTradeVolumeData = async (id, region) => {
     }
 }
 
-
 const updateChartSnapshotTable = async (region, date, dateValues, oneMonthAgo, thirtyDaysAgo) => {
     const regionName = getRegionName(region);
     try {

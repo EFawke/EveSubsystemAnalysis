@@ -139,12 +139,7 @@ async function getLatestPriceForItem(client, typeId, region, orderType) {
 
 buildRouter.post('/', async (req, res) => {
     const settings = req.body;
-
-    // console.log(settings);
     const materialRequirements = getMaterialRequirements(settings);
-
-    // axios.get(`https://esi.evetech.net/latest/markets/prices/?datasource=tranquility`).then(async (response) => {
-    // get the building costs from schedule
     const response = {
         data: (await client.query('SELECT type_id, adjusted_price FROM esi_prices')).rows
     };
@@ -505,8 +500,9 @@ buildRouter.post('/', async (req, res) => {
 
     consolidateByNameInPlace(materialRequirements.requiredMaterialsForAll);
 
+    console.log(materialRequirements);
+
     res.send(materialRequirements);
-    // });
 });
 
 module.exports = buildRouter;

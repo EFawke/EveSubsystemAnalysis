@@ -24,16 +24,35 @@ const getHighestBuyOrderPrice = async (orders, client, locationId, subsystemType
     }
 }
 
-function getSellVolume(orders) {
+const getSellVolume = (orders) => {
     return orders
         .filter(order => !order.is_buy_order)
         .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
 }
 
-function getBuyVolume(orders) {
-    return orders
-        .filter(order => order.is_buy_order)
-        .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
+const getBuyVolume = (orders) => {
+    let buyOrders = [];
+    let tooLow = 1;
+    if (orders.length) {
+        let price = 0;
+        let count = 0;
+        orders.forEach((order) => {
+            if (order.is_buy_order) {
+                buyOrders.push(order)
+                price += order.price;
+                count ++;
+            }
+        })
+        if(count > 0){
+            const average = price / count;
+            tooLow = Number(average.toFixed(0)) / 20;
+        }
+    }
+
+    const validBuyOrders = buyOrders
+        .reduce((totalVolume, order) => order.price > tooLow ? totalVolume + order.volume_remain : totalVolume + 0, 0);
+
+    return validBuyOrders;
 }
 
 function getBuyOrderCount(orders) {
@@ -167,8 +186,8 @@ const getMarketData = async (subsystemType, locationId, client, axios, name, loc
         query += `(${epoch}, '${locationId}', '${subsystemType}', ${Number(data.maxBuy)}, ${0}, ${0}, ${0}, ${0}, ${Number(data.buyVolume)}, ${Number(data.sellVolume)}, ${Number(data.buyOrders)}, ${Number(data.sellOrders)}, ${Number(data.maxBuy)}, ${Number(data.minSell)})`;
     }
 
-    // console.log(`Inserting ${name} in ${locationName} at ${epoch} minSell: ${data.minSell}, maxBuy: ${data.maxBuy}`);
-    client.query(query);
+    //UNCOMMENT HERE LATER
+    // client.query(query);
 }
 
 const fetchData = async (subsystemIDArr, client, axios, epoch, type) => {

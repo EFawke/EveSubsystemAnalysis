@@ -67,7 +67,6 @@ class Build extends React.Component {
         this.renderMatsTable = this.renderMatsTable.bind(this);
     }
     
-
     componentDidMount() {
         // Load settings from the cookie if available
         const savedSettings = Cookies.get('buildSettings');
@@ -110,7 +109,6 @@ class Build extends React.Component {
         }
         this.debouncedSubmitBuildData.cancel(); // cancel any pending debounce
     }
-    
 
     controller = null; // Class property to track the current request
 

@@ -10,7 +10,8 @@ const updatePriceTable = async (epoch, client) => {
     let date = new Date(epoch);
 
     if (date.getUTCHours() !== 0 || date.getMinutes() !== 0 || date.getSeconds() >= 2) {
-        return;
+        //UNCOMMENT HERE LATER
+        // return;
     }
 
     console.log("Updating price table for date:", date.toISOString());
@@ -26,7 +27,8 @@ const updatePriceTable = async (epoch, client) => {
             console.log("No data found, updating...");
             isUpdating = true;
             await fetchData(namesAndIds, client, axios, dateEpoch, "sub"); // fetch subsystems and update prices
-            await fetchData(materialsNamesAndIds, client, axios, dateEpoch, "mat"); // fetch materials and update prices
+            //UNCOMMENT HERE LATER
+            // await fetchData(materialsNamesAndIds, client, axios, dateEpoch, "mat"); // fetch materials and update prices
         } else {
             console.log("Data already exists for this date");
         }

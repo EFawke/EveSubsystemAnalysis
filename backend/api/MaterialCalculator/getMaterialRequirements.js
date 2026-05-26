@@ -61,8 +61,6 @@ const getMaterialRequirements = (settings) => {
     let offensiveRequiredMaterials = [];
     let propulsionRequiredMaterials = [];
 
-    // console.log(settings);
-
     const blueprints = invent(relicType, decryptor, skillLevel, coreRuns, offRuns, propRuns, defRuns)
 
     // add the mats needed for invention to the requiredMaterials array
