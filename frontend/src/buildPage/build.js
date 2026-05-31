@@ -151,6 +151,28 @@ class Build extends React.Component {
         )
     }
 
+    checkInfinity(value) {
+        if (value === Infinity || value === -Infinity || value === "Infinity" || value === "-Infinity") {
+            return "No Data";
+        }
+        return value;
+    }
+
+    getClassName = (value, colorBlindMode) => {
+        if (value >= 0 && !colorBlindMode) {
+            return "success";
+        }
+        if (value < 0 && !colorBlindMode) {
+            return "danger";
+        }
+        if (value >= 0 && colorBlindMode) {
+            return "success colorBlind";
+        }
+        if (value < 0 && colorBlindMode) {
+            return "danger colorBlind";
+        }
+    }
+
     renderMatsTable = (filteredMaterials) => {
         return (
             <Table.Root>
@@ -248,7 +270,7 @@ class Build extends React.Component {
                 
                 {/* <Divider /> */}
 
-                {loading ? <table>{this.renderTableLoading()}</table> : <MatsTable filteredMaterials={filteredMaterials} />}
+                {loading ? <table>{this.renderTableLoading()}</table> : <MatsTable filteredMaterials={filteredMaterials} getClassName={this.getClassName} checkInfinity={this.checkInfinity} />}
                 {loading ? null : <ScheduleTable schedule={schedule} />}
             </Flex>
         );

@@ -4,6 +4,7 @@ const buildRouter = express.Router();
 const { Client } = require('pg');
 const { getMaterialRequirements } = require('../MaterialCalculator/getMaterialRequirements.js');
 const { reactionRequirements, mainComponents, defensive, offensive, propulsion, core, azbel, raitaru, athanor, tatara, getPricePerUnit } = require('../MaterialCalculator/staticVars.js');
+const { materialsNamesAndIds } = require('../utils/namesAndIds.js')
 
 let client;
 if (!process.env.DATABASE_URL) {
@@ -443,34 +444,38 @@ buildRouter.post('/', async (req, res) => {
         totalTax += BPOTaxTotal;
     }
 
-    const maxBuyPromises = materialRequirements.requiredMaterialsForAll
+    const orderType = settings.materialsOrderType == 'buy' ? 'max_buy' : 'min_sell';
+    const percentageCol = settings.materialsOrderType == 'buy' ? 'max_buy_percent' : 'min_sell_percent';
+    const prices = await client.query(`SELECT type_id, region, date, ${orderType} as price, ${percentageCol} as percent_change FROM build_snapshot WHERE region = ${settings.materialsLocation}`);
+
+    for(let i = 0; i < prices.rows.length; i++){
+        console.log(prices.rows[i]);
+    }
+
+    let materialsTotal = 0;
+
+    const matIds = materialsNamesAndIds.map((mat) => mat.id);
+    materialRequirements.requiredMaterialsForAll
         .filter(item => item.id !== null)
-        .map(async item => {
-            if (componentIds.includes(item.id)) return 0;
+        .filter(item => matIds.includes(item.id))
+        .map((item) => {
+            console.log(item);
+            const unitPrice = prices.rows.find((data) => data.type_id == item.id).price;
+            const lineTotal = unitPrice * item.quantity;
+            const percentageChange = prices.rows.find((data) => data.type_id == item.id).percent_change;
 
-            try {
-                const unitPrice = await getLatestPriceForItem(client, item.id, settings.materialsLocation, settings.materialsOrderType);
-                const lineTotal = unitPrice * item.quantity;
-                item.unitPrice = unitPrice;
-                item.lineTotal = lineTotal;
-                return lineTotal;
-            } catch (error) {
-                console.error(`Error fetching price for item ${item.id}:`, error.message);
-                return 0;
-            }
-        });
+            materialsTotal += lineTotal;
 
+            item.unitPrice = unitPrice;
+            item.lineTotal = lineTotal;
+            item.percentageChange = percentageChange;
+        })
 
-    const maxBuys = await axios.all(maxBuyPromises)
-        .then(results => results.reduce((acc, price) => acc + price, 0))
-        .catch(error => {
-            console.error("Error aggregating max buy prices:", error);
-            return 0;
-        });
+    console.log(materialRequirements.requiredMaterialsForAll);
 
     materialRequirements.totalTax = totalTax;
-    materialRequirements.maxBuys = maxBuys;
-    materialRequirements.totalJobCost = maxBuys + totalTax;
+    materialRequirements.maxBuys = materialsTotal;
+    materialRequirements.totalJobCost = materialsTotal + totalTax;
 
     const gasIds = [30375, 30376, 30377, 30370, 30378, 30371, 30372, 30373, 30374];
     const reactionIds = [30311, 30310, 30305, 30303, 30309, 30307, 30306, 30304, 30308]
@@ -499,9 +504,7 @@ buildRouter.post('/', async (req, res) => {
     });
 
     consolidateByNameInPlace(materialRequirements.requiredMaterialsForAll);
-
-    console.log(materialRequirements);
-
+    
     res.send(materialRequirements);
 });
 

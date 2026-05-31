@@ -2,9 +2,11 @@ import React from "react";
 import 'react-loading-skeleton/dist/skeleton.css';
 import { Flex, Text, Table, Heading, Card } from "@radix-ui/themes";
 import { useState, useEffect } from "react";
+import NumericTableCell from "../home/numericTableCell";
 
 export default function MatsTable(props) {
     const [filteredMaterials, setFilteredMaterials] = useState(props.filteredMaterials);
+    console.log(filteredMaterials);
 
     useEffect(() => setFilteredMaterials(props.filteredMaterials), props)
 
@@ -39,18 +41,16 @@ export default function MatsTable(props) {
                                     </Flex>
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <Flex height="100%" align="center">
-                                        <Text size="3">
-                                            {Number(material.unitPrice).toLocaleString()}
-                                        </Text>
-                                    </Flex>
+                                    <NumericTableCell value={material.unitPrice} percentage={material.percentageChange} tipMessage="30 day median delta" colorBlindMode={false} getClassName={props.getClassName} checkInfinity={props.checkInfinity} />
                                 </Table.Cell>
                                 <Table.Cell>
-                                    <Flex height="100%" align="center">
+                                    <NumericTableCell value={material.lineTotal} percentage={material.percentageChange} tipMessage="30 day median delta" colorBlindMode={false} getClassName={props.getClassName} checkInfinity={props.checkInfinity} />
+
+                                    {/* <Flex height="100%" align="center">
                                         <Text size="3">
                                             {Math.round(material.lineTotal).toLocaleString()}
                                         </Text>
-                                    </Flex>
+                                    </Flex> */}
                                 </Table.Cell>
                             </Table.Row>
                         ))}
