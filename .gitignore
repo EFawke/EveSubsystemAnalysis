@@ -8,3 +8,5 @@ file-size.txt
 frontend/build/static/.DS_Store
 .env.development
 frontend/.env.development
+node_modules
+frontend/.end.development
