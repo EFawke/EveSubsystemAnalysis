@@ -6,7 +6,6 @@ import NumericTableCell from "../home/numericTableCell";
 
 export default function MatsTable(props) {
     const [filteredMaterials, setFilteredMaterials] = useState(props.filteredMaterials);
-    console.log(filteredMaterials);
 
     useEffect(() => setFilteredMaterials(props.filteredMaterials), props)
 

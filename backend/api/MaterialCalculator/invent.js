@@ -9,7 +9,7 @@ const {
     optimizedAugmentationDecryptor} = require('./staticVars.js');
 
 const invent = (relicType, decryptor, skillLevel, coreRuns, offRuns, propRuns, defRuns) => {
-    console.log(skillLevel);
+    // console.log(skillLevel);
     let output = {};
 
     let baseProbability;

@@ -58,10 +58,13 @@ const getSubsystemCosts = async (settings, oneMonthAgo) => {
                 column = "minsell";
             }
             const priceDataResponse = await client.query(`
-                SELECT DISTINCT ON (date) date, ${column}
+                SELECT DISTINCT ON (date) date, ${column}, to_timestamp(date / 1000) as readable_date
                 FROM price_data
                 WHERE type_id = ${id} AND date > ${oneMonthAgo} AND region = '${settings.materialsLocation}'
                 ORDER BY date DESC;`);
+            
+            
+            console.log(priceDataResponse.rows)
 
             priceDataResponse.rows.forEach(row => {
                 const date = row.date;

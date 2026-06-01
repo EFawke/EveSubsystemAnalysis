@@ -17,7 +17,7 @@ const updatePriceTable = async (epoch, client) => {
 
     date.setUTCHours(0, 0, 0, 0);
     let dateEpoch = date.getTime();
-    let query = `SELECT * FROM price_data WHERE date = ${dateEpoch};`;
+    let query = `SELECT * FROM price_data WHERE date = ${dateEpoch} LIMIT 1;`;
 
 
     try {

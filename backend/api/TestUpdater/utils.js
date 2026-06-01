@@ -48,13 +48,10 @@ function getSellOrderCount(orders) {
 
 const getPrevData = async (client, locationId, subsystemType, column) => {
     const query = `SELECT ${column} FROM price_data WHERE region = '${locationId}' AND type_id = '${subsystemType}' AND ${column} > 0 ORDER BY date DESC LIMIT 1`;
-    console.log(query);
     const res = await client.query(query);
     if (!res.rows[0]) {
-        console.log(`No previous data found for ${subsystemType} in ${locationId}`);
         return 0;
     }
-    console.log(res.rows[0][column]);
     return res.rows[0][column] || 0;
 }
 

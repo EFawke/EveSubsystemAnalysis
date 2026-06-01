@@ -5,7 +5,9 @@ const { fetchAndStorePrices } = require('./cachePrices.js');
 const { buildSnapshot } = require('./buildSnapshot.js');
 
 const runFunc = async () => {
-    await buildSnapshot();
+    console.log('running func');
+    await fetchAndStorePrices();
+    console.log('func run');
 }
 
 runFunc();

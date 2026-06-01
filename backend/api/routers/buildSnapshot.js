@@ -36,7 +36,7 @@ const createBuildSnapshotTable = async () => {
         max_buy_percent NUMERIC
         );`)
         .then(() => {
-            console.log('Created build_snapshot');
+            // console.log('Created build_snapshot');
         })
 }
 
@@ -76,16 +76,10 @@ const buildSnapshot = async () => {
         }
     })
 
-    await client.query(`INSERT INTO build_snapshot (date, region, type_id, item_name, min_sell, min_sell_percent, max_buy, max_buy_percent) VALUES ${queries}`).then((res) => {
-        console.log(res);
-        console.log('rows inserted');
-    }).catch((err) => console.log(err));
-    // console.log(`INSERT INTO build_snapshot (date, region, type_id, item_name, min_sell, min_sell_percent, max_buy, max_buy_percent) VALUES ${queries}`);
+    await client.query(`INSERT INTO build_snapshot (date, region, type_id, item_name, min_sell, min_sell_percent, max_buy, max_buy_percent) VALUES ${queries}`)
+    .catch((err) => console.log(err));
     await client.query(`DELETE FROM build_snapshot WHERE date != ${date}`)
-    .then((res) => {
-        console.log(res);
-        console.log('rows deleted');
-    }).catch((err) => console.log(err));
+    .catch((err) => console.log(err));
 }
 
 module.exports = {

@@ -54,8 +54,6 @@ const getMatCosts = (costsData) => {
 };
 
 const getBuyVolume = (latestData, historicalData) => {
-    // console.log(latestData)
-    // console.log(historicalData)
     const buyVolume = {};
     buyVolume.title = "Buy volume";
     let currentVolume;
@@ -197,10 +195,7 @@ function getLossesData(subsystems) {
 
     const thirtyDayStop = now - oneDayMs * 30;
 
-    console.log(thirtyDayStop)
-
     for (let day = startDate; day <= endDate; day += oneDayMs) {
-        console.log(day)
         if(day < thirtyDayStop){
             continue;
         }
@@ -267,8 +262,6 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             const sellVolume = getSellVolume(marketDataCurrent, data[1].rows);
             const tradeVolume = getTradeVolume(data[3].rows);
             const lossesData = getLossesData(subsystems);
-            // console.log(lossesData);
-            // console.log(minSell);
             res.status(200).json({ minSell, maxBuy, matCosts, profit, buyVolume, sellVolume, tradeVolume, lossesData });
         })
 });

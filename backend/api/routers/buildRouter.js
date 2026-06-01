@@ -448,10 +448,6 @@ buildRouter.post('/', async (req, res) => {
     const percentageCol = settings.materialsOrderType == 'buy' ? 'max_buy_percent' : 'min_sell_percent';
     const prices = await client.query(`SELECT type_id, region, date, ${orderType} as price, ${percentageCol} as percent_change FROM build_snapshot WHERE region = ${settings.materialsLocation}`);
 
-    for(let i = 0; i < prices.rows.length; i++){
-        console.log(prices.rows[i]);
-    }
-
     let materialsTotal = 0;
 
     const matIds = materialsNamesAndIds.map((mat) => mat.id);
@@ -459,7 +455,6 @@ buildRouter.post('/', async (req, res) => {
         .filter(item => item.id !== null)
         .filter(item => matIds.includes(item.id))
         .map((item) => {
-            console.log(item);
             const unitPrice = prices.rows.find((data) => data.type_id == item.id).price;
             const lineTotal = unitPrice * item.quantity;
             const percentageChange = prices.rows.find((data) => data.type_id == item.id).percent_change;
@@ -470,8 +465,6 @@ buildRouter.post('/', async (req, res) => {
             item.lineTotal = lineTotal;
             item.percentageChange = percentageChange;
         })
-
-    console.log(materialRequirements.requiredMaterialsForAll);
 
     materialRequirements.totalTax = totalTax;
     materialRequirements.maxBuys = materialsTotal;
