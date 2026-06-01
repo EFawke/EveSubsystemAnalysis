@@ -10,3 +10,4 @@ frontend/build/static/.DS_Store
 frontend/.env.development
 node_modules
 frontend/.end.development
+*.DS_Store

@@ -94,10 +94,35 @@ function getSellVolume(orders) {
         .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
 }
 
-function getBuyVolume(orders) {
-    return orders
-        .filter(order => order.is_buy_order)
-        .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
+// function getBuyVolume(orders) {
+//     return orders
+//         .filter(order => order.is_buy_order)
+//         .reduce((totalVolume, order) => totalVolume + order.volume_remain, 0);
+// }
+
+const getBuyVolume = (orders) => {
+    let buyOrders = [];
+    let tooLow = 1;
+    if (orders.length) {
+        let price = 0;
+        let count = 0;
+        orders.forEach((order) => {
+            if (order.is_buy_order) {
+                buyOrders.push(order)
+                price += order.price;
+                count ++;
+            }
+        })
+        if(count > 0){
+            const average = price / count;
+            tooLow = Number(average.toFixed(0)) / 20;
+        }
+    }
+
+    const validBuyOrders = buyOrders
+        .reduce((totalVolume, order) => order.price > tooLow ? totalVolume + order.volume_remain : totalVolume + 0, 0);
+
+    return validBuyOrders;
 }
 
 function getRegionName(regionId) {

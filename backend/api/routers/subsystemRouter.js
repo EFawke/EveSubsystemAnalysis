@@ -54,6 +54,8 @@ const getMatCosts = (costsData) => {
 };
 
 const getBuyVolume = (latestData, historicalData) => {
+    // console.log(latestData)
+    // console.log(historicalData)
     const buyVolume = {};
     buyVolume.title = "Buy volume";
     let currentVolume;
