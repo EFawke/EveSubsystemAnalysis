@@ -699,9 +699,8 @@ const getMaterialRequirements = (settings) => {
     }
 
     const slots = reactionSlots;
-
-    let schedule = scheduleReactions(uniqueReactions, slots);
-
+    let schedule = scheduleReactions(uniqueReactions, slots).schedule;
+    
     //add more data about the reactions to the schedule
     for (let i = 0; i < schedule.length; i++) {
         if (schedule[i].runs > 0) {

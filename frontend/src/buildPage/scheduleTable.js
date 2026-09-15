@@ -6,7 +6,7 @@ export default function ScheduleTable(props) {
 
     useEffect(() => {
         setSchedule(props.schedule);
-    }, [props])
+    }, [props]);
 
     return (
         <>

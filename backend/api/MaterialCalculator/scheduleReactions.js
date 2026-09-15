@@ -20,27 +20,70 @@ const runScheduleAlgorithm = (numAboveMean, sortedReactions, meanRuns, slots) =>
             availableSlots -= 1;
         }
     }
+
     if (availableSlots >= 0) {
-        return schedule;
+        // Upper bound
+        return {
+            success: true,
+            schedule: schedule
+        }
     } else {
-        return runScheduleAlgorithm(numAboveMean + 1, sortedReactions, meanRuns, slots);
+        return {
+            success: false,
+            schedule: schedule
+        }
     }
 };
 
 const scheduleReactions = (reactions, slots) => {
     let schedule = false;
     if (slots > 1000) {
-        slots = 1000; // Users probably won't need more than 1000 slots but stops trolling
+        slots = 1000; // User probably won't have 1000 slots
     }
     const sortedReactions = reactions.sort((a, b) => a.runs - b.runs)
     const reacRunsSum = sortedReactions.reduce((acc, curr) => acc + Number(curr.runs), 0);
     const meanRuns = Math.round(reacRunsSum / slots)
-    const numAboveMean = 0;
     if (slots <= sortedReactions.length) {
-        return sortedReactions;
-    } else {
-        schedule = runScheduleAlgorithm(numAboveMean + 1, sortedReactions, meanRuns, slots);
+        return {
+            success: true,
+            schedule: sortedReactions
+        }; // Queue can't be optimised
     }
+
+    let numAboveMean = 1;
+    let lastFail = 0;
+    let lastSuccess = null;
+
+    while(true){
+        const {success} = runScheduleAlgorithm(numAboveMean, sortedReactions, meanRuns, slots)
+        if(success){
+            lastSuccess = numAboveMean;
+            break;
+        } else {
+            lastFail = numAboveMean;
+            numAboveMean *= 2; // Exponential
+            if(numAboveMean > reacRunsSum){
+                lastSuccess = reacRunsSum;
+                break;
+            }
+        }
+    }
+
+    let low = lastFail
+    let high = lastSuccess
+
+    // Binary search over schedule ranges
+    while(low < high){
+        const mid = Math.floor((low + high) / 2);
+        const {success} = runScheduleAlgorithm(mid, sortedReactions, meanRuns, slots);
+        if(success){
+            high = mid;
+        } else {
+            low = mid + 1
+        }
+    }
+
+    schedule = runScheduleAlgorithm(low, sortedReactions, meanRuns, slots);
     return schedule;
 }
 

@@ -35,7 +35,6 @@ class MarketData extends Component {
     };
 
     this.renderIconButton = this.renderIconButton.bind(this);
-    // this.renderChart = this.renderChart.bind(this);
     this.handleIconClick = this.handleIconClick.bind(this);
     this.getClassName = this.getClassName.bind(this);
     this.getLocationName = this.getLocationName.bind(this);
@@ -152,7 +151,7 @@ class MarketData extends Component {
             dates: convertDates(data.profit.dates),
             dataValues: data.profit.dataValues,
             percentageChange: data.profit.thirtyDayMedianDelta,
-            addToGraph: false,
+            addToGraph: true,
             info: `Buying materials from ${settings.materialsOrderType} orders in ${this.getLocationName(settings.materialsLocation)} and selling subsystems to ${settings.subsystemsOrderType} orders in ${this.getLocationName(settings.subsystemsLocation)}.`,
           },
           materialsCost: {
