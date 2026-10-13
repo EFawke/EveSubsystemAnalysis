@@ -219,7 +219,6 @@ const SettingsAccordion = (props) => (
 						<Tooltip content="Found in the manufacturing window in-game">
 							<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 								<Text size="2" style={{ color: "var(--accent-a11)" }}>Build System Cost Index</Text>
-								{/* <TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.buildCostIndex || 0.14} onChange={(e) => props.handleInputChange(e.target.value, 'buildCostIndex')} /> */}
 								<TextField.Root
 									style={{ maxWidth: "100px" }}
 									type="number"
@@ -239,7 +238,6 @@ const SettingsAccordion = (props) => (
 						</Tooltip>
 						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>Facility Tax</Text>
-							{/* <TextField.Root style={{ maxWidth: "100px" }} type="number" value={props.complexFacilityTax || 0.25} onChange={(e) => props.handleInputChange(e.target.value, 'complexFacilityTax')} /> */}
 							<TextField.Root
 								style={{ maxWidth: "100px" }}
 								type="number"
@@ -267,13 +265,13 @@ const SettingsAccordion = (props) => (
 					<Flex direction="column" gap="4" align="start" style={{ width: "100%" }}>
 						<Flex direction="column" gap="2" align="start" style={{ width: "50%" }}>
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>Component Mat. Efficiency</Text>
-							<Slider name="componentMaterialEfficiency" min={0} step={1} max={10} defaultValue={[10]} onValueCommit={(e) => props.handleSliderChange(e, "componentMaterialEfficiency")} />
+							<Slider name="componentMaterialEfficiency" min={0} step={1} max={10} defaultValue={[props.componentMaterialEfficiency]} onValueCommit={(e) => props.handleSliderChange(e, "componentMaterialEfficiency")} />
 						</Flex>
 						<Flex direction="column" gap="2" align="start" style={{ width: "50%" }}>
 							<Tooltip content="Feature in development">
 								<Text size="2" style={{ color: "var(--accent-a11)" }}>Component Time Efficiency</Text>
 							</Tooltip>
-							<Slider name="componentTimeEfficiency" min={0} step={1} max={20} defaultValue={[20]} onValueCommit={(e) => props.handleSliderChange(e, "componentTimeEfficiency")} />
+							<Slider name="componentTimeEfficiency" min={0} step={1} max={20} defaultValue={[props.componentTimeEfficiency]} onValueCommit={(e) => props.handleSliderChange(e, "componentTimeEfficiency")} />
 						</Flex>
 					</Flex>
 				</Flex>

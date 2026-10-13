@@ -2,6 +2,8 @@ const express = require('express');
 const morgan = require('morgan');
 const cors = require('cors');
 const app = express();
+app.use(cors({ origin: ["http://localhost:3000", "https://evesubsystemanalysis.com"] }));
+app.use(express.json());
 const errorHandler = require('errorhandler');
 const path = require('path');
 const apiRouter = require('./api/routers/apiRouter')
