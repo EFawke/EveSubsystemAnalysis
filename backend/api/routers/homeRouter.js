@@ -24,7 +24,7 @@ homeRouter.use(express.json());
 
 homeRouter.post('/', async (req, res) => {
     const tradeHub = req.body.tradeHub;
-    const page = req.body?.page || 0;
+    const page = req.body?.page * 10 || 0;
 
     if (!tradeHub) {
         return res.status(400).json({ error: "Missing tradeHub in request body" });
@@ -44,7 +44,7 @@ homeRouter.post('/', async (req, res) => {
                 )
                 ORDER BY losses DESC
                 LIMIT 10
-                OFFSET ${page * 10}
+                OFFSET $2
             ) AS top_lost
             ORDER BY min_sell DESC;
         `, [tradeHub, page]);
