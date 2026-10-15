@@ -79,7 +79,7 @@ const SettingsAccordion = (props) => (
 					<Flex direction="column" gap="2" align="start" style={{ width: "50%" }}>
 						<Flex direction="column" gap="1" align="start" style={{ width: "100%" }}>
 							<Text size="2" style={{ color: "var(--accent-a11)" }}>System Type</Text>
-							<Select.Root defaultValue={props.location || "wormhole"} onValueChange={(value) => props.handleInputChange(value, 'location')}>
+							<Select.Root defaultValue={props.refinerySystem || "wormhole"} onValueChange={(value) => props.handleInputChange(value, 'refinerySystem')}>
 								<Select.Trigger />
 								<Select.Content>
 									<Select.Group>

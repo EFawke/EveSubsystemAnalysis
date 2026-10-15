@@ -37,7 +37,7 @@ const getMaterialRequirements = (settings) => {
     let reactionStructure = settings.refinery;
     let reactionRigOne = settings.meRig || "None";
     let reactionRigTwo = settings.teRig || "None";
-    let reactionLocation = settings.system || "wormhole";
+    let reactionLocation = settings.refinerySystem || "wormhole";
 
     let BPOME = settings.componentMaterialEfficiency ?? 10;
     let BPOTE = settings.componentTimeEfficiency ?? 20;

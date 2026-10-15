@@ -47,9 +47,6 @@ const calculateReactorMEEfficiency = (reactionStructure, reactionRigOne, reactio
     if (reactionLocation == "wormhole") {
         locationBonus = rigME.wormholeBonus;
     }
-    if (reactionLocation == "highsec") {
-        locationBonus = rigME.highsecBonus;
-    }
     if (reactionLocation == "lowsec") {
         locationBonus = rigME.lowsecBonus;
     }
