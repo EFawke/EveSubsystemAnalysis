@@ -285,7 +285,7 @@ class Build extends React.Component {
             offensiveVolume, propulsionVolume, numSlots, skillLevel,
             implant, buildingComponents, runningReactions,
             reactionCostIndex, buildCostIndex,
-            reactionFacilityTax, complexFacilityTax, loading
+            reactionFacilityTax, complexFacilityTax, refinerySystem
         } = this.state;
 
         return (
@@ -293,6 +293,7 @@ class Build extends React.Component {
                 <Flex direction="column" className="settings_accordion" style={{ height: "fit-content" }}>
                     <SettingsAccordion
                         refinery={refinery}
+                        refinerySystem={refinerySystem}
                         teRig={teRig}
                         meRig={meRig}
                         system={system}
