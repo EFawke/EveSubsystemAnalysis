@@ -87,13 +87,15 @@ const logTable = () => {
 // dropTable();
 
 const createAnalysisSnapshotTable = () => {
-    client.query(`CREATE TABLE IF NOT EXISTS "analysis_snapshot" (
-        id SERIAL PRIMARY KEY,
-        date BIGINT,
-        region BIGINT,
-        type_id BIGINT,
-        trade_volume BIGINT,
-        trade_volume_percent NUMERIC
+    client.query(`
+    CREATE TABLE IF NOT EXISTS "analysis_snapshot" (
+        id                       SERIAL PRIMARY KEY,
+        date                     BIGINT,
+        region                   BIGINT,
+        type_id                  BIGINT,
+        trade_volume             BIGINT,
+        trade_volume_percent     NUMERIC,
+        
         );`)
         .then(() => {
             console.log('Created analysis_snapshot');

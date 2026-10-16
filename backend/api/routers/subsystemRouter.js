@@ -224,12 +224,15 @@ function getLossesData(subsystems) {
 };
 
 marketRouter.post(`/:subsystemID`, async (req, res) => {
-    const id = req.params.subsystemID;
+    const id = Number(req.params.subsystemID);
     const settings = req.body;
     const time = new Date().setUTCHours(0, 0, 0, 0);
     const twentyfourhours = 24 * 60 * 60 * 1000
     const yesterday = time - twentyfourhours;
     const oneMonthAgo = time - (twentyfourhours * 30);
+
+    // oof
+
     Promise.all([
         client.query(`SELECT * FROM subsystems WHERE type_id = ${id} AND killtime > ${oneMonthAgo} ORDER BY killtime DESC;`),
         client.query(`
