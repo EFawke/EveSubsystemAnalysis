@@ -94,8 +94,8 @@ const createAnalysisSnapshotTable = () => {
         region                   BIGINT,
         type_id                  BIGINT,
         trade_volume             BIGINT,
-        trade_volume_percent     NUMERIC,
-        
+        trade_volume_percent     NUMERIC
+
         );`)
         .then(() => {
             console.log('Created analysis_snapshot');
