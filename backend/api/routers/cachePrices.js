@@ -4,32 +4,31 @@ const { namesAndIds, materialsNamesAndIds } = require('../utils/namesAndIds');
 
 const PRICES_URL = 'https://esi.evetech.net/latest/markets/prices/';
 
-let client;
-if (!process.env.DATABASE_URL) {
-  client = new Client({
+async function fetchAndStorePrices() {
+  let client;
+  if (!process.env.DATABASE_URL) {
+    client = new Client({
       user: process.env.LOCAL_USER,
       host: 'localhost',
       database: process.env.LOCAL_DB,
       password: '',
       port: process.env.LOCAL_PORT
-  });
-} else {
-  client = new Client({
+    });
+  } else {
+    client = new Client({
       connectionString: process.env.DATABASE_URL,
       ssl: {
-          rejectUnauthorized: false,
+        rejectUnauthorized: false,
       },
       allowExitOnIdle: true,
-  });
-}
-
-async function fetchAndStorePrices() {
+    });
+  }
   const vals = [];
   const subIds = namesAndIds.map((item) => item.id);
   const matIds = materialsNamesAndIds.map((item) => item.id);
 
   const allIds = [...subIds, ...matIds];
- 
+
   try {
     await client.connect();
 
@@ -42,7 +41,7 @@ async function fetchAndStorePrices() {
     }
 
     for (const price of prices) {
-      if(allIds.includes(price.type_id)){
+      if (allIds.includes(price.type_id)) {
         vals.push(`(${price.type_id}, ${price.adjusted_price || 0}, ${price.average_price || 0}, to_timestamp(${Date.now()} / 1000))`);
       }
     }
@@ -58,7 +57,7 @@ async function fetchAndStorePrices() {
   } catch (err) {
     console.error('Failed to fetch and store prices:', err.message);
   }
-  finally{
+  finally {
     console.log(`[${new Date().toISOString()}] esi update`);
     await client.end();
   }
