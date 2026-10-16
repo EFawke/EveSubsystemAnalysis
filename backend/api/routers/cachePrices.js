@@ -7,19 +7,19 @@ const PRICES_URL = 'https://esi.evetech.net/latest/markets/prices/';
 let client;
 if (!process.env.DATABASE_URL) {
   client = new Client({
-    user: 'tedfawke',
-    host: 'localhost',
-    database: 'evesubsystemanalysis_local',
-    password: '',
-    port: 5432
+      user: process.env.LOCAL_USER,
+      host: 'localhost',
+      database: process.env.LOCAL_DB,
+      password: '',
+      port: process.env.LOCAL_PORT
   });
 } else {
   client = new Client({
-    connectionString: process.env.DATABASE_URL,
-    ssl: {
-      rejectUnauthorized: false
-    },
-    allowExitOnIdle: true
+      connectionString: process.env.DATABASE_URL,
+      ssl: {
+          rejectUnauthorized: false,
+      },
+      allowExitOnIdle: true,
   });
 }
 

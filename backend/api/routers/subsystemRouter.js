@@ -7,17 +7,19 @@ const axios = require('axios');
 let client;
 if (!process.env.DATABASE_URL) {
     client = new Client({
-        user: 'tedfawke',
+        user: process.env.LOCAL_USER,
         host: 'localhost',
-        database: 'evesubsystemanalysis_local',
+        database: process.env.LOCAL_DB,
         password: '',
-        port: 5432
+        port: process.env.LOCAL_PORT
     });
 } else {
     client = new Client({
         connectionString: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
-        allowExitOnIdle: true
+        ssl: {
+            rejectUnauthorized: false,
+        },
+        allowExitOnIdle: true,
     });
 }
 client.connect();
@@ -230,8 +232,17 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
     const twentyfourhours = 24 * 60 * 60 * 1000
     const yesterday = time - twentyfourhours;
     const oneMonthAgo = time - (twentyfourhours * 30);
+    // const time = new Date().setUTCHours(0, 0, 0, 0);
+    // const twentyfourhours = 24 * 60 * 60 * 1000
+    // let dates = [];
+    // for(let i = 0; i < 30; i++){
+    //     dates.push(time - (twentyfourhours * i));
+    // }
 
-    // oof
+    // const lossesQuery = 'WITH loss_days AS (SELECT to_timestamp(killtime / 1000)::date AS date_of_loss FROM subsystems WHERE killtime > $1 AND type_id = $2) SELECT date_of_loss, count(date_of_loss) FROM loss_days GROUP BY date_of_loss ORDER BY date_of_loss ASC;';
+    // const losses = await client.query(lossesQuery, [dates.pop(), id]);
+    // const pricesQuery = 'SELECT DISTINCT ON (date) to_timestamp(date / 1000)::date, minsell, maxbuy, buyvolume, sellvolume FROM price_data WHERE type_id = $1 AND region = $2 AND date > $3 ORDER BY date ASC;';
+    // const prices = await client.query(pricesQuery, [id, settings.subsystemsLocation, dates.pop()]);
 
     Promise.all([
         client.query(`SELECT * FROM subsystems WHERE type_id = ${id} AND killtime > ${oneMonthAgo} ORDER BY killtime DESC;`),

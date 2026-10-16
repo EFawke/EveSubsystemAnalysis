@@ -9,19 +9,19 @@ const { materialsNamesAndIds } = require('../utils/namesAndIds.js')
 let client;
 if (!process.env.DATABASE_URL) {
     client = new Client({
-        user: 'tedfawke',
+        user: process.env.LOCAL_USER,
         host: 'localhost',
-        database: 'evesubsystemanalysis_local',
+        database: process.env.LOCAL_DB,
         password: '',
-        port: 5432
+        port: process.env.LOCAL_PORT
     });
 } else {
     client = new Client({
         connectionString: process.env.DATABASE_URL,
         ssl: {
-            rejectUnauthorized: false
+            rejectUnauthorized: false,
         },
-        allowExitOnIdle: true
+        allowExitOnIdle: true,
     });
 }
 

@@ -6,17 +6,19 @@ const { getMaterialRequirements } = require('../MaterialCalculator/getMaterialRe
 let client;
 if (!process.env.DATABASE_URL) {
     client = new Client({
-        user: 'tedfawke',
+        user: process.env.LOCAL_USER,
         host: 'localhost',
-        database: 'evesubsystemanalysis_local',
+        database: process.env.LOCAL_DB,
         password: '',
-        port: 5432
+        port: process.env.LOCAL_PORT
     });
 } else {
     client = new Client({
         connectionString: process.env.DATABASE_URL,
-        ssl: { rejectUnauthorized: false },
-        allowExitOnIdle: true
+        ssl: {
+            rejectUnauthorized: false,
+        },
+        allowExitOnIdle: true,
     });
 }
 client.connect();
@@ -63,9 +65,6 @@ const getSubsystemCosts = async (settings, oneMonthAgo) => {
                 WHERE type_id = ${id} AND date > ${oneMonthAgo} AND region = '${settings.materialsLocation}'
                 ORDER BY date DESC;`);
             
-            
-            console.log(priceDataResponse.rows)
-
             priceDataResponse.rows.forEach(row => {
                 const date = row.date;
                 const itemCost = row[column] * quantity;

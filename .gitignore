@@ -11,3 +11,5 @@ frontend/.env.development
 node_modules
 frontend/.end.development
 *.DS_Store
+.env.local
+.end*

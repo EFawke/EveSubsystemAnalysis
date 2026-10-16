@@ -6,19 +6,19 @@ const { updatePriceTable } = require('../DailyDataUpdaters/dailyDatabaseUpload.j
 let client;
 if (!process.env.DATABASE_URL) {
     client = new Client({
-        user: 'tedfawke',        // Your local PostgreSQL username
-        host: 'localhost',       // Host should be localhost for local development
-        database: 'evesubsystemanalysis_local',  // Your local database name
-        password: '',            // Local password if needed (empty if not used)
-        port: 5432               // Default PostgreSQL port
+        user: process.env.LOCAL_USER,
+        host: 'localhost',
+        database: process.env.LOCAL_DB,
+        password: '',
+        port: process.env.LOCAL_PORT
     });
 } else {
     client = new Client({
         connectionString: process.env.DATABASE_URL,
         ssl: {
-            rejectUnauthorized: false
+            rejectUnauthorized: false,
         },
-        allowExitOnIdle: true
+        allowExitOnIdle: true,
     });
 }
 
