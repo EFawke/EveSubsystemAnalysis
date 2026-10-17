@@ -89,6 +89,7 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
 
     let currentValues = {
         tradeVol: {
+            title: "Trade Volume",
             currentValue: chartData.filter((item) => item.tradeVol !== 'No Data').at(-1).tradeVol,
             change: (() => {
                 const current = chartData.filter((item) => item.tradeVol !== 'No Data').at(-1).tradeVol;
@@ -98,6 +99,7 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             })()
         },
         totalCost: {
+            title: "Material Cost",
             currentValue: [...chartData].filter((item) => item.totalCost !== 'No Data').at(-1).totalCost,
             change: (() => {
                 const current = chartData.filter((item) => item.totalCost !== 'No Data').at(-1).totalCost;
@@ -107,6 +109,7 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             })()
         },
         minSell: {
+            title: "Min Sell",
             currentValue: [...chartData].filter((item) => item.minSell !== 'No Data').at(-1).minSell,
             change: (() => {
                 const current = chartData.filter((item) => item.minSell !== 'No Data').at(-1).minSell;
@@ -116,6 +119,7 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             })()
         },
         maxBuy: {
+            title: "Max Buy",
             currentValue: [...chartData].filter((item) => item.maxBuy !== 'No Data').at(-1).maxBuy,
             change: (() => {
                 const current = chartData.filter((item) => item.maxBuy !== 'No Data').at(-1).maxBuy;
@@ -125,6 +129,7 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             })()
         },
         buyVol: {
+            title: "Buy Volume",
             currentValue: [...chartData].filter((item) => item.buyVol !== 'No Data').at(-1).buyVol,
             change: (() => {
                 const current = chartData.filter((item) => item.buyVol !== 'No Data').at(-1).buyVol;
@@ -134,6 +139,7 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             })()
         },
         sellVol: {
+            title: "Sell Volume",
             currentValue: [...chartData].filter((item) => item.sellVol !== 'No Data').at(-1).sellVol,
             change: (() => {
                 const current = chartData.filter((item) => item.sellVol !== 'No Data').at(-1).sellVol;
@@ -143,6 +149,7 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             })()
         },
         losses: {
+            title: "Losses",
             currentValue: [...chartData].filter((item) => item.losses !== 'No Data').at(-1).losses,
             change: (() => {
                 const current = chartData.filter((item) => item.losses !== 'No Data').at(-1).losses;
@@ -152,6 +159,7 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
             })()
         },
         profit: {
+            title: "Profit",
             currentValue: [...chartData].filter((item) => item.profit !== 'No Data').at(-1).profit,
             change: (() => {
                 const current = chartData.filter((item) => item.profit !== 'No Data').at(-1).profit;
