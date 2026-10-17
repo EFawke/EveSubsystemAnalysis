@@ -1,4 +1,6 @@
 backend/node_modules/
+backend/.env
+backend/.env.development
 node_modules/.cache/
 frontend/node_modules/
 .DS_Storelatest.dump

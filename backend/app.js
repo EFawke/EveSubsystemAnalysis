@@ -4,9 +4,12 @@ const cors = require('cors');
 const app = express();
 app.use(cors({ origin: ["http://localhost:3000", "https://evesubsystemanalysis.com"] }));
 app.use(express.json());
+app.use(morgan('dev'));
 const errorHandler = require('errorhandler');
 const path = require('path');
+require('dotenv').config({ path: require('path').resolve(__dirname, '.env') });
 const apiRouter = require('./api/routers/apiRouter')
+
 
 if (process.env.NODE_ENV === 'production') {
   app.set('trust proxy', true);
@@ -18,10 +21,7 @@ if (process.env.NODE_ENV === 'production') {
     next();
   });
 }
-
 app.use('/api', apiRouter);
-app.use(morgan('dev'));
-app.use(cors());
 app.use(errorHandler());
 
 let port = process.env.PORT;

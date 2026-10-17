@@ -143,6 +143,7 @@ class App extends React.Component {
     };
 
     render() {
+        return (<div style={{height: '100vh', width: '100vw', display: 'flex', justifyContent: 'center', alignItems: 'center'}}><p>website is undergoing maintenance</p></div>)
         const { darkMode, profit, cursorState, backgroundColors, colorBlindMode, backlight, materialsLocation, materialsOrderType, subsystemsLocation, subsystemsOrderType } = this.state;
         const isValidUrl = (url, array) => {
             const urlParts = url.split('/');

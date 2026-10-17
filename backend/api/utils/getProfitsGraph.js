@@ -46,7 +46,7 @@ const getSubsystemCosts = async (settings, oneMonthAgo) => {
 
     for (let i = matRequirements.length - 1; i >= 0; i--) {
         const arr = [30002, 30476, 30464, 30474, 30470, 29992, 29994, 30478, 30008]; //remove components from price estimate
-        if (arr.includes(matRequirements[i].id)) {
+        if (arr.includes(matRequirements[i].id) || matRequirements[i].name === 'None') {
             matRequirements.splice(i, 1);
         }
     }
@@ -59,19 +59,24 @@ const getSubsystemCosts = async (settings, oneMonthAgo) => {
             if (settings.materialsOrderType == "sell") {
                 column = "minsell";
             }
-            const priceDataResponse = await client.query(`
-                SELECT DISTINCT ON (date) date, ${column}, to_timestamp(date / 1000) as readable_date
-                FROM price_data
-                WHERE type_id = ${id} AND date > ${oneMonthAgo} AND region = '${settings.materialsLocation}'
-                ORDER BY date DESC;`);
+            const costQuery = `
+            
+            SELECT DISTINCT ON (day) to_char(to_timestamp(date / 1000) AT TIME ZONE 'UTC', 'YYYY-MM-DD') AS day,
+            ${column}
+            FROM price_data
+            WHERE type_id = $1 AND region = $2 AND date >= $3
+            ORDER BY day ASC, date DESC;
+            
+            `
+            const priceDataResponse = await client.query(costQuery, [id, settings.materialsLocation, oneMonthAgo]);
             
             priceDataResponse.rows.forEach(row => {
-                const date = row.date;
+                const day = row.day;
                 const itemCost = row[column] * quantity;
 
-                let dayEntry = dailyCosts.find(entry => entry.date === date);
+                let dayEntry = dailyCosts.find(entry => entry.day === day);
                 if (!dayEntry) {
-                    dayEntry = { date, totalCost: 0 };
+                    dayEntry = { day, totalCost: 0 };
                     dailyCosts.push(dayEntry);
                 }
 
@@ -82,7 +87,6 @@ const getSubsystemCosts = async (settings, oneMonthAgo) => {
         dailyCosts.forEach(entry => {
             entry.totalCost = entry.totalCost / 22;
         });
-
         return dailyCosts; // Each entry in dailyCosts is { date, totalCost }
 
     } catch (error) {

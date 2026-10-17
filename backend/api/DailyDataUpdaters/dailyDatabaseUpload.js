@@ -31,6 +31,7 @@ const updatePriceTable = async (epoch, client) => {
             console.log("Data already exists for this date");
         }
     }
+    
     catch (err) {
         console.log(err);
     }

@@ -9,7 +9,7 @@ if (!process.env.DATABASE_URL) {
         host: 'localhost',
         database: process.env.LOCAL_DB,
         password: '',
-        port: process.env.LOCAL_PORT
+        port: Number(process.env.LOCAL_PORT)
     });
 } else {
     client = new Client({
