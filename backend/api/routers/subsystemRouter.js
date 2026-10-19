@@ -27,6 +27,9 @@ client.connect();
 marketRouter.use(express.json());
 
 marketRouter.post(`/:subsystemID`, async (req, res) => {
+    /* 
+        Updated on 8/10/2026
+    */
     const id = Number(req.params.subsystemID);
     const settings = req.body;
     const time = new Date().setUTCHours(0, 0, 0, 0);
@@ -128,14 +131,14 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
                 return Number((((current - cleaned[middle].profit) / cleaned[middle].profit) * 100).toFixed(1))
             })()
         },
-        buyVol: {
-            title: "Buy Volume",
-            currentValue: [...chartData].filter((item) => item.buyVol !== 'No Data').at(-1).buyVol,
+        losses: {
+            title: "Losses",
+            currentValue: [...chartData].filter((item) => item.losses !== 'No Data').at(-1).losses,
             change: (() => {
-                const current = chartData.filter((item) => item.buyVol !== 'No Data').at(-1).buyVol;
-                const cleaned = chartData.filter((item) => item.buyVol !== 'No Data').sort((a,b) => a.buyVol - b.buyVol);
+                const current = chartData.filter((item) => item.losses !== 'No Data').at(-1).losses;
+                const cleaned = chartData.filter((item) => item.losses !== 'No Data').sort((a,b) => a.losses - b.losses);
                 const middle = Math.floor(cleaned.length  / 2);
-                return Number((((current - cleaned[middle].buyVol) / cleaned[middle].buyVol) * 100).toFixed(1))
+                return Number((((current - cleaned[middle].losses) / cleaned[middle].losses) * 100).toFixed(1))
             })()
         },
         sellVol: {
@@ -148,6 +151,16 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
                 return Number((((current - cleaned[middle].sellVol) / cleaned[middle].sellVol) * 100).toFixed(1))
             })()
         },
+        buyVol: {
+            title: "Buy Volume",
+            currentValue: [...chartData].filter((item) => item.buyVol !== 'No Data').at(-1).buyVol,
+            change: (() => {
+                const current = chartData.filter((item) => item.buyVol !== 'No Data').at(-1).buyVol;
+                const cleaned = chartData.filter((item) => item.buyVol !== 'No Data').sort((a,b) => a.buyVol - b.buyVol);
+                const middle = Math.floor(cleaned.length  / 2);
+                return Number((((current - cleaned[middle].buyVol) / cleaned[middle].buyVol) * 100).toFixed(1))
+            })()
+        },
         tradeVol: {
             title: "Trade Volume",
             currentValue: chartData.filter((item) => item.tradeVol !== 'No Data').at(-1).tradeVol,
@@ -156,16 +169,6 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
                 const cleaned = chartData.filter((item) => item.tradeVol !== 'No Data').sort((a,b) => a.tradeVol - b.tradeVol);
                 const middle = Math.floor(cleaned.length  / 2);
                 return Number((((current - cleaned[middle].tradeVol) / cleaned[middle].tradeVol) * 100).toFixed(1))
-            })()
-        },
-        losses: {
-            title: "Losses",
-            currentValue: [...chartData].filter((item) => item.losses !== 'No Data').at(-1).losses,
-            change: (() => {
-                const current = chartData.filter((item) => item.losses !== 'No Data').at(-1).losses;
-                const cleaned = chartData.filter((item) => item.losses !== 'No Data').sort((a,b) => a.losses - b.losses);
-                const middle = Math.floor(cleaned.length  / 2);
-                return Number((((current - cleaned[middle].losses) / cleaned[middle].losses) * 100).toFixed(1))
             })()
         },
     }

@@ -7,7 +7,7 @@ const {
     largeManufacturingRigII} = require('./staticVars.js');
 
 const getMaterialEfficiencyBonus = (BPOME, BPOTE, structure, rigOne, rigTwo, location, settings) => {
-    let struct;
+    let struct = azbel;
     if (structure == "Azbel") {
         struct = azbel;
     }

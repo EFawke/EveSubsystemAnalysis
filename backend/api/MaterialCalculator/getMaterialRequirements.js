@@ -29,12 +29,12 @@ const { aggregateItems } = require('./aggregateItems.js');
 const { materialsNamesAndIds } = require('../utils/namesAndIds.js');
 
 const getMaterialRequirements = (settings) => {
-    let structure = settings.complex;
+    let structure = settings.complex || "Azbel";
     let rigOne = settings.complexMeRig || "None";
     let rigTwo = settings.complexTeRig || "None";
     let location = settings.complexSystem || "wormhole";
 
-    let reactionStructure = settings.refinery;
+    let reactionStructure = settings.refinery || "Tatara";
     let reactionRigOne = settings.meRig || "None";
     let reactionRigTwo = settings.teRig || "None";
     let reactionLocation = settings.refinerySystem || "wormhole";
@@ -52,7 +52,7 @@ const getMaterialRequirements = (settings) => {
 
     let reactionSlots = settings.numSlots || 1;
     let skillLevel = settings.skillLevel ?? 1;
-    let implantBonus = settings.implant;
+    let implantBonus = settings.implant || 'None';
 
     let requiredMaterials = [];
 

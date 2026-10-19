@@ -138,367 +138,403 @@ async function getLatestPriceForItem(client, typeId, region, orderType) {
     return result.rows[0]?.[column] || 0;
 }
 
+// const handleErrors = (settings) => {
+//     if(!settings){
+//         return "settings not defined";
+//     }
+//     if(!settings?.complex){
+//         return "complex not defined";
+//     }
+//     if(settings.complex !== "Azbel" && settings.complex !== "Raitaru"){
+//         return "Invalid complex";
+//     }
+//     if(!settings?.complexMeRig){
+//         return "complex ME rig not defined";
+//     }
+//     if(!settings?.complexTeRig){
+//         return "complex TE rig not defined";
+//     }
+//     if(!settings?.complexSystem){
+//         return "complex system not defined";
+//     }
+//     if(!settings?.refinery){
+//         return "refinery not defined";
+//     }
+//     if(!settings?.meRig){
+//         return "refinery ME rig not defined";
+//     }
+//     if(!settings?.teRig){
+//         return "refinery ME rig not defined";
+//     }
+// }
+
 buildRouter.post('/', async (req, res) => {
-    const settings = req.body;
-    const materialRequirements = getMaterialRequirements(settings);
-    const response = {
-        data: (await client.query('SELECT type_id, adjusted_price FROM esi_prices')).rows
-    };
+    try{
+        const settings = req.body;
 
-    let totalTax = 0;
-    for (let i = 0; i < materialRequirements.schedule.length; i++) {
-        const slot = materialRequirements.schedule[i];
-        const reaction = reactionRequirements.find(reaction => reaction.type_id === slot.id);
-
-        if (reaction) {
-            const calculatedEIV = calculateEIV(reaction.requirements, slot.runs, response.data);
-            const formulaReactionCostIndex = settings.reactionCostIndex / 100;
-            const systemCostIndex = Math.floor(calculatedEIV * formulaReactionCostIndex);
-            const facilityTax = Math.floor(calculatedEIV * settings.reactionFacilityTax / 100);
-            const sccSurcharge = Math.floor(calculatedEIV * 0.04);
-            totalTax += systemCostIndex + facilityTax + sccSurcharge;
-        }
-    }
-    // eiv for BPC's
-    let totalEIVForBPC = 0;
-    for (let i = 0; i < materialRequirements.requiredMaterialsForAll.length; i++) {
-        const item = materialRequirements.requiredMaterialsForAll[i];
-        const calculatedEIV = calculateBPCEIV(item, response.data, materialRequirements.blueprints, settings);
-        totalEIVForBPC += Math.round(calculatedEIV);
-    }
-
-    const formulaManufacturingCostIndex = Number(settings.buildCostIndex / 100);
-    let systemCostIndexTax = Math.floor(totalEIVForBPC * formulaManufacturingCostIndex);
-    if (settings.complex == 'Azbel') {
-        const reductionFactor = azbel.iskReduction * systemCostIndexTax;
-        systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-    }
-    if (settings.complex == 'Raitaru') {
-        const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
-        systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-    }
-    const facilityTaxTax = Math.floor(totalEIVForBPC * settings.complexFacilityTax / 100);
-    const sccSurchargeTax = Math.floor(totalEIVForBPC * 0.04);
-    const BPCTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
-    totalTax += BPCTaxTotal;
-
-    // eiv for components
-    if (Number(settings.coreVolume) > 0) {
-        let totalEIVForBPO = 0;
-        let coreSpecQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == core.specComponents[0].type_id).quantity;
-        let array = [];
-        for (let i = 0; i < core.specComponents[0].requirements.length; i++) {
-            array.push({ id: core.specComponents[0].requirements[i].type_id, quantity: core.specComponents[0].requirements[i].quantity * coreSpecQuantity });
-        }
-
-        for (let i = 0; i < array.length; i++) {
-            const item = array[i];
-            const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
-            totalEIVForBPO += calculatedEIV;
-        }
-
-        let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
-        if (settings.complex == 'Azbel') {
-            const reductionFactor = azbel.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        if (settings.complex == 'Raitaru') {
-            const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
-        const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
-        const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
-        totalTax += BPOTaxTotal;
-    }
-
-    if (Number(settings.defensiveVolume) > 0) {
-        let totalEIVForBPO = 0;
-        let defSpecQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == defensive.specComponents[0].type_id).quantity;
-        let array = [];
-        for (let i = 0; i < defensive.specComponents[0].requirements.length; i++) {
-            array.push({ id: defensive.specComponents[0].requirements[i].type_id, quantity: defensive.specComponents[0].requirements[i].quantity * defSpecQuantity });
-        }
-
-        for (let i = 0; i < array.length; i++) {
-            const item = array[i];
-            const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
-            totalEIVForBPO += calculatedEIV;
-        }
-
-        let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
-        if (settings.complex == 'Azbel') {
-            const reductionFactor = azbel.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        if (settings.complex == 'Raitaru') {
-            const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
-        const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
-        const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
-        totalTax += BPOTaxTotal;
-    }
-
-    if (Number(settings.offensiveVolume) > 0) {
-        let totalEIVForBPO = 0;
-        let offSpecQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == offensive.specComponents[0].type_id).quantity;
-        let array = [];
-        for (let i = 0; i < offensive.specComponents[0].requirements.length; i++) {
-            array.push({ id: offensive.specComponents[0].requirements[i].type_id, quantity: offensive.specComponents[0].requirements[i].quantity * offSpecQuantity });
-        }
-
-        for (let i = 0; i < array.length; i++) {
-            const item = array[i];
-            const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
-            totalEIVForBPO += calculatedEIV;
-        }
-
-        let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
-        if (settings.complex == 'Azbel') {
-            const reductionFactor = azbel.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        if (settings.complex == 'Raitaru') {
-            const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
-        const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
-        const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
-        totalTax += BPOTaxTotal;
-    }
-
-    if (Number(settings.propulsionVolume) > 0) {
-        let totalEIVForBPO = 0;
-        let propSpecQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == propulsion.specComponents[0].type_id).quantity;
-        let array = [];
-        for (let i = 0; i < propulsion.specComponents[0].requirements.length; i++) {
-            array.push({ id: propulsion.specComponents[0].requirements[i].type_id, quantity: propulsion.specComponents[0].requirements[i].quantity * propSpecQuantity });
-        }
-
-        for (let i = 0; i < array.length; i++) {
-            const item = array[i];
-            const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
-            totalEIVForBPO += calculatedEIV;
-        }
-
-        let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
-        if (settings.complex == 'Azbel') {
-            const reductionFactor = azbel.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        if (settings.complex == 'Raitaru') {
-            const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
-        const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
-        const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
-        totalTax += BPOTaxTotal;
-    }
-
-    if (Number(settings.propulsionVolume) > 0 || Number(settings.offensiveVolume) > 0 || Number(settings.defensiveVolume) > 0 || Number(settings.coreVolume) > 0) {
-        let totalEIVForBPO = 0;
-        let mainComponentQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == mainComponents[0].type_id).quantity;
-        let array = [];
-        for (let i = 0; i < mainComponents[0].requirements.length; i++) {
-            array.push({ id: mainComponents[0].requirements[i].type_id, quantity: mainComponents[0].requirements[i].quantity * mainComponentQuantity });
-        }
-
-        for (let i = 0; i < array.length; i++) {
-            const item = array[i];
-            const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
-            totalEIVForBPO += calculatedEIV;
-        }
-
-        let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
-        if (settings.complex == 'Azbel') {
-            const reductionFactor = azbel.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        if (settings.complex == 'Raitaru') {
-            const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
-        const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
-        const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
-        totalTax += BPOTaxTotal;
-    }
-
-    if (Number(settings.propulsionVolume) > 0 || Number(settings.offensiveVolume) > 0 || Number(settings.defensiveVolume) > 0 || Number(settings.coreVolume) > 0) {
-        let totalEIVForBPO = 0;
-        let mainComponentQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == mainComponents[1].type_id).quantity;
-        let array = [];
-        for (let i = 0; i < mainComponents[1].requirements.length; i++) {
-            array.push({ id: mainComponents[1].requirements[i].type_id, quantity: mainComponents[1].requirements[i].quantity * mainComponentQuantity });
-        }
-
-        for (let i = 0; i < array.length; i++) {
-            const item = array[i];
-            const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
-            totalEIVForBPO += calculatedEIV;
-        }
-
-        let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
-        if (settings.complex == 'Azbel') {
-            const reductionFactor = azbel.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        if (settings.complex == 'Raitaru') {
-            const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
-        const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
-        const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
-        totalTax += BPOTaxTotal;
-    }
-
-    if (Number(settings.propulsionVolume) > 0 || Number(settings.offensiveVolume) > 0 || Number(settings.defensiveVolume) > 0 || Number(settings.coreVolume) > 0) {
-        let totalEIVForBPO = 0;
-        let mainComponentQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == mainComponents[2].type_id).quantity;
-        let array = [];
-        for (let i = 0; i < mainComponents[2].requirements.length; i++) {
-            array.push({ id: mainComponents[2].requirements[i].type_id, quantity: mainComponents[2].requirements[i].quantity * mainComponentQuantity });
-        }
-
-        for (let i = 0; i < array.length; i++) {
-            const item = array[i];
-            const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
-            totalEIVForBPO += calculatedEIV;
-        }
-
-        let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
-        if (settings.complex == 'Azbel') {
-            const reductionFactor = azbel.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        if (settings.complex == 'Raitaru') {
-            const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
-        const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
-        const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
-        totalTax += BPOTaxTotal;
-    }
-
-    if (Number(settings.propulsionVolume) > 0 || Number(settings.offensiveVolume) > 0 || Number(settings.defensiveVolume) > 0 || Number(settings.coreVolume) > 0) {
-        let totalEIVForBPO = 0;
-        let mainComponentQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == mainComponents[3].type_id).quantity;
-        let array = [];
-        for (let i = 0; i < mainComponents[3].requirements.length; i++) {
-            array.push({ id: mainComponents[3].requirements[i].type_id, quantity: mainComponents[3].requirements[i].quantity * mainComponentQuantity });
-        }
-
-        for (let i = 0; i < array.length; i++) {
-            const item = array[i];
-            const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
-            totalEIVForBPO += calculatedEIV;
-        }
-
-        let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
-        if (settings.complex == 'Azbel') {
-            const reductionFactor = azbel.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        if (settings.complex == 'Raitaru') {
-            const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
-        const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
-        const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
-        totalTax += BPOTaxTotal;
-    }
-
-    if (Number(settings.propulsionVolume) > 0 || Number(settings.offensiveVolume) > 0 || Number(settings.defensiveVolume) > 0 || Number(settings.coreVolume) > 0) {
-        let totalEIVForBPO = 0;
-        let mainComponentQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == mainComponents[4].type_id).quantity;
-        let array = [];
-        for (let i = 0; i < mainComponents[4].requirements.length; i++) {
-            array.push({ id: mainComponents[4].requirements[i].type_id, quantity: mainComponents[4].requirements[i].quantity * mainComponentQuantity });
-        }
-
-        for (let i = 0; i < array.length; i++) {
-            const item = array[i];
-            const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
-            totalEIVForBPO += calculatedEIV;
-        }
-
-        let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
-        if (settings.complex == 'Azbel') {
-            const reductionFactor = azbel.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        if (settings.complex == 'Raitaru') {
-            const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
-            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
-        }
-        const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
-        const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
-        const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
-        totalTax += BPOTaxTotal;
-    }
-
-    const orderType = settings.materialsOrderType == 'buy' ? 'max_buy' : 'min_sell';
-    const percentageCol = settings.materialsOrderType == 'buy' ? 'max_buy_percent' : 'min_sell_percent';
-    const prices = await client.query(`SELECT type_id, region, date, ${orderType} as price, ${percentageCol} as percent_change FROM build_snapshot WHERE region = ${settings.materialsLocation}`);
-
-    let materialsTotal = 0;
-
-    const matIds = materialsNamesAndIds.map((mat) => mat.id);
-    materialRequirements.requiredMaterialsForAll
-        .filter(item => item.id !== null)
-        .filter(item => matIds.includes(item.id))
-        .map((item) => {
-            const unitPrice = prices.rows.find((data) => data.type_id == item.id).price;
-            const lineTotal = unitPrice * item.quantity;
-            const percentageChange = prices.rows.find((data) => data.type_id == item.id).percent_change;
-
-            materialsTotal += lineTotal;
-
-            item.unitPrice = unitPrice;
-            item.lineTotal = lineTotal;
-            item.percentageChange = percentageChange;
-        })
-
-    materialRequirements.totalTax = totalTax;
-    materialRequirements.maxBuys = materialsTotal;
-    materialRequirements.totalJobCost = materialsTotal + totalTax;
-
-    const gasIds = [30375, 30376, 30377, 30370, 30378, 30371, 30372, 30373, 30374];
-    const reactionIds = [30311, 30310, 30305, 30303, 30309, 30307, 30306, 30304, 30308]
-    const salvageIds = [45662, 30024, 30270, 30269, 30254, 30248, 30271, 45661, 30018, 30022, 30268, 30259, 30021, 30251, 30019, 30258, 45660, 45663, 30252];
-    const mineralIds = [37, 40, 36, 38, 35, 34, 39];
-    const fuelBlockIds = [21940, 19860, 21100, 20230];
-
-    // Helper function to determine category priority
-    const getCategoryPriority = (id) => {
-        if (salvageIds.includes(id)) return 1;
-        if (gasIds.includes(id)) return 2;
-        if (fuelBlockIds.includes(id)) return 3;
-        if (mineralIds.includes(id)) return 4;
-        return 5; // For "everything else"
-    };
-
-    // Sorting the array
-    materialRequirements.requiredMaterialsForAll.sort((a, b) => {
-        const categoryA = getCategoryPriority(a.id);
-        const categoryB = getCategoryPriority(b.id);
-
-        if (categoryA !== categoryB) {
-            return categoryA - categoryB; // Sort by category priority
-        }
-        return a.id - b.id; // Within the same category, sort by ID
-    });
-
-    consolidateByNameInPlace(materialRequirements.requiredMaterialsForAll);
+        const materialRequirements = getMaterialRequirements(settings);
+        const response = {
+            data: (await client.query('SELECT type_id, adjusted_price FROM esi_prices')).rows
+        };
     
-    res.send(materialRequirements);
+        let totalTax = 0;
+        for (let i = 0; i < materialRequirements.schedule.length; i++) {
+            const slot = materialRequirements.schedule[i];
+            const reaction = reactionRequirements.find(reaction => reaction.type_id === slot.id);
+    
+            if (reaction) {
+                const calculatedEIV = calculateEIV(reaction.requirements, slot.runs, response.data);
+                const formulaReactionCostIndex = settings.reactionCostIndex / 100;
+                const systemCostIndex = Math.floor(calculatedEIV * formulaReactionCostIndex);
+                const facilityTax = Math.floor(calculatedEIV * settings.reactionFacilityTax / 100);
+                const sccSurcharge = Math.floor(calculatedEIV * 0.04);
+                totalTax += systemCostIndex + facilityTax + sccSurcharge;
+            }
+        }
+        // eiv for BPC's
+        let totalEIVForBPC = 0;
+        for (let i = 0; i < materialRequirements.requiredMaterialsForAll.length; i++) {
+            const item = materialRequirements.requiredMaterialsForAll[i];
+            const calculatedEIV = calculateBPCEIV(item, response.data, materialRequirements.blueprints, settings);
+            totalEIVForBPC += Math.round(calculatedEIV);
+        }
+    
+        const formulaManufacturingCostIndex = Number(settings.buildCostIndex / 100);
+        let systemCostIndexTax = Math.floor(totalEIVForBPC * formulaManufacturingCostIndex);
+        if (settings.complex == 'Azbel') {
+            const reductionFactor = azbel.iskReduction * systemCostIndexTax;
+            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+        }
+        if (settings.complex == 'Raitaru') {
+            const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
+            systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+        }
+        const facilityTaxTax = Math.floor(totalEIVForBPC * settings.complexFacilityTax / 100);
+        const sccSurchargeTax = Math.floor(totalEIVForBPC * 0.04);
+        const BPCTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
+        totalTax += BPCTaxTotal;
+    
+        // eiv for components
+        if (Number(settings.coreVolume) > 0) {
+            let totalEIVForBPO = 0;
+            let coreSpecQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == core.specComponents[0].type_id).quantity;
+            let array = [];
+            for (let i = 0; i < core.specComponents[0].requirements.length; i++) {
+                array.push({ id: core.specComponents[0].requirements[i].type_id, quantity: core.specComponents[0].requirements[i].quantity * coreSpecQuantity });
+            }
+    
+            for (let i = 0; i < array.length; i++) {
+                const item = array[i];
+                const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
+                totalEIVForBPO += calculatedEIV;
+            }
+    
+            let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
+            if (settings.complex == 'Azbel') {
+                const reductionFactor = azbel.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            if (settings.complex == 'Raitaru') {
+                const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
+            const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
+            const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
+            totalTax += BPOTaxTotal;
+        }
+    
+        if (Number(settings.defensiveVolume) > 0) {
+            let totalEIVForBPO = 0;
+            let defSpecQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == defensive.specComponents[0].type_id).quantity;
+            let array = [];
+            for (let i = 0; i < defensive.specComponents[0].requirements.length; i++) {
+                array.push({ id: defensive.specComponents[0].requirements[i].type_id, quantity: defensive.specComponents[0].requirements[i].quantity * defSpecQuantity });
+            }
+    
+            for (let i = 0; i < array.length; i++) {
+                const item = array[i];
+                const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
+                totalEIVForBPO += calculatedEIV;
+            }
+    
+            let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
+            if (settings.complex == 'Azbel') {
+                const reductionFactor = azbel.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            if (settings.complex == 'Raitaru') {
+                const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
+            const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
+            const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
+            totalTax += BPOTaxTotal;
+        }
+    
+        if (Number(settings.offensiveVolume) > 0) {
+            let totalEIVForBPO = 0;
+            let offSpecQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == offensive.specComponents[0].type_id).quantity;
+            let array = [];
+            for (let i = 0; i < offensive.specComponents[0].requirements.length; i++) {
+                array.push({ id: offensive.specComponents[0].requirements[i].type_id, quantity: offensive.specComponents[0].requirements[i].quantity * offSpecQuantity });
+            }
+    
+            for (let i = 0; i < array.length; i++) {
+                const item = array[i];
+                const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
+                totalEIVForBPO += calculatedEIV;
+            }
+    
+            let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
+            if (settings.complex == 'Azbel') {
+                const reductionFactor = azbel.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            if (settings.complex == 'Raitaru') {
+                const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
+            const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
+            const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
+            totalTax += BPOTaxTotal;
+        }
+    
+        if (Number(settings.propulsionVolume) > 0) {
+            let totalEIVForBPO = 0;
+            let propSpecQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == propulsion.specComponents[0].type_id).quantity;
+            let array = [];
+            for (let i = 0; i < propulsion.specComponents[0].requirements.length; i++) {
+                array.push({ id: propulsion.specComponents[0].requirements[i].type_id, quantity: propulsion.specComponents[0].requirements[i].quantity * propSpecQuantity });
+            }
+    
+            for (let i = 0; i < array.length; i++) {
+                const item = array[i];
+                const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
+                totalEIVForBPO += calculatedEIV;
+            }
+    
+            let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
+            if (settings.complex == 'Azbel') {
+                const reductionFactor = azbel.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            if (settings.complex == 'Raitaru') {
+                const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
+            const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
+            const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
+            totalTax += BPOTaxTotal;
+        }
+    
+        if (Number(settings.propulsionVolume) > 0 || Number(settings.offensiveVolume) > 0 || Number(settings.defensiveVolume) > 0 || Number(settings.coreVolume) > 0) {
+            let totalEIVForBPO = 0;
+            let mainComponentQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == mainComponents[0].type_id).quantity;
+            let array = [];
+            for (let i = 0; i < mainComponents[0].requirements.length; i++) {
+                array.push({ id: mainComponents[0].requirements[i].type_id, quantity: mainComponents[0].requirements[i].quantity * mainComponentQuantity });
+            }
+    
+            for (let i = 0; i < array.length; i++) {
+                const item = array[i];
+                const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
+                totalEIVForBPO += calculatedEIV;
+            }
+    
+            let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
+            if (settings.complex == 'Azbel') {
+                const reductionFactor = azbel.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            if (settings.complex == 'Raitaru') {
+                const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
+            const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
+            const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
+            totalTax += BPOTaxTotal;
+        }
+    
+        if (Number(settings.propulsionVolume) > 0 || Number(settings.offensiveVolume) > 0 || Number(settings.defensiveVolume) > 0 || Number(settings.coreVolume) > 0) {
+            let totalEIVForBPO = 0;
+            let mainComponentQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == mainComponents[1].type_id).quantity;
+            let array = [];
+            for (let i = 0; i < mainComponents[1].requirements.length; i++) {
+                array.push({ id: mainComponents[1].requirements[i].type_id, quantity: mainComponents[1].requirements[i].quantity * mainComponentQuantity });
+            }
+    
+            for (let i = 0; i < array.length; i++) {
+                const item = array[i];
+                const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
+                totalEIVForBPO += calculatedEIV;
+            }
+    
+            let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
+            if (settings.complex == 'Azbel') {
+                const reductionFactor = azbel.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            if (settings.complex == 'Raitaru') {
+                const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
+            const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
+            const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
+            totalTax += BPOTaxTotal;
+        }
+    
+        if (Number(settings.propulsionVolume) > 0 || Number(settings.offensiveVolume) > 0 || Number(settings.defensiveVolume) > 0 || Number(settings.coreVolume) > 0) {
+            let totalEIVForBPO = 0;
+            let mainComponentQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == mainComponents[2].type_id).quantity;
+            let array = [];
+            for (let i = 0; i < mainComponents[2].requirements.length; i++) {
+                array.push({ id: mainComponents[2].requirements[i].type_id, quantity: mainComponents[2].requirements[i].quantity * mainComponentQuantity });
+            }
+    
+            for (let i = 0; i < array.length; i++) {
+                const item = array[i];
+                const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
+                totalEIVForBPO += calculatedEIV;
+            }
+    
+            let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
+            if (settings.complex == 'Azbel') {
+                const reductionFactor = azbel.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            if (settings.complex == 'Raitaru') {
+                const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
+            const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
+            const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
+            totalTax += BPOTaxTotal;
+        }
+    
+        if (Number(settings.propulsionVolume) > 0 || Number(settings.offensiveVolume) > 0 || Number(settings.defensiveVolume) > 0 || Number(settings.coreVolume) > 0) {
+            let totalEIVForBPO = 0;
+            let mainComponentQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == mainComponents[3].type_id).quantity;
+            let array = [];
+            for (let i = 0; i < mainComponents[3].requirements.length; i++) {
+                array.push({ id: mainComponents[3].requirements[i].type_id, quantity: mainComponents[3].requirements[i].quantity * mainComponentQuantity });
+            }
+    
+            for (let i = 0; i < array.length; i++) {
+                const item = array[i];
+                const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
+                totalEIVForBPO += calculatedEIV;
+            }
+    
+            let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
+            if (settings.complex == 'Azbel') {
+                const reductionFactor = azbel.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            if (settings.complex == 'Raitaru') {
+                const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
+            const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
+            const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
+            totalTax += BPOTaxTotal;
+        }
+    
+        if (Number(settings.propulsionVolume) > 0 || Number(settings.offensiveVolume) > 0 || Number(settings.defensiveVolume) > 0 || Number(settings.coreVolume) > 0) {
+            let totalEIVForBPO = 0;
+            let mainComponentQuantity = materialRequirements.requiredMaterialsForAll.find((item) => item.id == mainComponents[4].type_id).quantity;
+            let array = [];
+            for (let i = 0; i < mainComponents[4].requirements.length; i++) {
+                array.push({ id: mainComponents[4].requirements[i].type_id, quantity: mainComponents[4].requirements[i].quantity * mainComponentQuantity });
+            }
+    
+            for (let i = 0; i < array.length; i++) {
+                const item = array[i];
+                const calculatedEIV = response.data.find(material => material.type_id === item.id).adjusted_price * item.quantity;
+                totalEIVForBPO += calculatedEIV;
+            }
+    
+            let systemCostIndexTax = Math.floor(totalEIVForBPO * formulaManufacturingCostIndex);
+            if (settings.complex == 'Azbel') {
+                const reductionFactor = azbel.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            if (settings.complex == 'Raitaru') {
+                const reductionFactor = raitaru.iskReduction * systemCostIndexTax;
+                systemCostIndexTax = Math.floor(systemCostIndexTax - reductionFactor);
+            }
+            const facilityTaxTax = Math.floor(totalEIVForBPO * settings.complexFacilityTax / 100);
+            const sccSurchargeTax = Math.floor(totalEIVForBPO * 0.04);
+            const BPOTaxTotal = systemCostIndexTax + facilityTaxTax + sccSurchargeTax;
+            totalTax += BPOTaxTotal;
+        }
+    
+        const orderType = settings.materialsOrderType == 'buy' ? 'max_buy' : 'min_sell';
+        const percentageCol = settings.materialsOrderType == 'buy' ? 'max_buy_percent' : 'min_sell_percent';
+        const prices = await client.query(`SELECT type_id, region, date, ${orderType} as price, ${percentageCol} as percent_change FROM build_snapshot WHERE region = ${settings.materialsLocation}`);
+    
+        let materialsTotal = 0;
+    
+        const matIds = materialsNamesAndIds.map((mat) => mat.id);
+        materialRequirements.requiredMaterialsForAll
+            .filter(item => item.id !== null)
+            .filter(item => matIds.includes(item.id))
+            .map((item) => {
+                const unitPrice = prices.rows.find((data) => data.type_id == item.id).price;
+                const lineTotal = unitPrice * item.quantity;
+                const percentageChange = prices.rows.find((data) => data.type_id == item.id).percent_change;
+    
+                materialsTotal += lineTotal;
+    
+                item.unitPrice = unitPrice;
+                item.lineTotal = lineTotal;
+                item.percentageChange = percentageChange;
+            })
+    
+        materialRequirements.totalTax = totalTax;
+        materialRequirements.maxBuys = materialsTotal;
+        materialRequirements.totalJobCost = materialsTotal + totalTax;
+    
+        const gasIds = [30375, 30376, 30377, 30370, 30378, 30371, 30372, 30373, 30374];
+        const reactionIds = [30311, 30310, 30305, 30303, 30309, 30307, 30306, 30304, 30308]
+        const salvageIds = [45662, 30024, 30270, 30269, 30254, 30248, 30271, 45661, 30018, 30022, 30268, 30259, 30021, 30251, 30019, 30258, 45660, 45663, 30252];
+        const mineralIds = [37, 40, 36, 38, 35, 34, 39];
+        const fuelBlockIds = [21940, 19860, 21100, 20230];
+    
+        // Helper function to determine category priority
+        const getCategoryPriority = (id) => {
+            if (salvageIds.includes(id)) return 1;
+            if (gasIds.includes(id)) return 2;
+            if (fuelBlockIds.includes(id)) return 3;
+            if (mineralIds.includes(id)) return 4;
+            return 5; // For "everything else"
+        };
+    
+        // Sorting the array
+        materialRequirements.requiredMaterialsForAll.sort((a, b) => {
+            const categoryA = getCategoryPriority(a.id);
+            const categoryB = getCategoryPriority(b.id);
+    
+            if (categoryA !== categoryB) {
+                return categoryA - categoryB; // Sort by category priority
+            }
+            return a.id - b.id; // Within the same category, sort by ID
+        });
+    
+        consolidateByNameInPlace(materialRequirements.requiredMaterialsForAll);
+        
+        res.send(materialRequirements);
+    }
+    catch(err) {
+        res.send(err);
+    }
 });
 
 module.exports = buildRouter;
