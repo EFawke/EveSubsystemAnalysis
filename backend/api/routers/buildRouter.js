@@ -533,7 +533,7 @@ buildRouter.post('/', async (req, res) => {
         res.send(materialRequirements);
     }
     catch(err) {
-        res.send(err);
+        res.status(500).send('Something broke, did you send the correct headers?');
     }
 });
 
