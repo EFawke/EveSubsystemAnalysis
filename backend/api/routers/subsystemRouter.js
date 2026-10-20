@@ -90,6 +90,8 @@ marketRouter.post(`/:subsystemID`, async (req, res) => {
         chartData.push(obj)
     }
 
+    console.log(chartData);
+
     let currentValues = {
         minSell: {
             title: "Min Sell",
