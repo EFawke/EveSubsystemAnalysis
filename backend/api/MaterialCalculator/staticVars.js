@@ -845,7 +845,7 @@ const core = {
 
 const intactArmorNanobots = {
     typeId: 30614,
-    typeName: "Intact Armor Nanobots",
+    typeName: "Intact Armor Nanobot",
     baseProbability: .26,
     baseRuns: 20,
     datacoreOne: 11496,
@@ -936,12 +936,12 @@ const malfunctioningWeaponSubroutines = {
 };
 
 const malfunctioningThrusterSections = {
-    typeId: 30586,
-    typeName: "Malfunctioning Power Cores",
+    typeId: 30558,
+    typeName: "Malfunctioning Thruster Sections",
     baseProbability: .21,
     baseRuns: 10,
-    datacoreOne: 20115,
-    datacoreTwo: 20414,
+    datacoreOne: 20114,
+    datacoreTwo: 20420,
     //skills and levels
     sleeperEncryptionMethods: 4,
     skillOne: 4,
@@ -988,12 +988,12 @@ const wreckedWeaponSubroutines = {
 };
 
 const wreckedThrusterSections = {
-    typeId: 30588,
-    typeName: "Wrecked Power Cores",
+    typeId: 30562,
+    typeName: "Wrecked Thruster Sections",
     baseProbability: .14,
     baseRuns: 3,
-    datacoreOne: 20115,
-    datacoreTwo: 20414,
+    datacoreOne: 20114,
+    datacoreTwo: 20420,
     //skills and levels
     sleeperEncryptionMethods: 4,
     skillOne: 4,
@@ -1020,7 +1020,7 @@ const attaintmentDecryptor = {
 
 const augmentationDecryptor = {
     typeName: "Augmentation Decryptor",
-    typeId: 34202,
+    typeId: 34203,
     probabilityModifier: 0.6,
     inventionMEModifier: -2,
     inventionTEModifier: 2,
@@ -1064,7 +1064,7 @@ const optimizedAttainmentDecryptor = {
 }
 
 const optimizedAugmentationDecryptor = {
-    typeName: "Attainment Decryptor",
+    typeName: "Optimized Augmentation Decryptor",
     typeId: 34208,
     probabilityModifier: 0.9,
     inventionMEModifier: 2,

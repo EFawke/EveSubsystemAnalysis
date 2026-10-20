@@ -44,12 +44,6 @@ export default function MatsTable(props) {
                                 </Table.Cell>
                                 <Table.Cell>
                                     <NumericTableCell value={material.lineTotal} percentage={material.percentageChange} tipMessage="30 day median delta" colorBlindMode={false} getClassName={props.getClassName} checkInfinity={props.checkInfinity} />
-
-                                    {/* <Flex height="100%" align="center">
-                                        <Text size="3">
-                                            {Math.round(material.lineTotal).toLocaleString()}
-                                        </Text>
-                                    </Flex> */}
                                 </Table.Cell>
                             </Table.Row>
                         ))}
