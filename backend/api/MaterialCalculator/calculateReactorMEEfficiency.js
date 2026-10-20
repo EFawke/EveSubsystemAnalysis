@@ -4,7 +4,14 @@ const {
     largeReactionRigI,
     largeReactionRigII} = require('./staticVars.js');
 
-const calculateReactorMEEfficiency = (reactionStructure, reactionRigOne, reactionRigTwo, reactionLocation, settings) => {
+const calculateReactorMEEfficiency = (
+    reactionStructure, 
+    reactionRigOne, 
+    reactionRigTwo, 
+    tataraRig,
+    reactionLocation, 
+    settings
+) => {
     let rigME;
     if (reactionStructure == "Athanor") {
         if (reactionRigOne == "T1") {
@@ -25,13 +32,13 @@ const calculateReactorMEEfficiency = (reactionStructure, reactionRigOne, reactio
         }
     }
     if (reactionStructure == "Tatara") {
-        if (settings.tataraRig == "T1") {
+        if (tataraRig == "T1") {
             rigME = largeReactionRigI;
         }
-        if (settings.tataraRig == "T2") {
+        if (tataraRig == "T2") {
             rigME = largeReactionRigII;
         }
-        if (settings.tataraRig == "None") {
+        if (tataraRig == "None") {
             rigME = {
                 materialReduction: 0,
                 timeReduction: 0,

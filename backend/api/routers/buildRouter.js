@@ -80,28 +80,6 @@ const calculateEIV = (requirements, numRuns, marketData) => {
     return totalCost * numRuns;
 }
 
-const getValueFromData = (orderType, array, quantity) => {
-    if (orderType == "buy") {
-        const sortedArray = array.sort((a, b) => b.price - a.price);
-        return sortedArray[0].price * quantity
-    }
-    if (orderType == "sell") {
-        const sortedArray = array.sort((a, b) => a.price - b.price);
-        return sortedArray[0].price * quantity
-    }
-}
-
-const getUnitPriceFromData = (orderType, array) => {
-    if (orderType == "buy") {
-        const sortedArray = array.sort((a, b) => b.price - a.price);
-        return sortedArray[0].price;
-    }
-    if (orderType == "sell") {
-        const sortedArray = array.sort((a, b) => a.price - b.price);
-        return sortedArray[0].price;
-    }
-}
-
 function consolidateByNameInPlace(arr) {
     const map = new Map();
 
@@ -122,51 +100,6 @@ function consolidateByNameInPlace(arr) {
         }
     }
 }
-
-async function getLatestPriceForItem(client, typeId, region, orderType) {
-    const column = orderType === 'buy' ? 'maxbuy' : 'minsell';
-    const result = await client.query(
-        `
-        SELECT ${column}
-        FROM price_data
-        WHERE type_id = $1 AND region = $2
-        ORDER BY date DESC
-        LIMIT 1
-      `,
-        [typeId, region]
-    );
-    return result.rows[0]?.[column] || 0;
-}
-
-// const handleErrors = (settings) => {
-//     if(!settings){
-//         return "settings not defined";
-//     }
-//     if(!settings?.complex){
-//         return "complex not defined";
-//     }
-//     if(settings.complex !== "Azbel" && settings.complex !== "Raitaru"){
-//         return "Invalid complex";
-//     }
-//     if(!settings?.complexMeRig){
-//         return "complex ME rig not defined";
-//     }
-//     if(!settings?.complexTeRig){
-//         return "complex TE rig not defined";
-//     }
-//     if(!settings?.complexSystem){
-//         return "complex system not defined";
-//     }
-//     if(!settings?.refinery){
-//         return "refinery not defined";
-//     }
-//     if(!settings?.meRig){
-//         return "refinery ME rig not defined";
-//     }
-//     if(!settings?.teRig){
-//         return "refinery ME rig not defined";
-//     }
-// }
 
 buildRouter.post('/', async (req, res) => {
     try{

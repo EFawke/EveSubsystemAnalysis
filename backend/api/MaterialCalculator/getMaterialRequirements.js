@@ -35,8 +35,10 @@ const getMaterialRequirements = (settings) => {
     let location = settings.complexSystem || "wormhole";
 
     let reactionStructure = settings.refinery || "Tatara";
-    let reactionRigOne = settings.meRig || "None";
-    let reactionRigTwo = settings.teRig || "None";
+    let tataraRig = settings.tataraRig || "None";
+    let reactionRigOne = settings.refineryMeRig || "None";
+    let reactionRigTwo = settings.refineryTeRig || "None";
+
     let reactionLocation = settings.refinerySystem || "wormhole";
 
     let BPOME = settings.componentMaterialEfficiency ?? 10;
@@ -560,7 +562,14 @@ const getMaterialRequirements = (settings) => {
         }
     }
 
-    const reactorEfficiency = calculateReactorMEEfficiency(reactionStructure, reactionRigOne, reactionRigTwo, reactionLocation, settings);
+    const reactorEfficiency = calculateReactorMEEfficiency(
+        reactionStructure, 
+        reactionRigOne, 
+        reactionRigTwo,
+        tataraRig,
+        reactionLocation, 
+        settings
+    );
 
     const gasRequirements = [];
 
