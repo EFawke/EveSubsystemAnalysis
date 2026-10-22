@@ -4,8 +4,9 @@
   "description": "EVE SUBSYSTEM ANALYSIS",
   "main": "backend/app.js",
   "scripts": {
-    "postinstall": "npm --prefix backend install && npm --prefix frontend install",
-    "dev": "cd backend && node app"
+    "postinstall": "npm --prefix backend install",
+    "backend": "cd backend && node app",
+    "dev": "npm run backend"
   },
   "repository": {
     "type": "git",
