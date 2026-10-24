@@ -42,7 +42,10 @@ const scheduleReactions = (reactions, slots) => {
     }
     const sortedReactions = reactions.sort((a, b) => a.runs - b.runs)
     const reacRunsSum = sortedReactions.reduce((acc, curr) => acc + Number(curr.runs), 0);
-    const meanRuns = Math.round(reacRunsSum / slots)
+    let meanRuns = Math.round(reacRunsSum / slots);
+    if(meanRuns <= 0){
+        meanRuns = 1;
+    }
     if (slots <= sortedReactions.length) {
         return {
             success: true,
