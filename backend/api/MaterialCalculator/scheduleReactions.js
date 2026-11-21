@@ -44,7 +44,7 @@ const scheduleReactions = (reactions, slots) => {
     const reacRunsSum = sortedReactions.reduce((acc, curr) => acc + Number(curr.runs), 0);
     let meanRuns = Math.round(reacRunsSum / slots);
     if(meanRuns <= 0){
-        meanRuns = 1;
+        meanRuns = 1; // or we're dividing by 0 later and server crashes
     }
     if (slots <= sortedReactions.length) {
         return {

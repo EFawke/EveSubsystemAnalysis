@@ -468,6 +468,6 @@ buildRouter.post('/', async (req, res) => {
     catch(err) {
         res.status(500).send('Something broke, did you send the correct headers?');
     }
-});
+})
 
 module.exports = buildRouter;

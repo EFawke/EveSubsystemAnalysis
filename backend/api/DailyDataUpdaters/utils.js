@@ -127,8 +127,7 @@ const apiCall = async (url, axios, name, locationName, subsystemType, locationId
     backupData.sellOrders = backupData.sellOrders || 0;
 
     return backupData;
-};
-
+}
 
 const getMarketData = async (subsystemType, locationId, client, axios, name, locationName, epoch, type) => {
     const endpoint = makeUrl(subsystemType, locationId);
